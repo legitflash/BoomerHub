@@ -13,12 +13,12 @@ import { Heart, Share2, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/auth-context';
 import { getLikesForPost, toggleLike } from '@/services/likes-service';
+import type { Post } from '@/lib/types';
 
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+function BlogPostContent({ post }: { post: Post }) {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
-  const post = blogPosts.find((p) => p.slug === params.slug);
 
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -42,10 +42,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       fetchLikes();
     }
   }, [post, user, authLoading]);
-
-  if (!post) {
-    notFound();
-  }
 
   const handleLike = async () => {
     if (!user) {
@@ -221,4 +217,14 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       )}
     </>
   );
+}
+
+export default function BlogPostPage({ params }: { params: { slug: string } }) {
+  const post = blogPosts.find((p) => p.slug === params.slug);
+
+  if (!post) {
+    notFound();
+  }
+
+  return <BlogPostContent post={post} />;
 }
