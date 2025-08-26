@@ -69,7 +69,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         <ul>
           <li><strong>Lack of Patience:</strong> Success rarely happens overnight. Be prepared for a journey of consistent effort.</li>
           <li><strong>Ignoring Risk Management:</strong> In any venture involving money, understanding and managing risk is paramount.</li>
-          - <strong>Following Hype Blindly:</strong> What works for one person might not work for you. Do your own research before jumping on a trend.</li>
+          <li><strong>Following Hype Blindly:</strong> What works for one person might not work for you. Do your own research before jumping on a trend.</li>
         </ul>
         
         <p>By following these guidelines and committing to continuous learning, you're well on your way to achieving your goals. Explore our other articles and courses to dive deeper into specific topics that interest you.</p>
