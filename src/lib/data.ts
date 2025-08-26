@@ -1,5 +1,5 @@
 import type { Post, Course } from './types';
-import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy } from 'lucide-react';
+import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp } from 'lucide-react';
 
 export const blogPosts: Post[] = [
   // Money & Finance
@@ -324,6 +324,7 @@ export const blogCategories = [
     { name: 'Airdrop', icon: Droplets, slug: 'airdrop' },
     { name: 'Sports', icon: Gamepad, slug: 'sports' },
     { name: 'Top 10s', icon: Trophy, slug: 'top-10s' },
+    { name: 'Betting Predictions', icon: TrendingUp, slug: 'betting-predictions' },
 ];
 
 export const courseTracks = [
@@ -331,5 +332,7 @@ export const courseTracks = [
     { name: 'AI & Tech Skills', icon: Rocket, slug: 'ai-tech-skills' },
     { name: 'Social Media Growth & Monetization', icon: Users, slug: 'social-media-growth' },
 ]
+
+    
 
     
