@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { blogPosts } from '@/lib/data';
@@ -25,9 +25,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useRouter } from 'next/navigation';
 
-
+// This is the Client Component that handles all interactivity.
 function BlogPostContent({ post }: { post: Post }) {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
@@ -231,7 +230,9 @@ function BlogPostContent({ post }: { post: Post }) {
   );
 }
 
+
 // This is the main page component, which is a Server Component.
+// It fetches the data and passes it to the Client Component.
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = blogPosts.find((p) => p.slug === params.slug);
 
@@ -239,6 +240,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     notFound();
   }
 
-  // We pass the fetched post data to the Client Component.
   return <BlogPostContent post={post} />;
 }
+
+    
