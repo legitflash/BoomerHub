@@ -278,7 +278,19 @@ export const courses: Course[] = [
     hours: 8,
     progress: 30,
     level: 'Free',
-  }
+  },
+  {
+    slug: 'forex-crypto-basics',
+    title: 'Forex & Crypto Basics (Beginner-Friendly)',
+    track: 'Money Skills',
+    description: 'Get started with the fundamentals of Forex and Cryptocurrency trading in this beginner-friendly course.',
+    image: 'https://picsum.photos/600/400',
+    dataAiHint: 'finance basics',
+    lessons: 12,
+    hours: 4,
+    progress: 0,
+    level: 'Free',
+  },
 ];
 
 export const topCategories = [
@@ -307,3 +319,5 @@ export const courseTracks = [
     { name: 'AI & Tech Skills', icon: Rocket, slug: 'ai-tech-skills' },
     { name: 'Social Media Growth & Monetization', icon: Users, slug: 'social-media-growth' },
 ]
+
+    

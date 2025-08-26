@@ -13,12 +13,42 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
     notFound();
   }
 
-  const sections = [
-    { title: 'Introduction', lessons: ['Welcome', 'Course Overview'] },
-    { title: 'Module 1: Fundamentals', lessons: ['Lesson 1.1', 'Lesson 1.2', 'Quiz 1'] },
-    { title: 'Module 2: Advanced Techniques', lessons: ['Lesson 2.1', 'Lesson 2.2', 'Project'] },
-    { title: 'Conclusion', lessons: ['Final Summary', 'Next Steps'] },
-  ];
+  const sections =
+    course.slug === 'forex-crypto-basics'
+      ? [
+          {
+            title: 'What is Forex & Crypto?',
+            lessons: ['Introduction to Markets'],
+          },
+          {
+            title: 'Setting Up Accounts',
+            lessons: ['Brokers, Wallets, Exchanges'],
+          },
+          {
+            title: 'Candlesticks & Charts Explained',
+            lessons: ['Reading the Charts'],
+          },
+          { title: 'Spot Trading vs Futures', lessons: ['Trading Types'] },
+          {
+            title: 'Risk Management',
+            lessons: ['Stop loss, leverage'],
+          },
+          { title: 'Practice Session', lessons: ['Demo trading'] },
+          { title: 'Quiz & Certification', lessons: ['Final Quiz'] },
+        ]
+      : [
+          { title: 'Introduction', lessons: ['Welcome', 'Course Overview'] },
+          {
+            title: 'Module 1: Fundamentals',
+            lessons: ['Lesson 1.1', 'Lesson 1.2', 'Quiz 1'],
+          },
+          {
+            title: 'Module 2: Advanced Techniques',
+            lessons: ['Lesson 2.1', 'Lesson 2.2', 'Project'],
+          },
+          { title: 'Conclusion', lessons: ['Final Summary', 'Next Steps'] },
+        ];
+
 
   return (
     <div className="container max-w-5xl py-12 md:py-16">
@@ -97,3 +127,5 @@ export async function generateStaticParams() {
     slug: course.slug,
   }));
 }
+
+    
