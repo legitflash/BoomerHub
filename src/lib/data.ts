@@ -291,6 +291,18 @@ export const courses: Course[] = [
     progress: 0,
     level: 'Free',
   },
+  {
+    slug: 'social-media-monetization-mastery',
+    title: 'Social Media Monetization Mastery',
+    track: 'Social Media Growth & Monetization',
+    description: 'A comprehensive guide to building and monetizing your presence across major social media platforms.',
+    image: 'https://picsum.photos/600/400',
+    dataAiHint: 'social media growth',
+    lessons: 22,
+    hours: 9,
+    progress: 0,
+    level: 'Premium'
+  }
 ];
 
 export const topCategories = [

@@ -6,6 +6,11 @@ import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { CheckCircle2, BookOpen, Clock, Award, FileText } from 'lucide-react';
 
+type Section = {
+  title: string;
+  lessons: string[];
+};
+
 export default function CoursePage({ params }: { params: { slug: string } }) {
   const course = courses.find((c) => c.slug === params.slug);
 
@@ -13,51 +18,106 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
     notFound();
   }
 
-  const sections =
-    course.slug === 'forex-crypto-basics'
-      ? [
-          {
-            title: '1. What is Forex & Crypto?',
-            lessons: ['Introduction to Financial Markets', 'Differences Between Forex and Crypto', 'Why Trade Them?'],
-          },
-          {
-            title: '2. Setting Up Your Trading Accounts',
-            lessons: ['Choosing a Reliable Forex Broker', 'Selecting a Secure Crypto Wallet', 'Navigating Crypto Exchanges'],
-          },
-          {
-            title: '3. Candlesticks & Charts Explained',
-            lessons: ['How to Read Candlestick Patterns', 'Understanding Market Structure', 'Introduction to Technical Indicators'],
-          },
-          { 
-            title: '4. Spot Trading vs Futures', 
-            lessons: ['Understanding Spot Trading', 'Introduction to Futures/Derivatives', 'Pros and Cons of Each'] 
-          },
-          {
-            title: '5. Fundamental Risk Management',
-            lessons: ['The Importance of Stop Loss', 'Understanding and Using Leverage Wisely', 'Position Sizing'],
-          },
-          { 
-            title: '6. Your First Practice Session', 
-            lessons: ['Setting Up a Demo Account', 'Executing Your First Demo Trade', 'Analyzing Your Trades'] 
-          },
-          { 
-            title: '7. Quiz & Certification', 
-            lessons: ['Final Assessment Quiz', 'Claiming Your Certificate'] 
-          },
-        ]
-      : [
-          { title: 'Introduction', lessons: ['Welcome', 'Course Overview'] },
-          {
-            title: 'Module 1: Fundamentals',
-            lessons: ['Lesson 1.1', 'Lesson 1.2', 'Quiz 1'],
-          },
-          {
-            title: 'Module 2: Advanced Techniques',
-            lessons: ['Lesson 2.1', 'Lesson 2.2', 'Project'],
-          },
-          { title: 'Conclusion', lessons: ['Final Summary', 'Next Steps'] },
-        ];
+  const courseSections: { [key: string]: Section[] } = {
+    'forex-crypto-basics': [
+      {
+        title: '1. What is Forex & Crypto?',
+        lessons: ['Introduction to Financial Markets', 'Differences Between Forex and Crypto', 'Why Trade Them?'],
+      },
+      {
+        title: '2. Setting Up Your Trading Accounts',
+        lessons: ['Choosing a Reliable Forex Broker', 'Selecting a Secure Crypto Wallet', 'Navigating Crypto Exchanges'],
+      },
+      {
+        title: '3. Candlesticks & Charts Explained',
+        lessons: ['How to Read Candlestick Patterns', 'Understanding Market Structure', 'Introduction to Technical Indicators'],
+      },
+      { title: '4. Spot Trading vs Futures', lessons: ['Understanding Spot Trading', 'Introduction to Futures/Derivatives', 'Pros and Cons of Each'] },
+      {
+        title: '5. Fundamental Risk Management',
+        lessons: ['The Importance of Stop Loss', 'Understanding and Using Leverage Wisely', 'Position Sizing'],
+      },
+      { title: '6. Your First Practice Session', lessons: ['Setting Up a Demo Account', 'Executing Your First Demo Trade', 'Analyzing Your Trades'] },
+      { title: '7. Quiz & Certification', lessons: ['Final Assessment Quiz', 'Claiming Your Certificate'] },
+    ],
+    'social-media-monetization-mastery': [
+        { title: '1. Creating a Facebook Page for Business', lessons: ['Page Setup and Optimization', 'Content Strategy for Engagement', 'Facebook Ads Basics'] },
+        { title: '2. Growing on Instagram & Reels', lessons: ['Mastering the Instagram Algorithm', 'Creating Viral Reels', 'Influencer Collaboration'] },
+        { title: '3. TikTok Growth Hacks (2025 edition)', lessons: ['Understanding TikTok Trends', 'Monetizing through a-z', 'Going Live with a Purpose'] },
+        { title: '4. YouTube Monetization', lessons: ['Optimizing Shorts for Views', 'Strategies for Long-Form Content', 'Maximizing AdSense Revenue'] },
+        { title: '5. WhatsApp Business & Telegram Channels', lessons: ['Building a Community on WhatsApp', 'Monetizing Telegram Channels', 'Automating Communication'] },
+        { title: '6. Building a Personal Brand Online', lessons: ['Defining Your Niche and Voice', 'Content Pillars and Strategy', 'Networking and Collaboration'] },
+        { title: '7. Final Project', lessons: ['Create a Monetized Social Account', 'Peer Review and Feedback'] },
+        { title: '8. Quiz & Certification', lessons: ['Final Assessment Quiz', 'Claiming Your Certificate'] },
+    ],
+    default: [
+      { title: 'Introduction', lessons: ['Welcome', 'Course Overview'] },
+      {
+        title: 'Module 1: Fundamentals',
+        lessons: ['Lesson 1.1', 'Lesson 1.2', 'Quiz 1'],
+      },
+      {
+        title: 'Module 2: Advanced Techniques',
+        lessons: ['Lesson 2.1', 'Lesson 2.2', 'Project'],
+      },
+      { title: 'Conclusion', lessons: ['Final Summary', 'Next Steps'] },
+    ],
+  };
 
+  const sections = courseSections[course.slug] || courseSections.default;
+
+  const courseDescriptions: { [key: string]: React.ReactNode } = {
+    'forex-crypto-basics': (
+      <>
+        <h2>About This Course</h2>
+        <p>
+          Welcome to the ultimate beginner's guide to the exciting worlds of Forex and Cryptocurrency trading. If you've ever been curious about these markets but felt intimidated by the complexity, this course is designed for you. We'll demystify the jargon and provide a clear, step-by-step roadmap to get you started, even if you have zero prior experience.
+        </p>
+        <p>
+          Our goal is to empower you with the foundational knowledge and practical skills needed to navigate the markets with confidence. You'll learn how to analyze charts, manage risk, and execute trades on both demo and live accounts.
+        </p>
+        <h3>What You'll Learn:</h3>
+        <ul>
+          <li>The core concepts of the Forex and Crypto markets.</li>
+          <li>How to set up and secure your trading and crypto accounts.</li>
+          <li>The basics of technical analysis, including reading charts and candlestick patterns.</li>
+          <li>Crucial risk management techniques to protect your capital.</li>
+          <li>The practical steps to place your first trade.</li>
+        </ul>
+        <h3>Who Is This Course For?</h3>
+        <p>This course is perfect for absolute beginners with an interest in trading, individuals looking for a new side hustle, and anyone who wants to understand the financial markets that are shaping our world.</p>
+      </>
+    ),
+     'social-media-monetization-mastery': (
+      <>
+        <h2>About This Course</h2>
+        <p>
+          Unlock the full potential of social media and turn your online presence into a profitable venture. This comprehensive course covers everything you need to know about building, growing, and monetizing accounts on major platforms like Facebook, Instagram, TikTok, and YouTube.
+        </p>
+        <p>
+          From content strategy and algorithm hacks to personal branding and community building, we provide a step-by-step blueprint for success. Whether you're a business owner, aspiring influencer, or content creator, this course will equip you with the skills to thrive in the digital landscape.
+        </p>
+        <h3>What You'll Learn:</h3>
+        <ul>
+          <li>Platform-specific strategies for Facebook, Instagram, TikTok, and YouTube.</li>
+          <li>How to create engaging content that goes viral.</li>
+          <li>Proven monetization techniques for each platform.</li>
+          <li>The art of building an authentic and powerful personal brand.</li>
+          <li>Leveraging WhatsApp and Telegram for business growth.</li>
+        </ul>
+        <h3>Who Is This Course For?</h3>
+        <p>This course is ideal for entrepreneurs, marketers, content creators, and anyone looking to build a profitable online brand using social media.</p>
+      </>
+    ),
+    default: (
+      <>
+        <h2>About this course</h2>
+        <p>Here we would have a more detailed description of the course, what students will learn, who it's for, and any prerequisites. This is placeholder text to illustrate the layout.</p>
+      </>
+    ),
+  };
+
+  const descriptionContent = courseDescriptions[course.slug] || courseDescriptions.default;
 
   return (
     <div className="container max-w-5xl py-12 md:py-16">
@@ -82,32 +142,7 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
           </div>
 
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            {course.slug === 'forex-crypto-basics' ? (
-              <>
-                <h2>About This Course</h2>
-                <p>
-                  Welcome to the ultimate beginner's guide to the exciting worlds of Forex and Cryptocurrency trading. If you've ever been curious about these markets but felt intimidated by the complexity, this course is designed for you. We'll demystify the jargon and provide a clear, step-by-step roadmap to get you started, even if you have zero prior experience.
-                </p>
-                <p>
-                  Our goal is to empower you with the foundational knowledge and practical skills needed to navigate the markets with confidence. You'll learn how to analyze charts, manage risk, and execute trades on both demo and live accounts.
-                </p>
-                <h3>What You'll Learn:</h3>
-                <ul>
-                  <li>The core concepts of the Forex and Crypto markets.</li>
-                  <li>How to set up and secure your trading and crypto accounts.</li>
-                  <li>The basics of technical analysis, including reading charts and candlestick patterns.</li>
-                  <li>Crucial risk management techniques to protect your capital.</li>
-                  <li>The practical steps to place your first trade.</li>
-                </ul>
-                <h3>Who Is This Course For?</h3>
-                <p>This course is perfect for absolute beginners with an interest in trading, individuals looking for a new side hustle, and anyone who wants to understand the financial markets that are shaping our world.</p>
-              </>
-            ) : (
-               <>
-                <h2>About this course</h2>
-                <p>Here we would have a more detailed description of the course, what students will learn, who it's for, and any prerequisites. This is placeholder text to illustrate the layout.</p>
-               </>
-            )}
+            {descriptionContent}
           </div>
         </div>
 
