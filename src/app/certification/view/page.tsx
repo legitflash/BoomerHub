@@ -6,7 +6,7 @@ import { GraduationCap } from 'lucide-react';
 function CertificateContent() {
     const searchParams = useSearchParams();
     const course = searchParams.get('course') || 'Your Amazing Course';
-    const user = searchParams.get('user') || 'Smart Student';
+    const user = searchParams.get('user') || 'Valued Student';
     const date = new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -48,7 +48,7 @@ function CertificateContent() {
                         </div>
                         <div className="border-t border-gray-400 pt-2">
                              <p>Signature</p>
-                            <p className="font-semibold text-gray-700 dark:text-gray-300 font-serif italic">Favour Uduafemhe</p>
+                            <p className="font-semibold text-gray-700 dark:text-gray-300 font-serif italic">BoomerHub Team</p>
                         </div>
                     </div>
                 </div>

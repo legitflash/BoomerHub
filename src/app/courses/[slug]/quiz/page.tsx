@@ -65,7 +65,7 @@ export default function QuizPage({ params }: { params: { slug: string } }) {
                 </Card>
                 <div className="mt-8 flex justify-center">
                     <Button asChild size="lg">
-                        <Link href={`/certification/view?course=${encodeURIComponent(course.title)}&user=${encodeURIComponent("Favour Uduafemhe")}`}>
+                        <Link href={`/certification/view?course=${encodeURIComponent(course.title)}&user=${encodeURIComponent("Valued Student")}`}>
                             Submit & View Certificate <ArrowRight className="ml-2 h-5 w-5" />
                         </Link>
                     </Button>
