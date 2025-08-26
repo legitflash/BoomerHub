@@ -15,7 +15,7 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-[calc(100vh-14rem)]">
       <Card className="mx-auto max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardTitle className="text-2xl">Sign In</CardTitle>
           <CardDescription>
             Enter your email below to login to your account
           </CardDescription>
@@ -41,10 +41,10 @@ export default function LoginPage() {
               <Input id="password" type="password" required />
             </div>
             <Button type="submit" className="w-full">
-              Login
+              Sign In
             </Button>
             <Button variant="outline" className="w-full">
-              Login with Google
+              Sign In with Google
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">

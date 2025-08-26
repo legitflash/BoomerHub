@@ -75,7 +75,7 @@ export function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="pr-0">
-                 <SheetHeader>
+                <SheetHeader>
                   <SheetTitle>
                     <VisuallyHidden>Navigation Menu</VisuallyHidden>
                   </SheetTitle>
@@ -113,7 +113,7 @@ export function Header() {
           </div>
           <nav className="flex items-center gap-2">
             <Button variant="ghost" asChild>
-                <Link href="/auth/login">Login</Link>
+                <Link href="/auth/login">Sign In</Link>
             </Button>
             <Button asChild>
                 <Link href="/auth/register">Register</Link>
