@@ -10,12 +10,12 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <GraduationCap className="h-6 w-6 text-primary" />
-              <span className="font-bold">Boomer Academy</span>
+              <span className="font-bold">BoomerHub</span>
             </div>
             <p>Learn Skills. Earn Income. Get Certified.</p>
             <div className="flex gap-4 mt-2">
                 <Link href="#" aria-label="WhatsApp"><MessageCircle className="h-5 w-5 hover:text-primary" /></Link>
-                <Link href="#" aria-label="Email"><Mail className="h-5 w-5 hover:text-primary" /></Link>
+                <Link href="mailto:support@boomer.academy" aria-label="Email"><Mail className="h-5 w-5 hover:text-primary" /></Link>
             </div>
           </div>
           
@@ -51,7 +51,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Boomer Academy. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} BoomerHub. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

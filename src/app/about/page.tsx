@@ -13,7 +13,7 @@ export default function AboutPage() {
   return (
     <div className="container py-12 md:py-24 space-y-16">
       <section className="text-center">
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">About Boomer Academy</h1>
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">About BoomerHub</h1>
         <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-xl">
           We are dedicated to providing accessible, high-quality education to help individuals acquire valuable skills, generate income, and achieve certification. Our mission is to empower people for the digital economy.
         </p>
@@ -23,7 +23,7 @@ export default function AboutPage() {
         <div>
           <Image 
             src="https://picsum.photos/600/400" 
-            alt="Boomer Academy Team" 
+            alt="BoomerHub Team" 
             width={600} 
             height={400} 
             data-ai-hint="team working"
@@ -33,7 +33,7 @@ export default function AboutPage() {
         <div className="space-y-4">
           <h2 className="text-3xl font-bold tracking-tighter font-headline">Our Mission</h2>
           <p className="text-muted-foreground">
-            In a rapidly changing world, continuous learning is key. Boomer Academy was founded on the principle that everyone deserves the chance to upskill and adapt. We break down complex topics into easy-to-understand courses and articles, focusing on practical knowledge that can be applied immediately to earn income or start a new career.
+            In a rapidly changing world, continuous learning is key. BoomerHub was founded on the principle that everyone deserves the chance to upskill and adapt. We break down complex topics into easy-to-understand courses and articles, focusing on practical knowledge that can be applied immediately to earn income or start a new career.
           </p>
           <p className="text-muted-foreground">
             Whether you're exploring forex, mastering AI tools, or building a social media empire, we're your partner in growth.
