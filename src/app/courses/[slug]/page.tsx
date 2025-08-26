@@ -1,5 +1,6 @@
 
 
+
 'use client';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -145,8 +146,7 @@ default: (
 };
 
 // This is the Client Component that contains all the interactive logic.
-function CoursePageClient({ params }: { params: { slug: string } }) {
-  const course = courses.find((c) => c.slug === params.slug);
+function CoursePageClient({ course }: { course: any }) {
   const { user, loading } = useAuth();
   
   if (!course) {
@@ -252,6 +252,12 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
     notFound();
   }
   
-  // It renders the Client Component and passes the params.
-  return <CoursePageClient params={params} />;
+  // It renders the Client Component and passes the course data.
+  return <CoursePageClient course={course} />;
+}
+
+export async function generateStaticParams() {
+  return courses.map((course) => ({
+    slug: course.slug,
+  }));
 }

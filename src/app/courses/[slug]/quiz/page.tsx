@@ -147,9 +147,3 @@ export default function QuizPage({ params }: { params: { slug: string } }) {
         </div>
     );
 }
-
-export async function generateStaticParams() {
-  return courses.map((course) => ({
-    slug: course.slug,
-  }));
-}
