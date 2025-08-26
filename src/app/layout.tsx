@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Boomer Academy',
+  title: 'BoomerHub',
   description: 'Learn Skills. Earn Income. Get Certified.',
 };
 

@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { courses } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CheckCircle2, BookOpen, Clock, Award, FileText } from 'lucide-react';
+import { CheckCircle2, BookOpen, Clock, Award, FileText, Star } from 'lucide-react';
 
 type Section = {
   title: string;
@@ -150,6 +151,9 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
 
   const descriptionContent = courseDescriptions[course.slug] || courseDescriptions.default;
 
+  const isCompleted = course.progress === 100;
+  const buttonText = isCompleted ? 'Take Quiz' : (course.progress ?? 0) > 0 ? 'Continue Learning' : 'Start Course';
+
   return (
     <div className="container max-w-5xl py-12 md:py-16">
       <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
@@ -184,8 +188,14 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
                 <Progress value={course.progress} className="h-2" />
                 <p className="text-sm text-muted-foreground">{course.progress ?? 0}% complete</p>
             </div>
-            <Button className="w-full" size="lg">
-              {course.progress === 100 ? 'Get Certificate' : (course.progress ?? 0) > 0 ? 'Continue Learning' : 'Start Course'}
+            <Button asChild={isCompleted} className="w-full" size="lg">
+              {isCompleted ? (
+                 <Link href={`/courses/${course.slug}/quiz`}>
+                    <Trophy className="mr-2 h-5 w-5" /> Take Quiz
+                 </Link>
+              ) : (
+                <button>{buttonText}</button>
+              )}
             </Button>
             <div className="grid grid-cols-2 gap-4 mt-4 text-sm">
                 <div className="flex items-center gap-2"><BookOpen className="h-4 w-4 text-muted-foreground"/> <span>{course.lessons} lessons</span></div>

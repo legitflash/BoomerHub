@@ -30,7 +30,7 @@ export function Header() {
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <GraduationCap className="h-6 w-6 text-primary" />
-            <span className="hidden font-bold sm:inline-block">Boomer Academy</span>
+            <span className="hidden font-bold sm:inline-block">BoomerHub</span>
           </Link>
           <nav className="flex items-center gap-4 text-sm lg:gap-6">
             <DropdownMenu>
@@ -74,14 +74,14 @@ export function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="pr-0">
-                <SheetHeader>
+                 <SheetHeader>
                   <SheetTitle>
                     <VisuallyHidden>Navigation Menu</VisuallyHidden>
                   </SheetTitle>
                 </SheetHeader>
                 <Link href="/" className="mr-6 flex items-center space-x-2 p-4">
                   <GraduationCap className="h-6 w-6 text-primary" />
-                  <span className="font-bold">Boomer Academy</span>
+                  <span className="font-bold">BoomerHub</span>
                 </Link>
                 <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
                   <Accordion type="single" collapsible className="w-full">

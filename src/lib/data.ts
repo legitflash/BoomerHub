@@ -240,7 +240,7 @@ export const courses: Course[] = [
     lessons: 25,
     hours: 10,
     isFeatured: true,
-    progress: 0,
+    progress: 100,
     level: 'Premium',
   },
   {
@@ -252,7 +252,7 @@ export const courses: Course[] = [
     dataAiHint: 'artificial intelligence',
     lessons: 15,
     hours: 5,
-    progress: 0,
+    progress: 100,
     level: 'Free',
   },
   {
@@ -264,7 +264,7 @@ export const courses: Course[] = [
     dataAiHint: 'video creator',
     lessons: 30,
     hours: 12,
-    progress: 0,
+    progress: 75,
     level: 'Premium',
   },
   {
