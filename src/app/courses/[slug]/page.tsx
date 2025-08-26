@@ -17,24 +17,33 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
     course.slug === 'forex-crypto-basics'
       ? [
           {
-            title: 'What is Forex & Crypto?',
-            lessons: ['Introduction to Markets'],
+            title: '1. What is Forex & Crypto?',
+            lessons: ['Introduction to Financial Markets', 'Differences Between Forex and Crypto', 'Why Trade Them?'],
           },
           {
-            title: 'Setting Up Accounts',
-            lessons: ['Brokers, Wallets, Exchanges'],
+            title: '2. Setting Up Your Trading Accounts',
+            lessons: ['Choosing a Reliable Forex Broker', 'Selecting a Secure Crypto Wallet', 'Navigating Crypto Exchanges'],
           },
           {
-            title: 'Candlesticks & Charts Explained',
-            lessons: ['Reading the Charts'],
+            title: '3. Candlesticks & Charts Explained',
+            lessons: ['How to Read Candlestick Patterns', 'Understanding Market Structure', 'Introduction to Technical Indicators'],
           },
-          { title: 'Spot Trading vs Futures', lessons: ['Trading Types'] },
+          { 
+            title: '4. Spot Trading vs Futures', 
+            lessons: ['Understanding Spot Trading', 'Introduction to Futures/Derivatives', 'Pros and Cons of Each'] 
+          },
           {
-            title: 'Risk Management',
-            lessons: ['Stop loss, leverage'],
+            title: '5. Fundamental Risk Management',
+            lessons: ['The Importance of Stop Loss', 'Understanding and Using Leverage Wisely', 'Position Sizing'],
           },
-          { title: 'Practice Session', lessons: ['Demo trading'] },
-          { title: 'Quiz & Certification', lessons: ['Final Quiz'] },
+          { 
+            title: '6. Your First Practice Session', 
+            lessons: ['Setting Up a Demo Account', 'Executing Your First Demo Trade', 'Analyzing Your Trades'] 
+          },
+          { 
+            title: '7. Quiz & Certification', 
+            lessons: ['Final Assessment Quiz', 'Claiming Your Certificate'] 
+          },
         ]
       : [
           { title: 'Introduction', lessons: ['Welcome', 'Course Overview'] },
@@ -73,8 +82,32 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
           </div>
 
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <h2>About this course</h2>
-            <p>Here we would have a more detailed description of the course, what students will learn, who it's for, and any prerequisites. This is placeholder text to illustrate the layout.</p>
+            {course.slug === 'forex-crypto-basics' ? (
+              <>
+                <h2>About This Course</h2>
+                <p>
+                  Welcome to the ultimate beginner's guide to the exciting worlds of Forex and Cryptocurrency trading. If you've ever been curious about these markets but felt intimidated by the complexity, this course is designed for you. We'll demystify the jargon and provide a clear, step-by-step roadmap to get you started, even if you have zero prior experience.
+                </p>
+                <p>
+                  Our goal is to empower you with the foundational knowledge and practical skills needed to navigate the markets with confidence. You'll learn how to analyze charts, manage risk, and execute trades on both demo and live accounts.
+                </p>
+                <h3>What You'll Learn:</h3>
+                <ul>
+                  <li>The core concepts of the Forex and Crypto markets.</li>
+                  <li>How to set up and secure your trading and crypto accounts.</li>
+                  <li>The basics of technical analysis, including reading charts and candlestick patterns.</li>
+                  <li>Crucial risk management techniques to protect your capital.</li>
+                  <li>The practical steps to place your first trade.</li>
+                </ul>
+                <h3>Who Is This Course For?</h3>
+                <p>This course is perfect for absolute beginners with an interest in trading, individuals looking for a new side hustle, and anyone who wants to understand the financial markets that are shaping our world.</p>
+              </>
+            ) : (
+               <>
+                <h2>About this course</h2>
+                <p>Here we would have a more detailed description of the course, what students will learn, who it's for, and any prerequisites. This is placeholder text to illustrate the layout.</p>
+               </>
+            )}
           </div>
         </div>
 
@@ -127,5 +160,3 @@ export async function generateStaticParams() {
     slug: course.slug,
   }));
 }
-
-    
