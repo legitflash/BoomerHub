@@ -1,3 +1,142 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight, BookOpen, Clock, Star } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import IntelligentSearchForm from '@/components/search/intelligent-search-form';
+import { blogPosts, courses, topCategories } from '@/lib/data';
+
 export default function Home() {
-  return <></>;
+  const featuredCourse = courses.find(c => c.isFeatured);
+
+  return (
+    <div className="flex flex-col gap-16 md:gap-24">
+      {/* Hero Section */}
+      <section className="pt-12 md:pt-24">
+        <div className="container px-4 md:px-6">
+          <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+            <div className="flex flex-col justify-center space-y-4">
+              <div className="space-y-2">
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline">
+                  Learn Skills. Earn Income. Get Certified.
+                </h1>
+                <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                  Your journey to financial freedom starts here. Explore our courses and articles to master new skills.
+                </p>
+              </div>
+              <IntelligentSearchForm />
+            </div>
+            <Image
+              src="https://picsum.photos/1200/800"
+              alt="Hero"
+              width={1200}
+              height={800}
+              data-ai-hint="learning online"
+              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Top Categories Section */}
+      <section className="container px-4 md:px-6">
+        <h2 className="text-3xl font-bold tracking-tighter text-center mb-8 font-headline">Top Categories</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+          {topCategories.map((category) => (
+            <Card key={category.name} className="flex flex-col items-center justify-center p-6 text-center hover:shadow-lg transition-shadow">
+              <category.icon className="h-12 w-12 mb-4 text-primary" />
+              <h3 className="font-semibold">{category.name}</h3>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* Featured Course Section */}
+      {featuredCourse && (
+        <section className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold tracking-tighter text-center mb-8 font-headline">Featured Course</h2>
+          <Card className="w-full overflow-hidden md:grid md:grid-cols-2 md:gap-8 items-center">
+            <Image
+              src={featuredCourse.image}
+              alt={featuredCourse.title}
+              width={600}
+              height={400}
+              data-ai-hint={featuredCourse.dataAiHint}
+              className="object-cover w-full h-64 md:h-full"
+            />
+            <div className="p-6">
+              <CardHeader>
+                <CardTitle className="font-headline text-2xl">{featuredCourse.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">{featuredCourse.description}</p>
+                <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                  <div className="flex items-center">
+                    <BookOpen className="mr-1 h-4 w-4" />
+                    {featuredCourse.lessons} lessons
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="mr-1 h-4 w-4" />
+                    {featuredCourse.hours} hours
+                  </div>
+                  <div className="flex items-center">
+                    <Star className="mr-1 h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    Featured
+                  </div>
+                </div>
+                <Button asChild>
+                  <Link href={`/courses/${featuredCourse.slug}`}>
+                    Start Learning <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </div>
+          </Card>
+        </section>
+      )}
+
+      {/* Latest Blog Posts Section */}
+      <section className="container px-4 md:px-6 pb-12 md:pb-24">
+        <div className="flex justify-between items-baseline mb-8">
+          <h2 className="text-3xl font-bold tracking-tighter font-headline">Latest Blog Posts</h2>
+          <Button variant="link" asChild>
+            <Link href="/blog">View All <ArrowRight className="ml-2 h-4 w-4" /></Link>
+          </Button>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {blogPosts.slice(0, 4).map((post) => (
+            <Card key={post.slug} className="group">
+              <Link href={`/blog/${post.slug}`}>
+                <Image
+                  src={post.image}
+                  alt={post.title}
+                  width={600}
+                  height={400}
+                  data-ai-hint={post.dataAiHint}
+                  className="rounded-t-lg object-cover aspect-video"
+                />
+              </Link>
+              <CardContent className="p-4 space-y-2">
+                <Link href={`/blog/${post.slug}`}>
+                  <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{post.title}</h3>
+                </Link>
+                <p className="text-sm text-muted-foreground line-clamp-2">{post.description}</p>
+                <div className="flex items-center gap-2 pt-2 text-xs text-muted-foreground">
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage src={post.authorImage} alt={post.author} />
+                    <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <span>{post.author}</span>
+                  <span>&middot;</span>
+                  <span>{post.date}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
 }
