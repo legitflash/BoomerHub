@@ -1,3 +1,5 @@
+
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, BookOpen, Clock, Star } from 'lucide-react';
@@ -6,10 +8,27 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import IntelligentSearchForm from '@/components/search/intelligent-search-form';
-import { blogPosts, courses, topCategories } from '@/lib/data';
+import { blogPosts, topCategories } from '@/lib/data';
+import { getCourses } from '@/services/course-service';
+import { useEffect, useState } from 'react';
+import type { Course } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
-  const featuredCourse = courses.find(c => c.isFeatured);
+  const [featuredCourse, setFeaturedCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedCourse = async () => {
+      setLoading(true);
+      const allCourses = await getCourses();
+      const featured = allCourses.find(c => c.isFeatured) || allCourses[0] || null;
+      setFeaturedCourse(featured);
+      setLoading(false);
+    };
+
+    fetchFeaturedCourse();
+  }, []);
 
   return (
     <div className="flex flex-col gap-16 md:gap-24">
@@ -54,48 +73,59 @@ export default function Home() {
       </section>
 
       {/* Featured Course Section */}
-      {featuredCourse && (
-        <section className="container px-4 md:px-6">
-          <h2 className="text-3xl font-bold tracking-tighter text-center mb-8 font-headline">Featured Course</h2>
-          <Card className="w-full overflow-hidden md:grid md:grid-cols-2 md:gap-8 items-center">
-            <Image
-              src={featuredCourse.image}
-              alt={featuredCourse.title}
-              width={600}
-              height={400}
-              data-ai-hint={featuredCourse.dataAiHint}
-              className="object-cover w-full h-64 md:h-full"
-            />
-            <div className="p-6">
-              <CardHeader>
-                <CardTitle className="font-headline text-2xl">{featuredCourse.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">{featuredCourse.description}</p>
-                <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                  <div className="flex items-center">
-                    <BookOpen className="mr-1 h-4 w-4" />
-                    {featuredCourse.lessons} lessons
+      <section className="container px-4 md:px-6">
+        <h2 className="text-3xl font-bold tracking-tighter text-center mb-8 font-headline">Featured Course</h2>
+        {loading ? (
+           <Card className="w-full overflow-hidden md:grid md:grid-cols-2 md:gap-8 items-center">
+              <Skeleton className="h-64 md:h-full w-full" />
+              <div className="p-6 space-y-4">
+                <Skeleton className="h-8 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-10 w-40 mt-4" />
+              </div>
+            </Card>
+        ) : featuredCourse && (
+            <Card className="w-full overflow-hidden md:grid md:grid-cols-2 md:gap-8 items-center">
+              <Image
+                src={featuredCourse.image}
+                alt={featuredCourse.title}
+                width={600}
+                height={400}
+                data-ai-hint={featuredCourse.dataAiHint}
+                className="object-cover w-full h-64 md:h-full"
+              />
+              <div className="p-6">
+                <CardHeader>
+                  <CardTitle className="font-headline text-2xl">{featuredCourse.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">{featuredCourse.description}</p>
+                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                    <div className="flex items-center">
+                      <BookOpen className="mr-1 h-4 w-4" />
+                      {featuredCourse.lessons} lessons
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="mr-1 h-4 w-4" />
+                      {featuredCourse.hours} hours
+                    </div>
+                    <div className="flex items-center">
+                      <Star className="mr-1 h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      Featured
+                    </div>
                   </div>
-                  <div className="flex items-center">
-                    <Clock className="mr-1 h-4 w-4" />
-                    {featuredCourse.hours} hours
-                  </div>
-                  <div className="flex items-center">
-                    <Star className="mr-1 h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    Featured
-                  </div>
-                </div>
-                <Button asChild>
-                  <Link href={`/courses/${featuredCourse.slug}`}>
-                    Start Learning <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </div>
-          </Card>
-        </section>
-      )}
+                  <Button asChild>
+                    <Link href={`/courses/${featuredCourse.slug}`}>
+                      Start Learning <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </CardContent>
+              </div>
+            </Card>
+        )}
+      </section>
 
       {/* Latest Blog Posts Section */}
       <section className="container px-4 md:px-6 pb-12 md:pb-24">

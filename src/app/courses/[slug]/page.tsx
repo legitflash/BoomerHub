@@ -3,12 +3,17 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { courses } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { CheckCircle2, BookOpen, Clock, Award, FileText, Trophy, Lock } from 'lucide-react';
 import { useAuth } from '@/context/auth-context';
+import type { Course, CourseProgress } from '@/lib/types';
+import { getCourseBySlug } from '@/services/course-service';
+import { getProgressForUser, updateProgress } from '@/services/progress-service';
+import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+
 
 type Section = {
   title: string;
@@ -143,13 +148,79 @@ default: (
 ),
 };
 
-// This is the Client Component that contains all the interactive logic.
-function CoursePageClient({ course }: { course: any }) {
+export default function CoursePage({ params }: { params: { slug: string } }) {
   const { user } = useAuth();
+  const [course, setCourse] = useState<Course | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      const fetchedCourse = await getCourseBySlug(params.slug);
+      if (fetchedCourse) {
+        setCourse(fetchedCourse);
+        if (user && fetchedCourse.id) {
+          const progressData = await getProgressForUser(user.uid);
+          const courseProgress = progressData ? progressData[fetchedCourse.id] : null;
+          if (courseProgress) {
+            setProgress(courseProgress.progress);
+            setCompletedLessons(courseProgress.completedLessons);
+          }
+        }
+      } else {
+        notFound();
+      }
+      setLoading(false);
+    }
+    fetchData();
+  }, [params.slug, user]);
+
+  const handleToggleLesson = async (lessonTitle: string) => {
+    if (!user || !course || !course.id) return;
+
+    let newCompletedLessons;
+    if (completedLessons.includes(lessonTitle)) {
+      newCompletedLessons = completedLessons.filter(l => l !== lessonTitle);
+    } else {
+      newCompletedLessons = [...completedLessons, lessonTitle];
+    }
+    
+    setCompletedLessons(newCompletedLessons);
+
+    const totalLessons = sections.reduce((acc, section) => acc + section.lessons.length, 0);
+    const newProgress = Math.round((newCompletedLessons.length / totalLessons) * 100);
+    setProgress(newProgress);
+
+    await updateProgress(user.uid, course.id, newProgress, newCompletedLessons);
+  };
   
+  if (loading) {
+    return (
+        <div className="container max-w-5xl py-12 md:py-16">
+            <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+                <div className="md:col-span-2 space-y-8">
+                     <Skeleton className="h-12 w-3/4" />
+                     <Skeleton className="h-8 w-full" />
+                     <Skeleton className="w-full aspect-video rounded-lg" />
+                     <div className="space-y-4">
+                        <Skeleton className="h-6 w-1/4" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-5/6" />
+                     </div>
+                </div>
+                <aside className="md:col-span-1 space-y-6">
+                    <Skeleton className="h-64 w-full" />
+                    <Skeleton className="h-96 w-full" />
+                </aside>
+            </div>
+        </div>
+    )
+  }
+
   if (!course) {
-    // This should ideally not happen if generateStaticParams is correct
-    // and the data is consistent, but it's good practice.
     notFound();
   }
 
@@ -193,8 +264,8 @@ function CoursePageClient({ course }: { course: any }) {
             
             {user && (
                  <div className="space-y-2 mb-4">
-                    <Progress value={course.progress} className="h-2" />
-                    <p className="text-sm text-muted-foreground">{course.progress ?? 0}% complete</p>
+                    <Progress value={progress} className="h-2" />
+                    <p className="text-sm text-muted-foreground">{progress}% complete</p>
                 </div>
             )}
            
@@ -224,11 +295,13 @@ function CoursePageClient({ course }: { course: any }) {
                     <ul className="space-y-3 pl-2">
                       {section.lessons.map((lesson, lessonIndex) => (
                         <li key={lessonIndex} className="flex items-center gap-3">
-                           {user && (course.progress ?? 0 > 0) ? 
-                            <CheckCircle2 className="h-5 w-5 text-green-500" /> :
-                            <Lock className="h-5 w-5 text-muted-foreground" />
-                           }
-                          <span className="flex-1">{lesson}</span>
+                           <button onClick={() => handleToggleLesson(lesson)} disabled={!user}>
+                            {completedLessons.includes(lesson) ? 
+                                <CheckCircle2 className="h-5 w-5 text-green-500" /> :
+                                <Lock className="h-5 w-5 text-muted-foreground" />
+                            }
+                           </button>
+                          <span className={`${!user ? 'text-muted-foreground' : ''}`}>{lesson}</span>
                         </li>
                       ))}
                     </ul>
@@ -241,23 +314,4 @@ function CoursePageClient({ course }: { course: any }) {
       </div>
     </div>
   )
-}
-
-
-// This is the main page component, which is a Server Component.
-export default function CoursePage({ params }: { params: { slug: string } }) {
-  const course = courses.find((c) => c.slug === params.slug);
-
-  if (!course) {
-    notFound();
-  }
-  
-  // It renders the Client Component and passes the course data.
-  return <CoursePageClient course={course} />;
-}
-
-export async function generateStaticParams() {
-  return courses.map((course) => ({
-    slug: course.slug,
-  }));
 }

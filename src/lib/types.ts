@@ -1,6 +1,7 @@
 import type React from 'react';
 
 export type Post = {
+  id?: string;
   slug: string;
   title: string;
   category: string;
@@ -13,8 +14,9 @@ export type Post = {
 };
 
 export type Course = {
+  id?: string;
   slug: string;
-  title: string;
+  title:string;
   track: string;
   description: string;
   image: string;
@@ -25,6 +27,13 @@ export type Course = {
   progress?: number;
   level?: 'Free' | 'Premium';
 };
+
+export type CourseProgress = {
+    [courseId: string]: {
+        progress: number;
+        completedLessons: string[];
+    }
+}
 
 export type Category = {
   name: string;
