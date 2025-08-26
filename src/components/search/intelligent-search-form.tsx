@@ -12,12 +12,24 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { blogPosts, courses } from '@/lib/data';
 
 const formSchema = z.object({
   query: z.string().min(3, { message: 'Search query must be at least 3 characters long.' }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/[^\w-]+/g, '') // Remove all non-word chars
+    .replace(/--+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start of text
+    .replace(/-+$/, ''); // Trim - from end of text
+}
 
 export default function IntelligentSearchForm() {
   const [results, setResults] = useState<IntelligentSearchOutput | null>(null);
@@ -43,6 +55,12 @@ export default function IntelligentSearchForm() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  const findSlugByTitle = (type: 'blog' | 'course', title: string): string => {
+    const collection = type === 'blog' ? blogPosts : courses;
+    const item = collection.find(i => i.title.toLowerCase() === title.toLowerCase());
+    return item ? item.slug : slugify(title);
   }
 
   return (
@@ -88,7 +106,7 @@ export default function IntelligentSearchForm() {
                 <ul className="space-y-1 list-disc list-inside">
                   {results.courses.map((course, index) => (
                     <li key={index} className="text-primary hover:underline">
-                      <Link href={`/courses/`}>{course}</Link>
+                      <Link href={`/courses/${findSlugByTitle('course', course)}`}>{course}</Link>
                     </li>
                   ))}
                 </ul>
@@ -100,7 +118,7 @@ export default function IntelligentSearchForm() {
                 <ul className="space-y-1 list-disc list-inside">
                   {results.blogPosts.map((post, index) => (
                     <li key={index} className="text-primary hover:underline">
-                      <Link href={`/blog/`}>{post}</Link>
+                      <Link href={`/blog/${findSlugByTitle('blog', post)}`}>{post}</Link>
                     </li>
                   ))}
                 </ul>
