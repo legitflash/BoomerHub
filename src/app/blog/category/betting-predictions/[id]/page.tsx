@@ -1,13 +1,15 @@
+
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { predictions } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Check, TrendingUp, Users, Shield, BarChart2, X, Flame } from 'lucide-react';
+import { ArrowLeft, Check, TrendingUp, Users, Shield, X, Flame } from 'lucide-react';
 import Image from 'next/image';
+import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 
-export default function MatchAnalysisPage({ params }: { params: { id: string } }) {
+export default async function MatchAnalysisPage({ params }: { params: { id: string } }) {
   const prediction = predictions.find((p) => p.id.toString() === params.id);
 
   if (!prediction) {
@@ -17,6 +19,9 @@ export default function MatchAnalysisPage({ params }: { params: { id: string } }
   const { teams } = prediction;
   const homeTeam = teams.home;
   const awayTeam = teams.away;
+  
+  const analysis = await generateMatchAnalysis({ homeTeam: homeTeam.name, awayTeam: awayTeam.name });
+
 
   const getStatusInfo = (status: string) => {
     switch (status) {
@@ -57,11 +62,11 @@ export default function MatchAnalysisPage({ params }: { params: { id: string } }
           <CardContent className="p-6 grid md:grid-cols-3 gap-6 text-center">
             <div>
               <p className="text-sm text-muted-foreground">Prediction</p>
-              <p className="text-xl font-bold text-primary">{prediction.prediction}</p>
+              <p className="text-xl font-bold text-primary">{analysis.prediction}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Odds</p>
-              <p className="text-xl font-bold">{prediction.odds}</p>
+              <p className="text-sm text-muted-foreground">Confidence</p>
+              <p className="text-xl font-bold">{analysis.confidence}</p>
             </div>
             <div className="flex flex-col items-center">
               <p className="text-sm text-muted-foreground mb-1">Status</p>
@@ -81,25 +86,22 @@ export default function MatchAnalysisPage({ params }: { params: { id: string } }
                     <CardTitle className="flex items-center gap-2"><Users className="text-primary"/> Head-to-Head</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p>Historically, matches between these two have been tightly contested. In their last 5 meetings, {homeTeam.name} has won 2, {awayTeam.name} has won 2, and 1 match ended in a draw. This suggests a balanced encounter is likely.</p>
+                    <p>{analysis.headToHead}</p>
                 </CardContent>
             </Card>
             <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Shield className="text-primary"/> Defensive Analysis</CardTitle>
+                    <CardTitle className="flex items-center gap-2"><Shield className="text-primary"/> Recent Form Analysis</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p>{homeTeam.name} has kept 3 clean sheets in their last 5 games, showing strong defensive form. However, {awayTeam.name} has scored in 8 of their last 10 away games, indicating they can break down tough defenses. </p>
+                    <p>{analysis.formAnalysis}</p>
                 </CardContent>
             </Card>
         </div>
 
         <h2>Expert Opinion & Rationale</h2>
         <p>
-            Our prediction for "{prediction.prediction}" at odds of {prediction.odds} is based on a combination of recent form and tactical analysis. {homeTeam.name} has been dominant at home, winning their last 4 matches on their own turf. Their attacking trio is in scintillating form, and they average over 2.5 goals per game at home.
-        </p>
-        <p>
-            While {awayTeam.name} is a strong side, their away form has been inconsistent. They have struggled defensively against top-tier opponents, which is why we lean towards a {homeTeam.name} victory. The odds of {prediction.odds} present good value given the circumstances. We have assigned this a <span className="font-bold">{prediction.confidence} confidence</span> rating.
+            {analysis.expertOpinion}
         </p>
 
         <h2>Team Form (Last 5 Games)</h2>
