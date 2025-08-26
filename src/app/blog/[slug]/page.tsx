@@ -93,11 +93,12 @@ function BlogPostContent({ post }: { post: Post }) {
         });
       } catch (error) {
         console.error('Error sharing:', error);
-        toast({
-          variant: "destructive",
-          title: "Sharing Failed",
-          description: "Could not share the post at this time.",
-        });
+        // We only show an error if the user cancels the share action intentionally
+        // toast({
+        //   variant: "destructive",
+        //   title: "Sharing Failed",
+        //   description: "Could not share the post at this time.",
+        // });
       }
     } else {
         // Fallback for browsers that don't support the Web Share API
@@ -152,7 +153,7 @@ function BlogPostContent({ post }: { post: Post }) {
               <Button variant="ghost" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
               <Button variant="ghost" size="sm" onClick={handleSave} disabled={isTogglingSave || isLoadingSaves}>
                 {isTogglingSave ? <Loader2 className="mr-2 animate-spin"/> : <Bookmark className={`mr-2 ${isSaved ? 'fill-current' : ''}`}/>}
-                {isSaved ? 'Saved' : 'Save'}
+                {isSaved ? 'Saved' : 'Save'} ({saves})
               </Button>
           </div>
         </header>
