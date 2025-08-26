@@ -50,6 +50,16 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
         { title: '7. Final Project', lessons: ['Create a Monetized Social Account', 'Peer Review and Feedback'] },
         { title: '8. Quiz & Certification', lessons: ['Final Assessment Quiz', 'Claiming Your Certificate'] },
     ],
+    'ai-no-code-skills-for-side-hustles': [
+      { title: '1. Intro to AI Tools', lessons: ['ChatGPT & Gemini Explained', 'Image Generation with MidJourney', 'Exploring other AI models'] },
+      { title: '2. Prompt Engineering Basics', lessons: ['The Art of the Perfect Prompt', 'Advanced Prompting Techniques', 'Building Custom Instructions'] },
+      { title: '3. AI Content Creation', lessons: ['Generating Blog Posts & Articles', 'Creating Video Scripts and Reels', 'Designing Images and Graphics with AI'] },
+      { title: '4. No-Code Website/App Building', lessons: ['Intro to Glide, Bubble & Thunkable', 'Building a Simple App with Glide', 'Automating with Zapier'] },
+      { title: '5. How to Create a Telegram Bot with AI', lessons: ['Setting up your Bot with BotFather', 'No-code bot platforms', 'Integrating with AI APIs'] },
+      { title: '6. Freelancing with AI', lessons: ['Top AI-powered Gigs on Fiverr & Upwork', 'Pricing Your AI Services', 'Creating a Portfolio of AI Work'] },
+      { title: '7. Launch Your AI-Powered Side Hustle', lessons: ['Finding a Niche', 'Developing a Business Plan', 'Marketing Your Product/Service'] },
+      { title: '8. Quiz & Certification', lessons: ['Final Assessment Quiz', 'Claiming Your Certificate'] },
+    ],
     default: [
       { title: 'Introduction', lessons: ['Welcome', 'Course Overview'] },
       {
@@ -108,6 +118,27 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
         <h3>Who Is This Course For?</h3>
         <p>This course is ideal for entrepreneurs, marketers, content creators, and anyone looking to build a profitable online brand using social media.</p>
       </>
+    ),
+    'ai-no-code-skills-for-side-hustles': (
+        <>
+            <h2>About This Course</h2>
+            <p>
+                Dive into the future of work and entrepreneurship. This course is your gateway to mastering the most sought-after AI and no-code tools that are revolutionizing how we create, build, and earn online. You don't need to be a programmer to build powerful applications and businesses.
+            </p>
+            <p>
+                We'll guide you through using tools like ChatGPT and MidJourney for content creation, and platforms like Glide and Bubble to build apps without writing a single line of code. You'll learn practical skills to launch your own side hustle or become a highly-demanded freelancer in the new digital economy.
+            </p>
+            <h3>What You'll Learn:</h3>
+            <ul>
+                <li>Mastering generative AI for text, images, and video.</li>
+                <li>The fundamentals of prompt engineering to get the best results from AI.</li>
+                <li>How to build functional websites and mobile apps with no-code tools.</li>
+                <li>Creating and integrating AI-powered Telegram bots.</li>
+                <li>Identifying and landing freelance gigs that leverage your new AI skills.</li>
+            </ul>
+            <h3>Who Is This Course For?</h3>
+            <p>This course is for aspiring entrepreneurs, freelancers, marketers, and anyone curious about using AI and no-code platforms to create new income streams and innovative projects.</p>
+        </>
     ),
     default: (
       <>

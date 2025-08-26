@@ -302,6 +302,18 @@ export const courses: Course[] = [
     hours: 9,
     progress: 0,
     level: 'Premium'
+  },
+  {
+    slug: 'ai-no-code-skills-for-side-hustles',
+    title: 'AI & No-Code Skills for Side Hustles',
+    track: 'AI & Tech Skills',
+    description: 'Learn to leverage AI and no-code tools to build and launch profitable side hustles from scratch.',
+    image: 'https://picsum.photos/600/400',
+    dataAiHint: 'ai tools',
+    lessons: 25,
+    hours: 10,
+    progress: 0,
+    level: 'Premium'
   }
 ];
 
