@@ -52,9 +52,9 @@ export default async function MatchAnalysisPage({ params }: { params: { id: stri
           <div className="bg-muted/30 p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-4">
-                <Image src="/placeholder.svg" alt={homeTeam.name} width={64} height={64} className="rounded-full bg-white p-1" />
+                <Image src={`https://logo.clearbit.com/${homeTeam.name.toLowerCase().replace(/ /g, '')}.com`} alt={`${homeTeam.name} logo`} width={64} height={64} className="rounded-full bg-white p-1" />
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter font-headline text-center sm:text-left">{homeTeam.name} vs {awayTeam.name}</h1>
-                <Image src="/placeholder.svg" alt={awayTeam.name} width={64} height={64} className="rounded-full bg-white p-1" />
+                <Image src={`https://logo.clearbit.com/${awayTeam.name.toLowerCase().replace(/ /g, '')}.com`} alt={`${awayTeam.name} logo`} width={64} height={64} className="rounded-full bg-white p-1" />
               </div>
               <Badge variant="outline">{prediction.league}</Badge>
             </div>
