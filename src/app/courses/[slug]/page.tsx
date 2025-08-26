@@ -1,6 +1,7 @@
 
+
 'use client';
-import { notFound } from 'next/navigation';
+import { notFound, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { courses } from '@/lib/data';
@@ -9,6 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { CheckCircle2, BookOpen, Clock, Award, FileText, Trophy, Lock } from 'lucide-react';
 import { Suspense } from 'react';
+import { useAuth } from '@/context/auth-context';
 
 type Section = {
   title: string;
@@ -145,7 +147,8 @@ default: (
 
 function CoursePageClient({ params }: { params: { slug: string } }) {
   const course = courses.find((c) => c.slug === params.slug);
-
+  const { user, loading } = useAuth();
+  
   if (!course) {
     notFound();
   }
@@ -154,7 +157,6 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
   const descriptionContent = courseDescriptions[course.slug] || courseDescriptions.default;
 
   const isCompleted = course.progress === 100;
-  const buttonText = isCompleted ? 'Take Quiz' : (course.progress ?? 0) > 0 ? 'Continue Learning' : 'Start Course';
 
   const isPremium = course.level === 'Premium';
 
@@ -191,10 +193,14 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
                 {course.level} Course
             </div>
             <h3 className="text-lg font-semibold mb-4">Course Progress</h3>
-            <div className="space-y-2 mb-4">
-                <Progress value={course.progress} className="h-2" />
-                <p className="text-sm text-muted-foreground">{course.progress ?? 0}% complete</p>
-            </div>
+            
+            {user && (
+                 <div className="space-y-2 mb-4">
+                    <Progress value={course.progress} className="h-2" />
+                    <p className="text-sm text-muted-foreground">{course.progress ?? 0}% complete</p>
+                </div>
+            )}
+           
             <Button asChild className="w-full" size="lg">
                  <Link href={`/courses/${course.slug}/quiz`}>
                     <Trophy className="mr-2 h-5 w-5" /> Take Quiz & Get Certificate
@@ -221,7 +227,10 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
                     <ul className="space-y-3 pl-2">
                       {section.lessons.map((lesson, lessonIndex) => (
                         <li key={lessonIndex} className="flex items-center gap-3">
-                          <CheckCircle2 className="h-5 w-5 text-green-500" />
+                           {user && (course.progress ?? 0 > 0) ? 
+                            <CheckCircle2 className="h-5 w-5 text-green-500" /> :
+                            <Lock className="h-5 w-5 text-muted-foreground" />
+                           }
                           <span className="flex-1">{lesson}</span>
                         </li>
                       ))}

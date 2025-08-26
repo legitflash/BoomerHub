@@ -8,10 +8,12 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, BookOpen, Clock } from 'lucide-react';
 import { Suspense } from 'react';
+import { useAuth } from '@/context/auth-context';
 
 function CoursesContent() {
   const searchParams = useSearchParams();
   const level = searchParams.get('level');
+  const { user } = useAuth();
 
   const filteredCourses = level
     ? courses.filter(c => c.level?.toLowerCase() === level)
@@ -73,7 +75,7 @@ function CoursesContent() {
                         {course.hours} hours
                       </div>
                     </div>
-                    {course.progress !== undefined && course.progress > 0 && (
+                    {user && course.progress !== undefined && course.progress > 0 && (
                        <div className="space-y-1 pt-2">
                          <div className="flex justify-between text-xs text-muted-foreground">
                              <span>In Progress</span>
@@ -85,7 +87,7 @@ function CoursesContent() {
                     <div className="mt-auto pt-4">
                        <Button asChild variant="secondary" className="w-full">
                          <Link href={`/courses/${course.slug}`}>
-                           {course.progress === 100 ? 'Review Course' : (course.progress ?? 0) > 0 ? 'Continue Learning' : 'Start Course'}
+                           {user && course.progress === 100 ? 'Review Course' : user && (course.progress ?? 0) > 0 ? 'Continue Learning' : 'Start Course'}
                            <ArrowRight className="ml-2 h-4 w-4" />
                          </Link>
                        </Button>
