@@ -1,6 +1,6 @@
 'use client';
 import Link from "next/link"
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -27,6 +27,8 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/courses';
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,17 +38,25 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
-      toast({ title: "Success", description: "Signed in successfully." });
-      router.push("/courses");
-    } catch (error: any) {
-      toast({
+  const handleSuccess = () => {
+    toast({ title: "Success", description: "Signed in successfully." });
+    router.push(redirect);
+  }
+
+  const handleError = (error: any) => {
+     toast({
         variant: "destructive",
         title: "Sign in failed",
         description: error.message,
       });
+  }
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      handleSuccess();
+    } catch (error: any) {
+      handleError(error);
     }
   };
   
@@ -54,14 +64,9 @@ export default function LoginPage() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      toast({ title: "Success", description: "Signed in successfully with Google." });
-      router.push("/courses");
+      handleSuccess();
     } catch (error: any) {
-       toast({
-        variant: "destructive",
-        title: "Google sign in failed",
-        description: error.message,
-      });
+      handleError(error);
     }
   };
 

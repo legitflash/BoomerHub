@@ -7,10 +7,8 @@ import { courses } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CheckCircle2, BookOpen, Clock, Award, FileText, Trophy } from 'lucide-react';
-import { useAuth } from '@/context/auth-context';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
+import { CheckCircle2, BookOpen, Clock, Award, FileText, Trophy, Lock } from 'lucide-react';
+import { Suspense } from 'react';
 
 type Section = {
   title: string;
@@ -146,15 +144,6 @@ default: (
 };
 
 function CoursePageClient({ params }: { params: { slug: string } }) {
-  const { user, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/login');
-    }
-  }, [user, loading, router]);
-  
   const course = courses.find((c) => c.slug === params.slug);
 
   if (!course) {
@@ -167,10 +156,8 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
   const isCompleted = course.progress === 100;
   const buttonText = isCompleted ? 'Take Quiz' : (course.progress ?? 0) > 0 ? 'Continue Learning' : 'Start Course';
 
-  if (loading || !user) {
-    return <div className="container py-12 md:py-16 text-center">Loading course...</div>;
-  }
-  
+  const isPremium = course.level === 'Premium';
+
   return (
     <div className="container max-w-5xl py-12 md:py-16">
       <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
@@ -200,20 +187,22 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
 
         <aside className="md:col-span-1 space-y-6">
           <div className="p-6 border rounded-lg bg-card">
+             <div className={`text-xs font-bold px-2 py-1 rounded-full mb-4 inline-block ${isPremium ? 'bg-accent text-accent-foreground' : 'bg-primary text-primary-foreground'}`}>
+                {course.level} Course
+            </div>
             <h3 className="text-lg font-semibold mb-4">Course Progress</h3>
             <div className="space-y-2 mb-4">
                 <Progress value={course.progress} className="h-2" />
                 <p className="text-sm text-muted-foreground">{course.progress ?? 0}% complete</p>
             </div>
-            <Button asChild={isCompleted} className="w-full" size="lg">
-              {isCompleted ? (
+            <Button asChild className="w-full" size="lg">
                  <Link href={`/courses/${course.slug}/quiz`}>
-                    <Trophy className="mr-2 h-5 w-5" /> Take Quiz
+                    <Trophy className="mr-2 h-5 w-5" /> Take Quiz & Get Certificate
                  </Link>
-              ) : (
-                <button>{buttonText}</button>
-              )}
             </Button>
+            {isPremium && (
+                <p className="text-xs text-center text-muted-foreground mt-2">A fee is required to claim the certificate for this premium course.</p>
+            )}
             <div className="grid grid-cols-2 gap-4 mt-4 text-sm">
                 <div className="flex items-center gap-2"><BookOpen className="h-4 w-4 text-muted-foreground"/> <span>{course.lessons} lessons</span></div>
                 <div className="flex items-center gap-2"><Clock className="h-4 w-4 text-muted-foreground"/> <span>{course.hours} hours</span></div>
@@ -249,8 +238,6 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
 }
 
 export default function CoursePage({ params }: { params: { slug: string } }) {
-    // This is a server component, but we are rendering a client component
-    // that needs access to the router, so we wrap it in a Suspense boundary.
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <CoursePageClient params={params} />

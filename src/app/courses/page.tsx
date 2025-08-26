@@ -1,27 +1,17 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { courses, courseTracks } from '@/lib/data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, BookOpen, Clock } from 'lucide-react';
-import { Suspense, useEffect } from 'react';
-import { useAuth } from '@/context/auth-context';
+import { Suspense } from 'react';
 
 function CoursesContent() {
   const searchParams = useSearchParams();
   const level = searchParams.get('level');
-  const { user, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/login');
-    }
-  }, [user, loading, router]);
-
 
   const filteredCourses = level
     ? courses.filter(c => c.level?.toLowerCase() === level)
@@ -31,11 +21,6 @@ function CoursesContent() {
   const pageDescription = level
     ? `Browse our ${level} courses.`
     : 'Structured learning paths to master in-demand skills.';
-
-  if (loading || !user) {
-      return <div className="container py-12 md:py-16 text-center">Loading courses...</div>;
-  }
-
 
   return (
     <div className="container py-12 md:py-16">
@@ -69,7 +54,7 @@ function CoursesContent() {
                       className="rounded-t-lg object-cover aspect-video transition-transform duration-300 group-hover:scale-105"
                     />
                     {course.level && (
-                      <div className="absolute top-2 right-2 bg-primary text-primary-foreground text-xs font-bold px-2 py-1 rounded-full">
+                      <div className={`absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded-full ${course.level === 'Premium' ? 'bg-accent text-accent-foreground' : 'bg-primary text-primary-foreground'}`}>
                         {course.level}
                       </div>
                     )}
