@@ -9,39 +9,73 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Heart, Share2 } from 'lucide-react';
+import { Heart, Share2, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/context/auth-context';
+import { getLikesForPost, toggleLike } from '@/services/likes-service';
+
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
   const post = blogPosts.find((p) => p.slug === params.slug);
 
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
-  const [initialLikes, setInitialLikes] = useState(0);
-
+  const [isLoadingLikes, setIsLoadingLikes] = useState(true);
+  const [isTogglingLike, setIsTogglingLike] = useState(false);
 
   useEffect(() => {
-    // Generate random likes only on the client side to prevent hydration mismatch
-    const randomLikes = Math.floor(Math.random() * 100) + 1;
-    setLikes(randomLikes);
-    setInitialLikes(randomLikes);
-  }, []);
-
+    if (!authLoading && post) {
+      const fetchLikes = async () => {
+        setIsLoadingLikes(true);
+        try {
+          const { count, isLiked } = await getLikesForPost(post.slug, user?.uid);
+          setLikes(count);
+          setIsLiked(isLiked);
+        } catch (error) {
+          console.error("Failed to fetch likes:", error);
+        } finally {
+          setIsLoadingLikes(false);
+        }
+      };
+      fetchLikes();
+    }
+  }, [post, user, authLoading]);
 
   if (!post) {
     notFound();
   }
-  
-  const handleLike = () => {
-    if (isLiked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
+
+  const handleLike = async () => {
+    if (!user) {
+        toast({
+            variant: "destructive",
+            title: "Authentication Required",
+            description: "You must be signed in to like a post.",
+        });
+        return;
     }
-    setIsLiked(!isLiked);
+    
+    if (isTogglingLike) return;
+
+    setIsTogglingLike(true);
+    try {
+        const { count, isLiked: newIsLiked } = await toggleLike(post.slug, user.uid);
+        setLikes(count);
+        setIsLiked(newIsLiked);
+    } catch (error) {
+        console.error("Failed to toggle like:", error);
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not update your like. Please try again.",
+        });
+    } finally {
+        setIsTogglingLike(false);
+    }
   };
-  
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -93,10 +127,19 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           </div>
           <div className="mt-6 flex flex-col items-center justify-center gap-2">
              <div className="flex gap-2">
-                <Button variant={isLiked ? "default" : "outline"} size="sm" onClick={handleLike}><Heart className="mr-2"/> Like</Button>
+                <Button variant={isLiked ? "default" : "outline"} size="sm" onClick={handleLike} disabled={isTogglingLike || isLoadingLikes}>
+                  {isTogglingLike ? <Loader2 className="mr-2 animate-spin"/> : <Heart className="mr-2"/>}
+                  Like
+                </Button>
                 <Button variant="outline" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
             </div>
-            <p className="text-sm text-muted-foreground mt-1">{likes > 0 ? `${likes} ${likes === 1 ? 'like' : 'likes'}` : ''}</p>
+             <p className="text-sm text-muted-foreground mt-1 h-5">
+              {isLoadingLikes ? (
+                <Loader2 className="animate-spin h-4 w-4" />
+              ) : (
+                <span>{likes > 0 ? `${likes} ${likes === 1 ? 'like' : 'likes'}` : 'Be the first to like'}</span>
+              )}
+            </p>
           </div>
         </header>
 
@@ -179,9 +222,3 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     </>
   );
 }
-
-// We can't use generateStaticParams on a client component, but since this page
-// is using data from a local file, Next.js can still determine the paths.
-// If this were fetching from a database, we'd need a different approach.
-
-

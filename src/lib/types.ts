@@ -36,7 +36,7 @@ export type Prediction = {
   isHot: boolean;
   teams: {
     home: {
-      name: string;
+      name:string;
       logo: string;
       form: string[];
     };
@@ -46,4 +46,9 @@ export type Prediction = {
       form: string[];
     };
   };
+};
+
+export type Like = {
+    userId: string;
+    postId: string;
 };
