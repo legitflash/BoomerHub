@@ -1,6 +1,4 @@
 
-
-
 'use client';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -147,9 +145,11 @@ default: (
 
 // This is the Client Component that contains all the interactive logic.
 function CoursePageClient({ course }: { course: any }) {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   
   if (!course) {
+    // This should ideally not happen if generateStaticParams is correct
+    // and the data is consistent, but it's good practice.
     notFound();
   }
 
