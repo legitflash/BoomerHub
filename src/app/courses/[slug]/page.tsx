@@ -1,7 +1,6 @@
 
-
 'use client';
-import { notFound, useSearchParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { courses } from '@/lib/data';
@@ -9,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { CheckCircle2, BookOpen, Clock, Award, FileText, Trophy, Lock } from 'lucide-react';
-import { Suspense } from 'react';
 import { useAuth } from '@/context/auth-context';
 
 type Section = {
@@ -247,11 +245,15 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
 }
 
 export default function CoursePage({ params }: { params: { slug: string } }) {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <CoursePageClient params={params} />
-        </Suspense>
-    );
+  // This is a server component. It can fetch data and generate static params.
+  // It renders the client component to handle interactivity.
+  const course = courses.find((c) => c.slug === params.slug);
+
+  if (!course) {
+    notFound();
+  }
+  
+  return <CoursePageClient params={params} />;
 }
 
 export async function generateStaticParams() {
