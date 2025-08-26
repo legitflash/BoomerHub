@@ -242,5 +242,3 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   return <BlogPostContent post={post} />;
 }
-
-    
