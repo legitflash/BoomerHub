@@ -1,4 +1,5 @@
 
+
 'use client';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -245,19 +246,14 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
 }
 
 export default function CoursePage({ params }: { params: { slug: string } }) {
-  // This is a server component. It can fetch data and generate static params.
-  // It renders the client component to handle interactivity.
   const course = courses.find((c) => c.slug === params.slug);
 
   if (!course) {
     notFound();
   }
   
+  // This is now a Client Component because we moved 'use client' to the top.
+  // It can use hooks and other client-side logic.
+  // We are not exporting generateStaticParams from this file anymore.
   return <CoursePageClient params={params} />;
-}
-
-export async function generateStaticParams() {
-  return courses.map((course) => ({
-    slug: course.slug,
-  }));
 }
