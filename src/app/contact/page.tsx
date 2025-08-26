@@ -67,7 +67,7 @@ export default function ContactPage() {
                        </Link>
                    </Button>
                     <Button asChild className="w-full" size="lg" variant="secondary">
-                       <Link href="#">
+                       <Link href="https://wa.me/2348060583504" target="_blank" rel="noopener noreferrer">
                             <MessageCircle className="mr-2 h-5 w-5" /> Chat with us on WhatsApp
                        </Link>
                    </Button>
