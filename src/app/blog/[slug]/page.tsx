@@ -93,15 +93,8 @@ function BlogPostContent({ post }: { post: Post }) {
         });
       } catch (error) {
         console.error('Error sharing:', error);
-        // We only show an error if the user cancels the share action intentionally
-        // toast({
-        //   variant: "destructive",
-        //   title: "Sharing Failed",
-        //   description: "Could not share the post at this time.",
-        // });
       }
     } else {
-        // Fallback for browsers that don't support the Web Share API
         navigator.clipboard.writeText(window.location.href);
         toast({
           title: "Link Copied",
