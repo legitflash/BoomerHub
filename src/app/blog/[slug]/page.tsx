@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,8 +16,18 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const { toast } = useToast();
   const post = blogPosts.find((p) => p.slug === params.slug);
 
-  const [likes, setLikes] = useState(Math.floor(Math.random() * 100) + 1);
+  const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
+  const [initialLikes, setInitialLikes] = useState(0);
+
+
+  useEffect(() => {
+    // Generate random likes only on the client side to prevent hydration mismatch
+    const randomLikes = Math.floor(Math.random() * 100) + 1;
+    setLikes(randomLikes);
+    setInitialLikes(randomLikes);
+  }, []);
+
 
   if (!post) {
     notFound();
@@ -86,7 +96,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                 <Button variant={isLiked ? "default" : "outline"} size="sm" onClick={handleLike}><Heart className="mr-2"/> Like</Button>
                 <Button variant="outline" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
             </div>
-            <p className="text-sm text-muted-foreground mt-1">{likes} {likes === 1 ? 'like' : 'likes'}</p>
+            <p className="text-sm text-muted-foreground mt-1">{likes > 0 ? `${likes} ${likes === 1 ? 'like' : 'likes'}` : ''}</p>
           </div>
         </header>
 
@@ -173,4 +183,5 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 // We can't use generateStaticParams on a client component, but since this page
 // is using data from a local file, Next.js can still determine the paths.
 // If this were fetching from a database, we'd need a different approach.
+
 
