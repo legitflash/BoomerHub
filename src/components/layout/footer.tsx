@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { GraduationCap, Mail, MessageCircle } from 'lucide-react';
 import { blogCategories } from '@/lib/data';
@@ -36,8 +37,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2">
               <li><Link href="/about" className="text-muted-foreground hover:text-primary">About Us</Link></li>
-              <li><Link href="/courses" className="text-muted-foreground hover:text-primary">Courses</Link></li>
-              <li><Link href="/certification" className="text-muted-foreground hover:text-primary">Claim Certificate</Link></li>
+              <li><Link href="/blog" className="text-muted-foreground hover:text-primary">Blog</Link></li>
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary">Contact</Link></li>
             </ul>
           </div>

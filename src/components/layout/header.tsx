@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import {
   Accordion,
@@ -50,22 +50,6 @@ export function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <DropdownMenu>
-             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none focus:ring-0">
-                    Courses <ChevronDown className="h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild>
-                <Link href="/courses?level=free">Free Courses</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/courses?level=premium">Premium Courses</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <NavLink href="/certification">Certification</NavLink>
           <NavLink href="/about">About</NavLink>
           <NavLink href="/contact">Contact</NavLink>
         </nav>
@@ -104,16 +88,8 @@ export function Header() {
                         ))}
                       </AccordionContent>
                     </AccordionItem>
-                     <AccordionItem value="courses">
-                      <AccordionTrigger>Courses</AccordionTrigger>
-                      <AccordionContent className="flex flex-col space-y-2 pl-4">
-                        <Link href="/courses?level=free">Free Courses</Link>
-                        <Link href="/courses?level=premium">Premium Courses</Link>
-                      </AccordionContent>
-                    </AccordionItem>
                   </Accordion>
                   <div className="flex flex-col space-y-3 mt-4 border-t pt-4">
-                    <Link href="/certification" className="text-foreground">Certification</Link>
                     <Link href="/about" className="text-foreground">About</Link>
                     <Link href="/contact" className="text-foreground">Contact</Link>
                   </div>
@@ -127,8 +103,7 @@ export function Header() {
             <Link href="/" className="flex items-center space-x-2">
               <GraduationCap className="h-6 w-6 text-primary" />
               <span className="font-bold">BoomerHub</span>
-            </Link>
-          </div>
+            </Link>          </div>
 
           {/* Sign In Button / User Menu */}
           <div className="flex items-center gap-2">

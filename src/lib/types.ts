@@ -1,3 +1,4 @@
+
 import type React from 'react';
 
 export type Post = {
@@ -12,28 +13,6 @@ export type Post = {
   authorImage: string;
   date: string;
 };
-
-export type Course = {
-  id?: string;
-  slug: string;
-  title:string;
-  track: string;
-  description: string;
-  image: string;
-  dataAiHint: string;
-  lessons: number;
-  hours: number;
-  isFeatured?: boolean;
-  progress?: number;
-  level?: 'Free' | 'Premium';
-};
-
-export type CourseProgress = {
-    [courseId: string]: {
-        progress: number;
-        completedLessons: string[];
-    }
-}
 
 export type Category = {
   name: string;

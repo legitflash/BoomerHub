@@ -1,16 +1,12 @@
+
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
-import { blogPosts, courses } from '@/lib/data';
+import { blogPosts } from '@/lib/data';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = blogPosts.find((p) => p.slug === params.slug);
-  const relatedCourse = courses[0]; // Placeholder for related course logic
 
   if (!post) {
     notFound();
@@ -72,24 +68,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <li><strong>Following Hype Blindly:</strong> What works for one person might not work for you. Do your own research before jumping on a trend.</li>
         </ul>
         
-        <p>By following these guidelines and committing to continuous learning, you're well on your way to achieving your goals. Explore our other articles and courses to dive deeper into specific topics that interest you.</p>
+        <p>By following these guidelines and committing to continuous learning, you're well on your way to achieving your goals. Explore our other articles to dive deeper into specific topics that interest you.</p>
       </div>
-      
-      {relatedCourse && (
-        <Card className="mt-16 bg-primary/10 border-primary/20">
-          <CardHeader>
-            <CardTitle>Want to become a certified expert?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4">Enroll in our "{relatedCourse.title}" course for a deep dive, practical projects, and an official certification.</p>
-            <Button asChild>
-              <Link href={`/courses/${relatedCourse.slug}`}>
-                Enroll Now <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
     </article>
   );
 }

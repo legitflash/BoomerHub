@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -12,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { blogPosts, courses } from '@/lib/data';
+import { blogPosts } from '@/lib/data';
 
 const formSchema = z.object({
   query: z.string().min(3, { message: 'Search query must be at least 3 characters long.' }),
@@ -57,9 +58,8 @@ export default function IntelligentSearchForm() {
     }
   }
 
-  const findSlugByTitle = (type: 'blog' | 'course', title: string): string => {
-    const collection = type === 'blog' ? blogPosts : courses;
-    const item = collection.find(i => i.title.toLowerCase() === title.toLowerCase());
+  const findSlugByTitle = (title: string): string => {
+    const item = blogPosts.find(i => i.title.toLowerCase() === title.toLowerCase());
     return item ? item.slug : slugify(title);
   }
 
@@ -75,7 +75,7 @@ export default function IntelligentSearchForm() {
                 <FormControl>
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input placeholder="Search How to..." className="pl-10 h-12 text-base" {...field} />
+                    <Input placeholder="Search articles..." className="pl-10 h-12 text-base" {...field} />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -100,31 +100,19 @@ export default function IntelligentSearchForm() {
             <CardTitle className="text-xl">Here's what we found for you:</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {results.courses.length > 0 && (
-              <div>
-                <h3 className="font-semibold mb-2">Recommended Courses</h3>
-                <ul className="space-y-1 list-disc list-inside">
-                  {results.courses.map((course, index) => (
-                    <li key={index} className="text-primary hover:underline">
-                      <Link href={`/courses/${findSlugByTitle('course', course)}`}>{course}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
             {results.blogPosts.length > 0 && (
               <div>
                 <h3 className="font-semibold mb-2">Relevant Blog Posts</h3>
                 <ul className="space-y-1 list-disc list-inside">
                   {results.blogPosts.map((post, index) => (
                     <li key={index} className="text-primary hover:underline">
-                      <Link href={`/blog/${findSlugByTitle('blog', post)}`}>{post}</Link>
+                      <Link href={`/blog/${findSlugByTitle(post)}`}>{post}</Link>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
-            {(results.courses.length === 0 && results.blogPosts.length === 0) && (
+            {(results.blogPosts.length === 0) && (
               <p className="text-muted-foreground">No specific recommendations found. Try a broader search term.</p>
             )}
           </CardContent>

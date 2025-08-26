@@ -1,3 +1,4 @@
+
 'use client';
 import Link from "next/link"
 import { useRouter } from "next/navigation";
@@ -46,7 +47,7 @@ export default function RegisterPage() {
         displayName: `${values.firstName} ${values.lastName}`
       });
       toast({ title: "Success", description: "Account created successfully." });
-      router.push("/courses");
+      router.push("/blog");
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -61,7 +62,7 @@ export default function RegisterPage() {
     try {
       await signInWithPopup(auth, provider);
       toast({ title: "Success", description: "Signed up successfully with Google." });
-      router.push("/courses");
+      router.push("/blog");
     } catch (error: any) {
        toast({
         variant: "destructive",

@@ -1,4 +1,5 @@
-import type { Post, Course, Prediction } from './types';
+
+import type { Post, Prediction } from './types';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp } from 'lucide-react';
 
 export const blogPosts: Post[] = [
@@ -229,82 +230,6 @@ export const blogPosts: Post[] = [
   },
 ];
 
-export const courses: Course[] = [
-  {
-    slug: 'forex-crypto-basics',
-    title: 'Forex & Crypto Basics (Beginner-Friendly)',
-    track: 'Money Skills',
-    description: 'A complete course on Forex trading, covering everything from the basics to advanced strategies.',
-    image: 'https://picsum.photos/600/400',
-    dataAiHint: 'stock market',
-    lessons: 25,
-    hours: 10,
-    isFeatured: true,
-    progress: 100,
-    level: 'Premium',
-  },
-  {
-    slug: 'ai-prompt-engineering-101',
-    title: 'Prompt Engineering 101',
-    track: 'AI & Tech Skills',
-    description: 'Master the art of crafting effective prompts for AI models like ChatGPT and Gemini.',
-    image: 'https://picsum.photos/600/400',
-    dataAiHint: 'artificial intelligence',
-    lessons: 15,
-    hours: 5,
-    progress: 100,
-    level: 'Free',
-  },
-  {
-    slug: 'youtube-growth-adsense',
-    title: 'YouTube Growth + AdSense',
-    track: 'Social Media Growth & Monetization',
-    description: 'Learn how to grow your YouTube channel and maximize your AdSense revenue.',
-    image: 'https://picsum.photos/600/400',
-    dataAiHint: 'video creator',
-    lessons: 30,
-    hours: 12,
-    progress: 75,
-    level: 'Premium',
-  },
-  {
-    slug: 'how-to-create-telegram-bot-course',
-    title: 'How to create a Telegram bot (practical course)',
-    track: 'AI & Tech Skills',
-    description: 'A hands-on course that walks you through creating and deploying a functional Telegram bot.',
-    image: 'https://picsum.photos/600/400',
-    dataAiHint: 'coding bot',
-    lessons: 20,
-    hours: 8,
-    progress: 30,
-    level: 'Free',
-  },
-  {
-    slug: 'social-media-monetization-mastery',
-    title: 'Social Media Monetization Mastery',
-    track: 'Social Media Growth & Monetization',
-    description: 'A comprehensive guide to building and monetizing your presence across major social media platforms.',
-    image: 'https://picsum.photos/600/400',
-    dataAiHint: 'social media growth',
-    lessons: 22,
-    hours: 9,
-    progress: 0,
-    level: 'Premium'
-  },
-  {
-    slug: 'ai-no-code-skills-for-side-hustles',
-    title: 'AI & No-Code Skills for Side Hustles',
-    track: 'AI & Tech Skills',
-    description: 'Learn to leverage AI and no-code tools to build and launch profitable side hustles from scratch.',
-    image: 'https://picsum.photos/600/400',
-    dataAiHint: 'ai tools',
-    lessons: 25,
-    hours: 10,
-    progress: 0,
-    level: 'Premium'
-  }
-];
-
 export const topCategories = [
   { name: 'Forex', icon: LineChart },
   { name: 'AI', icon: BrainCircuit },
@@ -326,12 +251,6 @@ export const blogCategories = [
     { name: 'Top 10s', icon: Trophy, slug: 'top-10s' },
     { name: 'Betting Predictions', icon: TrendingUp, slug: 'betting-predictions' },
 ];
-
-export const courseTracks = [
-    { name: 'Money Skills', icon: BarChart, slug: 'money-skills' },
-    { name: 'AI & Tech Skills', icon: Rocket, slug: 'ai-tech-skills' },
-    { name: 'Social Media Growth & Monetization', icon: Users, slug: 'social-media-growth' },
-]
 
 export const predictions: Prediction[] = [
   {

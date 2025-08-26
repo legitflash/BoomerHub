@@ -1,3 +1,4 @@
+
 'use client';
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation";
@@ -28,7 +29,7 @@ const formSchema = z.object({
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/courses';
+  const redirect = searchParams.get('redirect') || '/blog';
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
