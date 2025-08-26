@@ -9,31 +9,14 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { CheckCircle2, BookOpen, Clock, Award, FileText, Trophy } from 'lucide-react';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type Section = {
   title: string;
   lessons: string[];
 };
 
-export default function CoursePage({ params }: { params: { slug: string } }) {
-  const { user, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/login');
-    }
-  }, [user, loading, router]);
-
-
-  const course = courses.find((c) => c.slug === params.slug);
-
-  if (!course) {
-    notFound();
-  }
-
-  const courseSections: { [key: string]: Section[] } = {
+const courseSections: { [key: string]: Section[] } = {
     'forex-crypto-basics': [
       {
         title: '1. What is Forex & Crypto?',
@@ -75,7 +58,7 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
       { title: '7. Launch Your AI-Powered Side Hustle', lessons: ['Finding a Niche', 'Developing a Business Plan', 'Marketing Your Product/Service'] },
       { title: '8. Quiz & Certification', lessons: ['Final Assessment Quiz', 'Claiming Your Certificate'] },
     ],
-    default: [
+    'default': [
       { title: 'Introduction', lessons: ['Welcome', 'Course Overview'] },
       {
         title: 'Module 1: Fundamentals',
@@ -89,80 +72,95 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
     ],
   };
 
+const courseDescriptions: { [key: string]: React.ReactNode } = {
+'forex-crypto-basics': (
+    <>
+    <h2>About This Course</h2>
+    <p>
+        Welcome to the ultimate beginner's guide to the exciting worlds of Forex and Cryptocurrency trading. If you've ever been curious about these markets but felt intimidated by the complexity, this course is designed for you. We'll demystify the jargon and provide a clear, step-by-step roadmap to get you started, even if you have zero prior experience.
+    </p>
+    <p>
+        Our goal is to empower you with the foundational knowledge and practical skills needed to navigate the markets with confidence. You'll learn how to analyze charts, manage risk, and execute trades on both demo and live accounts.
+    </p>
+    <h3>What You'll Learn:</h3>
+    <ul>
+        <li>The core concepts of the Forex and Crypto markets.</li>
+        <li>How to set up and secure your trading and crypto accounts.</li>
+        <li>The basics of technical analysis, including reading charts and candlestick patterns.</li>
+        <li>Crucial risk management techniques to protect your capital.</li>
+        <li>The practical steps to place your first trade.</li>
+    </ul>
+    <h3>Who Is This Course For?</h3>
+    <p>This course is perfect for absolute beginners with an interest in trading, individuals looking for a new side hustle, and anyone who wants to understand the financial markets that are shaping our world.</p>
+    </>
+),
+    'social-media-monetization-mastery': (
+    <>
+    <h2>About This Course</h2>
+    <p>
+        Unlock the full potential of social media and turn your online presence into a profitable venture. This comprehensive course covers everything you need to know about building, growing, and monetizing accounts on major platforms like Facebook, Instagram, TikTok, and YouTube.
+    </p>
+    <p>
+        From content strategy and algorithm hacks to personal branding and community building, we provide a step-by-step blueprint for success. Whether you're a business owner, aspiring influencer, or content creator, this course will equip you with the skills to thrive in the digital landscape.
+    </p>
+    <h3>What You'll Learn:</h3>
+    <ul>
+        <li>Platform-specific strategies for Facebook, Instagram, TikTok, and YouTube.</li>
+        <li>How to create engaging content that goes viral.</li>
+        <li>Proven monetization techniques for each platform.</li>
+        <li>The art of building an authentic and powerful personal brand.</li>
+        <li>Leveraging WhatsApp and Telegram for business growth.</li>
+    </ul>
+    <h3>Who Is This Course For?</h3>
+    <p>This course is ideal for entrepreneurs, marketers, content creators, and anyone looking to build a profitable online brand using social media.</p>
+    </>
+),
+'ai-no-code-skills-for-side-hustles': (
+    <>
+        <h2>About This Course</h2>
+        <p>
+            Dive into the future of work and entrepreneurship. This course is your gateway to mastering the most sought-after AI and no-code tools that are revolutionizing how we create, build, and earn online. You don't need to be a programmer to build powerful applications and businesses.
+        </p>
+        <p>
+            We'll guide you through using tools like ChatGPT and MidJourney for content creation, and platforms like Glide and Bubble to build apps without writing a single line of code. You'll learn practical skills to launch your own side hustle or become a highly-demanded freelancer in the new digital economy.
+        </p>
+        <h3>What You'll Learn:</h3>
+        <ul>
+            <li>Mastering generative AI for text, images, and video.</li>
+            <li>The fundamentals of prompt engineering to get the best results from AI.</li>
+            <li>How to build functional websites and mobile apps with no-code tools.</li>
+            <li>Creating and integrating AI-powered Telegram bots.</li>
+            <li>Identifying and landing freelance gigs that leverage your new AI skills.</li>
+        </ul>
+        <h3>Who Is This Course For?</h3>
+        <p>This course is for aspiring entrepreneurs, freelancers, marketers, and anyone curious about using AI and no-code platforms to create new income streams and innovative projects.</p>
+    </>
+),
+default: (
+    <>
+    <h2>About this course</h2>
+    <p>Here we would have a more detailed description of the course, what students will learn, who it's for, and any prerequisites. This is placeholder text to illustrate the layout.</p>
+    </>
+),
+};
+
+function CourseContent({ params }: { params: { slug: string } }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth/login');
+    }
+  }, [user, loading, router]);
+  
+  const course = courses.find((c) => c.slug === params.slug);
+
+  if (!course) {
+    notFound();
+  }
+
   const sections = courseSections[course.slug] || courseSections.default;
-
-  const courseDescriptions: { [key: string]: React.ReactNode } = {
-    'forex-crypto-basics': (
-      <>
-        <h2>About This Course</h2>
-        <p>
-          Welcome to the ultimate beginner's guide to the exciting worlds of Forex and Cryptocurrency trading. If you've ever been curious about these markets but felt intimidated by the complexity, this course is designed for you. We'll demystify the jargon and provide a clear, step-by-step roadmap to get you started, even if you have zero prior experience.
-        </p>
-        <p>
-          Our goal is to empower you with the foundational knowledge and practical skills needed to navigate the markets with confidence. You'll learn how to analyze charts, manage risk, and execute trades on both demo and live accounts.
-        </p>
-        <h3>What You'll Learn:</h3>
-        <ul>
-          <li>The core concepts of the Forex and Crypto markets.</li>
-          <li>How to set up and secure your trading and crypto accounts.</li>
-          <li>The basics of technical analysis, including reading charts and candlestick patterns.</li>
-          <li>Crucial risk management techniques to protect your capital.</li>
-          <li>The practical steps to place your first trade.</li>
-        </ul>
-        <h3>Who Is This Course For?</h3>
-        <p>This course is perfect for absolute beginners with an interest in trading, individuals looking for a new side hustle, and anyone who wants to understand the financial markets that are shaping our world.</p>
-      </>
-    ),
-     'social-media-monetization-mastery': (
-      <>
-        <h2>About This Course</h2>
-        <p>
-          Unlock the full potential of social media and turn your online presence into a profitable venture. This comprehensive course covers everything you need to know about building, growing, and monetizing accounts on major platforms like Facebook, Instagram, TikTok, and YouTube.
-        </p>
-        <p>
-          From content strategy and algorithm hacks to personal branding and community building, we provide a step-by-step blueprint for success. Whether you're a business owner, aspiring influencer, or content creator, this course will equip you with the skills to thrive in the digital landscape.
-        </p>
-        <h3>What You'll Learn:</h3>
-        <ul>
-          <li>Platform-specific strategies for Facebook, Instagram, TikTok, and YouTube.</li>
-          <li>How to create engaging content that goes viral.</li>
-          <li>Proven monetization techniques for each platform.</li>
-          <li>The art of building an authentic and powerful personal brand.</li>
-          <li>Leveraging WhatsApp and Telegram for business growth.</li>
-        </ul>
-        <h3>Who Is This Course For?</h3>
-        <p>This course is ideal for entrepreneurs, marketers, content creators, and anyone looking to build a profitable online brand using social media.</p>
-      </>
-    ),
-    'ai-no-code-skills-for-side-hustles': (
-        <>
-            <h2>About This Course</h2>
-            <p>
-                Dive into the future of work and entrepreneurship. This course is your gateway to mastering the most sought-after AI and no-code tools that are revolutionizing how we create, build, and earn online. You don't need to be a programmer to build powerful applications and businesses.
-            </p>
-            <p>
-                We'll guide you through using tools like ChatGPT and MidJourney for content creation, and platforms like Glide and Bubble to build apps without writing a single line of code. You'll learn practical skills to launch your own side hustle or become a highly-demanded freelancer in the new digital economy.
-            </p>
-            <h3>What You'll Learn:</h3>
-            <ul>
-                <li>Mastering generative AI for text, images, and video.</li>
-                <li>The fundamentals of prompt engineering to get the best results from AI.</li>
-                <li>How to build functional websites and mobile apps with no-code tools.</li>
-                <li>Creating and integrating AI-powered Telegram bots.</li>
-                <li>Identifying and landing freelance gigs that leverage your new AI skills.</li>
-            </ul>
-            <h3>Who Is This Course For?</h3>
-            <p>This course is for aspiring entrepreneurs, freelancers, marketers, and anyone curious about using AI and no-code platforms to create new income streams and innovative projects.</p>
-        </>
-    ),
-    default: (
-      <>
-        <h2>About this course</h2>
-        <p>Here we would have a more detailed description of the course, what students will learn, who it's for, and any prerequisites. This is placeholder text to illustrate the layout.</p>
-      </>
-    ),
-  };
-
   const descriptionContent = courseDescriptions[course.slug] || courseDescriptions.default;
 
   const isCompleted = course.progress === 100;
@@ -171,7 +169,7 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
   if (loading || !user) {
     return <div className="container py-12 md:py-16 text-center">Loading course...</div>;
   }
-
+  
   return (
     <div className="container max-w-5xl py-12 md:py-16">
       <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
@@ -246,7 +244,11 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
         </aside>
       </div>
     </div>
-  );
+  )
+}
+
+export default function CoursePage({ params }: { params: { slug: string } }) {
+    return <CourseContent params={params} />;
 }
 
 export async function generateStaticParams() {
