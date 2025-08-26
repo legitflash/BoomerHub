@@ -13,10 +13,10 @@ export function Footer() {
               <GraduationCap className="h-6 w-6 text-primary" />
               <span className="font-bold">BoomerHub</span>
             </div>
-            <p>Learn Skills. Earn Income. Get Certified.</p>
+            <p>Insights for Growth.</p>
             <div className="flex gap-4 mt-2">
-                <Link href="#" aria-label="WhatsApp"><MessageCircle className="h-5 w-5 hover:text-primary" /></Link>
-                <Link href="mailto:support@boomer.academy" aria-label="Email"><Mail className="h-5 w-5 hover:text-primary" /></Link>
+                <Link href="https://wa.me/2348060583504?text=Hello! I have a question about your services."  target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><MessageCircle className="h-5 w-5 hover:text-primary" /></Link>
+                <Link href="mailto:support@boomerhub.com" aria-label="Email"><Mail className="h-5 w-5 hover:text-primary" /></Link>
             </div>
           </div>
           
