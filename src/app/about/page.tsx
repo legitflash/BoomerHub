@@ -7,9 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function AboutPage() {
   const teamMembers = [
-    { name: 'Jane Doe', role: 'Founder & CEO', image: 'https://picsum.photos/100/100' },
-    { name: 'John Smith', role: 'Lead Instructor', image: 'https://picsum.photos/100/100' },
-    { name: 'Alex Johnson', role: 'Community Manager', image: 'https://picsum.photos/100/100' },
+    { name: 'Favour Uduafemhe', role: 'Founder & CEO', image: 'https://picsum.photos/100/100' },
   ];
 
   return (
@@ -45,9 +43,9 @@ export default function AboutPage() {
 
       <section className="text-center">
          <h2 className="text-3xl font-bold tracking-tighter font-headline mb-8">Meet the Team</h2>
-         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+         <div className="flex justify-center">
             {teamMembers.map((member) => (
-              <Card key={member.name}>
+              <Card key={member.name} className="max-w-sm">
                 <CardContent className="flex flex-col items-center text-center p-6">
                   <Avatar className="h-24 w-24 mb-4">
                     <AvatarImage src={member.image} alt={member.name} />
@@ -68,20 +66,10 @@ export default function AboutPage() {
         </p>
         <div className="flex flex-wrap justify-center gap-4">
             <Button asChild size="lg">
-                <Link href="mailto:support@boomerhub.com">
-                    <Mail className="mr-2 h-5 w-5" /> Email Us
+                <Link href="/contact">
+                    <Mail className="mr-2 h-5 w-5" /> Contact Us
                 </Link>
             </Button>
-            <Button asChild size="lg" variant="secondary">
-                <Link href="#">
-                    <MessageCircle className="mr-2 h-5 w-5" /> WhatsApp
-                </Link>
-            </Button>
-        </div>
-        <div className="flex justify-center gap-6 mt-8">
-            <Link href="#" className="text-muted-foreground hover:text-primary"><Twitter /></Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary"><Facebook /></Link>
-            <Link href="#" className="text-muted-foreground hover:text-primary"><Instagram /></Link>
         </div>
       </section>
     </div>

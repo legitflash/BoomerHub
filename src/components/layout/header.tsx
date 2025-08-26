@@ -60,7 +60,8 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
             <NavLink href="/certification">Certification</NavLink>
-            <NavLink href="/about">About/Contact</NavLink>
+            <NavLink href="/about">About</NavLink>
+            <NavLink href="/contact">Contact</NavLink>
           </nav>
         </div>
         
@@ -103,7 +104,8 @@ export function Header() {
                   </Accordion>
                   <div className="flex flex-col space-y-3 mt-4 border-t pt-4">
                     <Link href="/certification" className="text-foreground">Certification</Link>
-                    <Link href="/about" className="text-foreground">About/Contact</Link>
+                    <Link href="/about" className="text-foreground">About</Link>
+                    <Link href="/contact" className="text-foreground">Contact</Link>
                   </div>
                 </div>
               </SheetContent>
