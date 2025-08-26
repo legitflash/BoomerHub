@@ -231,8 +231,8 @@ export const blogPosts: Post[] = [
 
 export const courses: Course[] = [
   {
-    slug: 'forex-mastery',
-    title: 'Forex Mastery: From Basics to Advanced',
+    slug: 'forex-crypto-basics',
+    title: 'Forex & Crypto Basics (Beginner-Friendly)',
     track: 'Money Skills',
     description: 'A complete course on Forex trading, covering everything from the basics to advanced strategies.',
     image: 'https://picsum.photos/600/400',
@@ -277,18 +277,6 @@ export const courses: Course[] = [
     lessons: 20,
     hours: 8,
     progress: 30,
-    level: 'Free',
-  },
-  {
-    slug: 'forex-crypto-basics',
-    title: 'Forex & Crypto Basics (Beginner-Friendly)',
-    track: 'Money Skills',
-    description: 'Get started with the fundamentals of Forex and Cryptocurrency trading in this beginner-friendly course.',
-    image: 'https://picsum.photos/600/400',
-    dataAiHint: 'finance basics',
-    lessons: 12,
-    hours: 4,
-    progress: 0,
     level: 'Free',
   },
   {

@@ -5,7 +5,7 @@ import { courses } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { CheckCircle2, BookOpen, Clock, Award, FileText, Star } from 'lucide-react';
+import { CheckCircle2, BookOpen, Clock, Award, FileText, Trophy } from 'lucide-react';
 
 type Section = {
   title: string;
