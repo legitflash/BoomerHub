@@ -1,4 +1,6 @@
+'use client';
 
+import { useState } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,13 +10,53 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Share2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
+  const { toast } = useToast();
   const post = blogPosts.find((p) => p.slug === params.slug);
+
+  const [likes, setLikes] = useState(Math.floor(Math.random() * 100) + 1);
+  const [isLiked, setIsLiked] = useState(false);
 
   if (!post) {
     notFound();
   }
+  
+  const handleLike = () => {
+    if (isLiked) {
+      setLikes(likes - 1);
+    } else {
+      setLikes(likes + 1);
+    }
+    setIsLiked(!isLiked);
+  };
+  
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: post.description,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+        toast({
+          variant: "destructive",
+          title: "Sharing Failed",
+          description: "Could not share the post at this time.",
+        });
+      }
+    } else {
+        // Fallback for browsers that don't support the Web Share API
+        navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Link Copied",
+          description: "The article URL has been copied to your clipboard.",
+        });
+    }
+  };
 
   const relatedPosts = blogPosts
     .filter((p) => p.category === post.category && p.slug !== post.slug)
@@ -39,9 +81,12 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                   <span>{post.date}</span>
               </div>
           </div>
-          <div className="mt-6 flex justify-center gap-2">
-              <Button variant="outline" size="sm"><Heart className="mr-2"/> Like</Button>
-              <Button variant="outline" size="sm"><Share2 className="mr-2"/> Share</Button>
+          <div className="mt-6 flex flex-col items-center justify-center gap-2">
+             <div className="flex gap-2">
+                <Button variant={isLiked ? "default" : "outline"} size="sm" onClick={handleLike}><Heart className="mr-2"/> Like</Button>
+                <Button variant="outline" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
+            </div>
+            <p className="text-sm text-muted-foreground mt-1">{likes} {likes === 1 ? 'like' : 'likes'}</p>
           </div>
         </header>
 
@@ -84,7 +129,14 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           </ul>
           
           <p>By following these guidelines and committing to continuous learning, you're well on your way to achieving your goals. Explore our other articles to dive deeper into specific topics that interest you.</p>
+
+           <div className="mt-12 text-sm p-4 bg-muted/50 rounded-lg">
+            <p className="text-muted-foreground">
+                <strong>Disclaimer:</strong> Some of the links in this article may be affiliate links, which means we may earn a small commission if you make a purchase at no additional cost to you. This helps support our work in bringing you valuable content.
+            </p>
         </div>
+        </div>
+
       </article>
 
       {relatedPosts.length > 0 && (
@@ -118,8 +170,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   );
 }
 
-export async function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }));
-}
+// We can't use generateStaticParams on a client component, but since this page
+// is using data from a local file, Next.js can still determine the paths.
+// If this were fetching from a database, we'd need a different approach.
+
