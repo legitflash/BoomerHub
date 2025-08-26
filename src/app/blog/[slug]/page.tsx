@@ -10,66 +10,76 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Heart, Share2, Loader2 } from 'lucide-react';
+import { Share2, Loader2, Bookmark } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/auth-context';
-import { getLikesForPost, toggleLike } from '@/services/likes-service';
+import { getSavesForPost, toggleSave } from '@/services/saves-service';
 import type { Post } from '@/lib/types';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { useRouter } from 'next/navigation';
 
 
 function BlogPostContent({ post }: { post: Post }) {
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
 
-  const [likes, setLikes] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isLoadingLikes, setIsLoadingLikes] = useState(true);
-  const [isTogglingLike, setIsTogglingLike] = useState(false);
+  const [saves, setSaves] = useState(0);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isLoadingSaves, setIsLoadingSaves] = useState(true);
+  const [isTogglingSave, setIsTogglingSave] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+
 
   useEffect(() => {
     if (!authLoading && post) {
-      const fetchLikes = async () => {
-        setIsLoadingLikes(true);
+      const fetchSaves = async () => {
+        setIsLoadingSaves(true);
         try {
-          const { count, isLiked } = await getLikesForPost(post.slug, user?.uid);
-          setLikes(count);
-          setIsLiked(isLiked);
+          const { count, isSaved } = await getSavesForPost(post.slug, user?.uid);
+          setSaves(count);
+          setIsSaved(isSaved);
         } catch (error) {
-          console.error("Failed to fetch likes:", error);
+          console.error("Failed to fetch saves:", error);
         } finally {
-          setIsLoadingLikes(false);
+          setIsLoadingSaves(false);
         }
       };
-      fetchLikes();
+      fetchSaves();
     }
   }, [post, user, authLoading]);
 
-  const handleLike = async () => {
+  const handleSave = async () => {
     if (!user) {
-        toast({
-            variant: "destructive",
-            title: "Authentication Required",
-            description: "You must be signed in to like a post.",
-        });
+        setShowAuthDialog(true);
         return;
     }
     
-    if (isTogglingLike) return;
+    if (isTogglingSave) return;
 
-    setIsTogglingLike(true);
+    setIsTogglingSave(true);
     try {
-        const { count, isLiked: newIsLiked } = await toggleLike(post.slug, user.uid);
-        setLikes(count);
-        setIsLiked(newIsLiked);
+        const { count, isSaved: newIsSaved } = await toggleSave(post.slug, user.uid);
+        setSaves(count);
+        setIsSaved(newIsSaved);
     } catch (error) {
-        console.error("Failed to toggle like:", error);
+        console.error("Failed to toggle save:", error);
         toast({
             variant: "destructive",
             title: "Error",
-            description: "Could not update your like. Please try again.",
+            description: "Could not update your save. Please try again.",
         });
     } finally {
-        setIsTogglingLike(false);
+        setIsTogglingSave(false);
     }
   };
 
@@ -105,6 +115,22 @@ function BlogPostContent({ post }: { post: Post }) {
 
   return (
     <>
+      <AlertDialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Sign in to save for later</AlertDialogTitle>
+            <AlertDialogDescription>
+              Create an account or sign in to save this article to your profile and read it anytime.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => router.push('/auth/register')}>Register</AlertDialogAction>
+            <AlertDialogAction onClick={() => router.push('/auth/login')}>Sign In</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <article className="container max-w-4xl py-12 md:py-24">
         <header className="mb-8">
           <div className="text-center">
@@ -122,21 +148,12 @@ function BlogPostContent({ post }: { post: Post }) {
                   <span>{post.date}</span>
               </div>
           </div>
-          <div className="mt-6 flex flex-col items-center justify-center gap-2">
-             <div className="flex gap-2">
-                <Button variant={isLiked ? "default" : "outline"} size="sm" onClick={handleLike} disabled={isTogglingLike || isLoadingLikes}>
-                  {isTogglingLike ? <Loader2 className="mr-2 animate-spin"/> : <Heart className="mr-2"/>}
-                  Like
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
-            </div>
-             <p className="text-sm text-muted-foreground mt-1 h-5">
-              {isLoadingLikes ? (
-                <Loader2 className="animate-spin h-4 w-4" />
-              ) : (
-                <span>{likes > 0 ? `${likes} ${likes === 1 ? 'like' : 'likes'}` : 'Be the first to like'}</span>
-              )}
-            </p>
+          <div className="mt-6 flex items-center justify-center gap-2 border-t border-b py-4">
+              <Button variant="ghost" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
+              <Button variant="ghost" size="sm" onClick={handleSave} disabled={isTogglingSave || isLoadingSaves}>
+                {isTogglingSave ? <Loader2 className="mr-2 animate-spin"/> : <Bookmark className={`mr-2 ${isSaved ? 'fill-current' : ''}`}/>}
+                {isSaved ? 'Saved' : 'Save'}
+              </Button>
           </div>
         </header>
 

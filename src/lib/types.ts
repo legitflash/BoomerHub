@@ -48,7 +48,7 @@ export type Prediction = {
   };
 };
 
-export type Like = {
+export type SavedPost = {
     userId: string;
     postId: string;
 };
