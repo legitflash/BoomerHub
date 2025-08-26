@@ -1,3 +1,4 @@
+'use client';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { CheckCircle2, BookOpen, Clock, Award, FileText, Trophy } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 type Section = {
   title: string;
@@ -13,6 +17,16 @@ type Section = {
 };
 
 export default function CoursePage({ params }: { params: { slug: string } }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth/login');
+    }
+  }, [user, loading, router]);
+
+
   const course = courses.find((c) => c.slug === params.slug);
 
   if (!course) {
@@ -153,6 +167,10 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
 
   const isCompleted = course.progress === 100;
   const buttonText = isCompleted ? 'Take Quiz' : (course.progress ?? 0) > 0 ? 'Continue Learning' : 'Start Course';
+
+  if (loading || !user) {
+    return <div className="container py-12 md:py-16 text-center">Loading course...</div>;
+  }
 
   return (
     <div className="container max-w-5xl py-12 md:py-16">

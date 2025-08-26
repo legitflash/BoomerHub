@@ -1,13 +1,15 @@
+'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, User, LogOut } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import {
   Accordion,
@@ -16,6 +18,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { blogCategories } from '@/lib/data';
+import { useAuth } from '@/context/auth-context';
 
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <Link href={href} className="text-foreground/60 transition-colors hover:text-foreground/80">
@@ -24,6 +27,7 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 );
 
 export function Header() {
+  const { user, signOutUser } = useAuth();
   const mainBlogCategories = blogCategories.filter(c => c.slug !== 'betting-predictions');
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -121,11 +125,31 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Sign In Button */}
+          {/* Sign In Button / User Menu */}
           <div className="flex items-center gap-2">
-            <Button asChild>
+            {user ? (
+               <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                     <Avatar className="h-8 w-8">
+                       <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                     </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem disabled>{user.email}</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOutUser}>
+                    <LogOut className="mr-2 h-4 w-4"/>
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild>
                 <Link href="/auth/login">Sign In</Link>
-            </Button>
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -2,11 +2,14 @@
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { GraduationCap } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
 
 function CertificateContent() {
     const searchParams = useSearchParams();
+    const { user } = useAuth();
+
     const course = searchParams.get('course') || 'Your Amazing Course';
-    const user = searchParams.get('user') || 'Valued Student';
+    const userName = user?.displayName || user?.email || 'Valued Student';
     const date = searchParams.get('date') || new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -32,7 +35,7 @@ function CertificateContent() {
                     </p>
 
                     <h2 className="text-5xl md:text-6xl font-bold text-[#d4af37] animate-fade-in-up delay-200" style={{fontFamily: "'Great Vibes', cursive"}}>
-                        {user}
+                        {userName}
                     </h2>
 
                     <p className="text-md text-gray-300 animate-fade-in-up delay-300">

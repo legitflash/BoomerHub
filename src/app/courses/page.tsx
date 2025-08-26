@@ -1,17 +1,27 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { courses, courseTracks } from '@/lib/data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, BookOpen, Clock } from 'lucide-react';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
+import { useAuth } from '@/context/auth-context';
 
 function CoursesContent() {
   const searchParams = useSearchParams();
   const level = searchParams.get('level');
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/auth/login');
+    }
+  }, [user, loading, router]);
+
 
   const filteredCourses = level
     ? courses.filter(c => c.level?.toLowerCase() === level)
@@ -21,6 +31,10 @@ function CoursesContent() {
   const pageDescription = level
     ? `Browse our ${level} courses.`
     : 'Structured learning paths to master in-demand skills.';
+
+  if (loading || !user) {
+      return <div className="container py-12 md:py-16 text-center">Loading courses...</div>;
+  }
 
 
   return (
