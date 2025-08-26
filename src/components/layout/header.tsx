@@ -20,7 +20,7 @@ import {
 import { blogCategories } from '@/lib/data';
 import { useAuth } from '@/context/auth-context';
 
-const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+const NavLink = ({ href, children }: { href: string; children: React.React.Node }) => (
   <Link href={href} className="text-foreground/60 transition-colors hover:text-foreground/80">
     {children}
   </Link>
@@ -36,8 +36,10 @@ export function Header() {
         <nav className="hidden md:flex items-center gap-4 text-sm lg:gap-6">
           <NavLink href="/">Home</NavLink>
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none">
-              Blog <ChevronDown className="h-4 w-4" />
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none focus:ring-0">
+                    Blog <ChevronDown className="h-4 w-4" />
+                </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {blogCategories.map((category) => (
@@ -49,8 +51,10 @@ export function Header() {
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none">
-              Courses <ChevronDown className="h-4 w-4" />
+             <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none focus:ring-0">
+                    Courses <ChevronDown className="h-4 w-4" />
+                </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem asChild>
