@@ -24,6 +24,7 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 );
 
 export function Header() {
+  const mainBlogCategories = blogCategories.filter(c => c.slug !== 'betting-predictions');
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
@@ -34,13 +35,15 @@ export function Header() {
               Blog <ChevronDown className="h-4 w-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {blogCategories.map((category) => (
+              {mainBlogCategories.map((category) => (
                 <DropdownMenuItem key={category.slug} asChild>
                   <Link href={`/blog/category/${category.slug}`}>{category.name}</Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <NavLink href="/blog/category/betting-predictions">Betting</NavLink>
 
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none">
@@ -86,7 +89,7 @@ export function Header() {
                     <AccordionItem value="blog">
                       <AccordionTrigger>Blog</AccordionTrigger>
                       <AccordionContent className="flex flex-col space-y-2 pl-4">
-                         {blogCategories.map((category) => (
+                         {mainBlogCategories.map((category) => (
                           <Link key={category.slug} href={`/blog/category/${category.slug}`}>{category.name}</Link>
                         ))}
                       </AccordionContent>
@@ -100,6 +103,7 @@ export function Header() {
                     </AccordionItem>
                   </Accordion>
                   <div className="flex flex-col space-y-3 mt-4 border-t pt-4">
+                    <Link href="/blog/category/betting-predictions" className="text-foreground">Betting</Link>
                     <Link href="/certification" className="text-foreground">Certification</Link>
                     <Link href="/about" className="text-foreground">About</Link>
                     <Link href="/contact" className="text-foreground">Contact</Link>

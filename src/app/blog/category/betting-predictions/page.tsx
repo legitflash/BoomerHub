@@ -1,0 +1,144 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Check, Flame, TrendingUp, X } from "lucide-react";
+import Link from "next/link";
+
+const predictions = [
+  {
+    id: 1,
+    league: "Premier League",
+    match: "Man City vs. Arsenal",
+    prediction: "Man City to Win",
+    odds: "1.85",
+    confidence: "high",
+    status: "Won",
+  },
+  {
+    id: 2,
+    league: "La Liga",
+    match: "Real Madrid vs. Barcelona",
+    prediction: "Over 2.5 Goals",
+    odds: "1.70",
+    confidence: "high",
+    status: "Pending",
+    isHot: true,
+  },
+  {
+    id: 3,
+    league: "Serie A",
+    match: "Inter Milan vs. Juventus",
+    prediction: "Both Teams to Score",
+    odds: "1.90",
+    confidence: "medium",
+    status: "Lost",
+  },
+    {
+    id: 4,
+    league: "Bundesliga",
+    match: "Bayern Munich vs. Dortmund",
+    prediction: "Bayern -1.5 Handicap",
+    odds: "2.10",
+    confidence: "high",
+    status: "Pending",
+    isHot: true,
+  },
+   {
+    id: 5,
+    league: "Ligue 1",
+    match: "PSG vs. Monaco",
+    prediction: "Under 3.5 Goals",
+    odds: "1.65",
+    confidence: "medium",
+    status: "Won",
+  },
+  {
+    id: 6,
+    league: "Champions League",
+    match: "Liverpool vs. Atletico Madrid",
+    prediction: "Liverpool to Qualify",
+    odds: "1.50",
+    confidence: "high",
+    status: "Pending",
+  },
+];
+
+export default function BettingPredictionsPage() {
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "Won":
+        return <Check className="h-5 w-5 text-green-500" />;
+      case "Lost":
+        return <X className="h-5 w-5 text-red-500" />;
+      default:
+        return <TrendingUp className="h-5 w-5 text-yellow-500" />;
+    }
+  };
+  
+  const getConfidenceBadge = (confidence: string) => {
+      switch (confidence) {
+          case "high":
+              return <Badge variant="destructive">High Confidence</Badge>;
+          case "medium":
+              return <Badge variant="secondary">Medium Confidence</Badge>;
+          default:
+              return <Badge variant="outline">Low Confidence</Badge>;
+      }
+  }
+
+
+  return (
+    <div className="container py-12 md:py-16">
+      <header className="text-center mb-12">
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">Betting Predictions</h1>
+        <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
+          Expert analysis and predictions for upcoming matches. Please bet responsibly.
+        </p>
+      </header>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {predictions.map((p) => (
+          <Card key={p.id} className={`flex flex-col ${p.isHot ? 'border-primary border-2' : ''}`}>
+             {p.isHot && (
+                 <div className="bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center p-2 rounded-t-lg">
+                    <Flame className="mr-2 h-5 w-5"/>
+                    Hot Tip
+                 </div>
+            )}
+            <CardHeader>
+              <CardTitle>{p.match}</CardTitle>
+              <CardDescription>{p.league}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-grow space-y-4">
+              <div>
+                <p className="text-sm font-semibold text-muted-foreground">Prediction</p>
+                <p className="text-lg font-bold">{p.prediction}</p>
+              </div>
+              <div className="flex justify-between items-center">
+                 <div>
+                    <p className="text-sm font-semibold text-muted-foreground">Odds</p>
+                    <p className="text-lg font-bold">{p.odds}</p>
+                </div>
+                {getConfidenceBadge(p.confidence)}
+              </div>
+            </CardContent>
+            <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
+                <div className="flex items-center gap-2 font-bold">
+                    {getStatusIcon(p.status)}
+                    <span>{p.status}</span>
+                </div>
+                <Button variant="secondary" size="sm">Details</Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+      
+       <div className="text-center mt-16">
+            <p className="text-muted-foreground mb-4">Disclaimer: These predictions are for informational purposes only. We are not responsible for any losses incurred.</p>
+            <Button asChild>
+                <Link href="/contact">Contact us for Premium Tips</Link>
+            </Button>
+        </div>
+    </div>
+  );
+}
