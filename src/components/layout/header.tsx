@@ -85,7 +85,7 @@ export function Header() {
                 </SheetHeader>
                 <Link href="/" className="mr-6 flex items-center space-x-2 p-4">
                   <GraduationCap className="h-6 w-6 text-primary" />
-                  <span className="font-bold">BoomerHub</span>
+                  <span className="font-bold">Boomer Academy</span>
                 </Link>
                 <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
                   <div className="flex flex-col space-y-3 mb-4">
@@ -122,7 +122,7 @@ export function Header() {
           <div className="flex-1 flex justify-center">
             <Link href="/" className="flex items-center space-x-2">
               <GraduationCap className="h-6 w-6 text-primary" />
-              <span className="font-bold">BoomerHub</span>
+              <span className="font-bold">Boomer Academy</span>
             </Link>
           </div>
 

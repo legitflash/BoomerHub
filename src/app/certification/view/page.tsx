@@ -23,7 +23,7 @@ function CertificateContent() {
                     
                     <div className="flex justify-center items-center gap-3 mb-4">
                         <GraduationCap className="h-10 w-10 text-[#d4af37]" />
-                        <span className="text-2xl font-bold font-headline-serif tracking-wider">BoomerHub</span>
+                        <span className="text-2xl font-bold font-headline-serif tracking-wider">Boomer Academy</span>
                     </div>
 
                     <h1 className="text-4xl md:text-5xl font-bold font-headline-serif text-white tracking-wider animate-fade-in-down">
@@ -50,21 +50,21 @@ function CertificateContent() {
                         on {date}
                     </p>
                     
-                    <p className="text-sm text-gray-400 animate-fade-in-up delay-600 pt-4">Issued by BoomerHub</p>
+                    <p className="text-sm text-gray-400 animate-fade-in-up delay-600 pt-4">Issued by Boomer Academy</p>
 
 
                     <div className="flex justify-between items-center pt-8 text-sm text-gray-300 animate-fade-in-up delay-700">
                         <div className="text-center">
                             <p className="font-script text-3xl text-[#d4af37] italic" style={{fontFamily: "'Great Vibes', cursive"}}>Favour Uduafemhe</p>
                             <div className="border-t border-[#d4af37] w-48 mx-auto mt-1 pt-1">
-                                <p className="font-semibold">Founder, BoomerHub</p>
+                                <p className="font-semibold">Founder, Boomer Academy</p>
                             </div>
                         </div>
                         <div className="relative">
                             <div className="w-28 h-28 border-2 border-[#d4af37] rounded-full flex items-center justify-center">
                                 <div className="w-24 h-24 border border-[#d4af37] rounded-full flex flex-col items-center justify-center text-center">
                                      <GraduationCap className="h-8 w-8 text-[#d4af37]" />
-                                     <p className="text-[8px] font-bold tracking-widest mt-1">BOOMERHUB</p>
+                                     <p className="text-[8px] font-bold tracking-widest mt-1">BOOMERACADEMY</p>
                                      <p className="text-[6px] tracking-wider">CERTIFIED</p>
                                 </div>
                             </div>

@@ -10,7 +10,7 @@ export function Footer() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <GraduationCap className="h-6 w-6 text-primary" />
-              <span className="font-bold">BoomerHub</span>
+              <span className="font-bold">Boomer Academy</span>
             </div>
             <p>Learn Skills. Earn Income. Get Certified.</p>
             <div className="flex gap-4 mt-2">
@@ -51,7 +51,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} BoomerHub. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Boomer Academy. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

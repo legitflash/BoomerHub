@@ -20,7 +20,7 @@ export default function Home() {
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline">
-                  Learn Skills. Earn Income. Get Certified.
+                  Skill Up. Read Up. Earn Up.
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
                   Your journey to financial freedom starts here. Explore our courses and articles to master new skills.
