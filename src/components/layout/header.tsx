@@ -27,45 +27,42 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
-        <div className="mr-4 hidden md:flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <GraduationCap className="h-6 w-6 text-primary" />
-            <span className="hidden font-bold sm:inline-block">BoomerHub</span>
-          </Link>
-          <nav className="flex items-center gap-4 text-sm lg:gap-6">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none">
-                Blog <ChevronDown className="h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {blogCategories.map((category) => (
-                  <DropdownMenuItem key={category.slug} asChild>
-                    <Link href={`/blog/category/${category.slug}`}>{category.name}</Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-4 text-sm lg:gap-6">
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none">
+              Blog <ChevronDown className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {blogCategories.map((category) => (
+                <DropdownMenuItem key={category.slug} asChild>
+                  <Link href={`/blog/category/${category.slug}`}>{category.name}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none">
-                Courses <ChevronDown className="h-4 w-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem asChild>
-                  <Link href="/courses?level=free">Free Courses</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/courses?level=premium">Premium Courses</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <NavLink href="/certification">Certification</NavLink>
-            <NavLink href="/about">About</NavLink>
-            <NavLink href="/contact">Contact</NavLink>
-          </nav>
-        </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none">
+              Courses <ChevronDown className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem asChild>
+                <Link href="/courses?level=free">Free Courses</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/courses?level=premium">Premium Courses</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <NavLink href="/certification">Certification</NavLink>
+          <NavLink href="/about">About</NavLink>
+          <NavLink href="/contact">Contact</NavLink>
+        </nav>
         
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+        {/* Mobile Nav and Centered Logo */}
+        <div className="flex flex-1 items-center justify-between">
+          {/* Mobile Menu Trigger */}
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>
@@ -76,9 +73,9 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="left" className="pr-0">
                 <SheetHeader>
-                  <SheetTitle>
-                    <VisuallyHidden>Navigation Menu</VisuallyHidden>
-                  </SheetTitle>
+                    <SheetTitle>
+                        <VisuallyHidden>Navigation Menu</VisuallyHidden>
+                    </SheetTitle>
                 </SheetHeader>
                 <Link href="/" className="mr-6 flex items-center space-x-2 p-4">
                   <GraduationCap className="h-6 w-6 text-primary" />
@@ -111,14 +108,21 @@ export function Header() {
               </SheetContent>
             </Sheet>
           </div>
-          <nav className="flex items-center gap-2">
-            <Button variant="ghost" asChild>
+          
+          {/* Centered App Logo/Name */}
+          <div className="flex-1 flex justify-center">
+            <Link href="/" className="flex items-center space-x-2">
+              <GraduationCap className="h-6 w-6 text-primary" />
+              <span className="font-bold">BoomerHub</span>
+            </Link>
+          </div>
+
+          {/* Sign In Button */}
+          <div className="flex items-center gap-2">
+            <Button asChild>
                 <Link href="/auth/login">Sign In</Link>
             </Button>
-            <Button asChild>
-                <Link href="/auth/register">Register</Link>
-            </Button>
-          </nav>
+          </div>
         </div>
       </div>
     </header>

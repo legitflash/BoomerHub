@@ -50,7 +50,7 @@ export default function LoginPage() {
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/auth/register" className="underline">
-              Sign up
+              Create account
             </Link>
           </div>
         </CardContent>
