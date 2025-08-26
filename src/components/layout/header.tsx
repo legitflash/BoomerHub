@@ -34,6 +34,7 @@ export function Header() {
       <div className="container flex h-14 max-w-screen-2xl items-center">
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-4 text-sm lg:gap-6">
+          <NavLink href="/">Home</NavLink>
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none">
               Blog <ChevronDown className="h-4 w-4" />
@@ -87,6 +88,9 @@ export function Header() {
                   <span className="font-bold">BoomerHub</span>
                 </Link>
                 <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
+                  <div className="flex flex-col space-y-3 mb-4">
+                     <Link href="/" className="text-foreground font-semibold">Home</Link>
+                  </div>
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="blog">
                       <AccordionTrigger>Blog</AccordionTrigger>
