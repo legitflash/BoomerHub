@@ -1,13 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, MessageCircle, Twitter, Facebook, Instagram } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function AboutPage() {
   const teamMembers = [
-    { name: 'Favour Uduafemhe', role: 'Founder & CEO', image: 'https://picsum.photos/100/100' },
+    { name: 'Favour Uduafemhe', role: 'Founder & Editor-in-Chief', image: 'https://picsum.photos/100/100' },
   ];
 
   return (
@@ -15,7 +15,7 @@ export default function AboutPage() {
       <section className="text-center">
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">About BoomerHub</h1>
         <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-xl">
-          We are dedicated to providing accessible, high-quality education to help individuals acquire valuable skills, generate income, and achieve certification. Our mission is to empower people for the digital economy.
+          We are dedicated to providing insightful, high-quality articles and resources to help our readers navigate the digital economy and achieve their personal and financial goals.
         </p>
       </section>
 
@@ -26,17 +26,17 @@ export default function AboutPage() {
             alt="BoomerHub Team" 
             width={600} 
             height={400} 
-            data-ai-hint="team working"
+            data-ai-hint="writing content"
             className="rounded-lg shadow-md"
           />
         </div>
         <div className="space-y-4">
           <h2 className="text-3xl font-bold tracking-tighter font-headline">Our Mission</h2>
           <p className="text-muted-foreground">
-            In a rapidly changing world, continuous learning is key. BoomerHub was founded on the principle that everyone deserves the chance to upskill and adapt. We break down complex topics into easy-to-understand courses and articles, focusing on practical knowledge that can be applied immediately to earn income or start a new career.
+            In a rapidly changing world, knowledge is power. BoomerHub was founded on the principle that everyone deserves access to reliable and practical information. We break down complex topics into easy-to-understand articles, focusing on actionable advice that can be applied immediately to improve your skills, career, and financial well-being.
           </p>
           <p className="text-muted-foreground">
-            Whether you're exploring forex, mastering AI tools, or building a social media empire, we're your partner in growth.
+            Whether you're exploring forex, mastering AI tools, or building a social media empire, our blog is your partner in growth.
           </p>
         </div>
       </section>
@@ -62,7 +62,7 @@ export default function AboutPage() {
       <section className="text-center max-w-2xl mx-auto">
         <h2 className="text-3xl font-bold tracking-tighter font-headline mb-4">Get in Touch</h2>
         <p className="text-muted-foreground mb-8">
-          Have questions or want to collaborate? We'd love to hear from you. Reach out through any of our channels.
+          Have questions, suggestions, or want to contribute? We'd love to hear from you.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
             <Button asChild size="lg">

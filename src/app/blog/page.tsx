@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { blogPosts, blogCategories } from '@/lib/data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import IntelligentSearchForm from '@/components/search/intelligent-search-form';
 
 export default function BlogPage() {
   return (
@@ -12,6 +13,9 @@ export default function BlogPage() {
         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
           Insights on finance, tech, social media, and more.
         </p>
+        <div className="max-w-lg mx-auto mt-8">
+            <IntelligentSearchForm />
+        </div>
       </header>
 
       <div className="mb-12 flex flex-wrap items-center justify-center gap-4">

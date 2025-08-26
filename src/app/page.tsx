@@ -2,10 +2,10 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Clock, Star } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import IntelligentSearchForm from '@/components/search/intelligent-search-form';
 import { blogPosts, topCategories } from '@/lib/data';
@@ -21,10 +21,10 @@ export default function Home() {
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline">
-                  Skill Up. Read Up. Earn Up.
+                  Insights for Growth.
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Your journey to financial freedom starts here. Explore our articles to master new skills.
+                  Explore our articles to master new skills in finance, tech, and online business.
                 </p>
               </div>
               <IntelligentSearchForm />
@@ -46,10 +46,12 @@ export default function Home() {
         <h2 className="text-3xl font-bold tracking-tighter text-center mb-8 font-headline">Top Categories</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
           {topCategories.map((category) => (
-            <Card key={category.name} className="flex flex-col items-center justify-center p-6 text-center hover:shadow-lg transition-shadow">
-              <category.icon className="h-12 w-12 mb-4 text-primary" />
-              <h3 className="font-semibold">{category.name}</h3>
-            </Card>
+             <Link key={category.slug} href={`/blog/category/${category.slug}`}>
+              <Card className="flex flex-col items-center justify-center p-6 text-center hover:shadow-lg transition-shadow h-full">
+                <category.icon className="h-12 w-12 mb-4 text-primary" />
+                <h3 className="font-semibold">{category.name}</h3>
+              </Card>
+            </Link>
           ))}
         </div>
       </section>

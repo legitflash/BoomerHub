@@ -19,6 +19,12 @@ export type Category = {
   icon: React.ComponentType<{ className?: string }>;
 };
 
+export type TopCategory = {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  slug: string;
+}
+
 export type Prediction = {
   id: number;
   league: string;

@@ -1,5 +1,5 @@
 
-import type { Post, Prediction } from './types';
+import type { Post, Prediction, TopCategory } from './types';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp } from 'lucide-react';
 
 export const blogPosts: Post[] = [
@@ -230,11 +230,11 @@ export const blogPosts: Post[] = [
   },
 ];
 
-export const topCategories = [
-  { name: 'Forex', icon: LineChart },
-  { name: 'AI', icon: BrainCircuit },
-  { name: 'Social Media', icon: Megaphone },
-  { name: 'Online Hustles', icon: Briefcase },
+export const topCategories: TopCategory[] = [
+  { name: 'Forex', icon: LineChart, slug: 'finance' },
+  { name: 'AI', icon: BrainCircuit, slug: 'ai-tech' },
+  { name: 'Social Media', icon: Megaphone, slug: 'social-media' },
+  { name: 'Online Hustles', icon: Briefcase, slug: 'freelancing'},
 ];
 
 export const blogCategories = [

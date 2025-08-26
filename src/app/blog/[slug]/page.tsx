@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { blogPosts } from '@/lib/data';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Heart, Share2 } from 'lucide-react';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = blogPosts.find((p) => p.slug === params.slug);
@@ -14,19 +16,25 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
 
   return (
     <article className="container max-w-4xl py-12 md:py-24">
-      <header className="mb-8 text-center">
-        <Badge variant="outline" className="mb-4">{post.category}</Badge>
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline mb-4">{post.title}</h1>
-        <div className="flex items-center justify-center gap-4 text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={post.authorImage} alt={post.author} />
-              <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <span>{post.author}</span>
-          </div>
-          <span>&middot;</span>
-          <span>{post.date}</span>
+      <header className="mb-8">
+        <div className="text-center">
+            <Badge variant="outline" className="mb-4">{post.category}</Badge>
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline mb-4">{post.title}</h1>
+            <div className="flex items-center justify-center gap-4 text-muted-foreground">
+                <div className="flex items-center gap-2">
+                    <Avatar className="h-8 w-8">
+                    <AvatarImage src={post.authorImage} alt={post.author} />
+                    <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span>{post.author}</span>
+                </div>
+                <span>&middot;</span>
+                <span>{post.date}</span>
+            </div>
+        </div>
+        <div className="mt-6 flex justify-center gap-2">
+            <Button variant="outline" size="sm"><Heart className="mr-2"/> Like</Button>
+            <Button variant="outline" size="sm"><Share2 className="mr-2"/> Share</Button>
         </div>
       </header>
 
