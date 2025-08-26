@@ -144,6 +144,7 @@ default: (
 ),
 };
 
+// This is the Client Component that contains all the interactive logic.
 function CoursePageClient({ params }: { params: { slug: string } }) {
   const course = courses.find((c) => c.slug === params.slug);
   const { user, loading } = useAuth();
@@ -154,9 +155,6 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
 
   const sections = courseSections[course.slug] || courseSections.default;
   const descriptionContent = courseDescriptions[course.slug] || courseDescriptions.default;
-
-  const isCompleted = course.progress === 100;
-
   const isPremium = course.level === 'Premium';
 
   return (
@@ -245,6 +243,8 @@ function CoursePageClient({ params }: { params: { slug: string } }) {
   )
 }
 
+
+// This is the main page component, which is a Server Component.
 export default function CoursePage({ params }: { params: { slug: string } }) {
   const course = courses.find((c) => c.slug === params.slug);
 
@@ -252,8 +252,6 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
     notFound();
   }
   
-  // This is now a Client Component because we moved 'use client' to the top.
-  // It can use hooks and other client-side logic.
-  // We are not exporting generateStaticParams from this file anymore.
+  // It renders the Client Component and passes the params.
   return <CoursePageClient params={params} />;
 }
