@@ -1,12 +1,12 @@
 import type { Post, Course } from './types';
-import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart } from 'lucide-react';
+import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy } from 'lucide-react';
 
 export const blogPosts: Post[] = [
   // Money & Finance
   {
     slug: 'start-forex-trading-with-10-dollars',
     title: 'How to Start Forex Trading with Just $10',
-    category: 'Money & Finance',
+    category: 'Finance',
     description: 'A beginner-friendly guide to entering the forex market with minimal investment. Learn the basics and make your first trade.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'money chart',
@@ -17,7 +17,7 @@ export const blogPosts: Post[] = [
   {
     slug: '5-crypto-wallets-for-beginners-2025',
     title: '5 Crypto Wallets Every Beginner Should Use in 2025',
-    category: 'Money & Finance',
+    category: 'Crypto News',
     description: 'Discover the most secure and user-friendly crypto wallets to start your journey in digital currencies.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'digital wallet',
@@ -28,7 +28,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'nigerian-side-hustles-500-monthly',
     title: '10 Side Hustles Nigerians Are Using to Make $500+ Monthly',
-    category: 'Money & Finance',
+    category: 'Finance',
     description: 'Explore popular and effective side hustles that are helping Nigerians achieve their financial goals.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'small business',
@@ -39,7 +39,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'earn-passive-income-online',
     title: 'How to Earn Passive Income Online (Even While Sleeping)',
-    category: 'Money & Finance',
+    category: 'Finance',
     description: 'Learn proven strategies to create automated income streams that work for you 24/7.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'laptop beach',
@@ -51,7 +51,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'create-facebook-business-page',
     title: 'How to Create a Facebook Page for Your Business (Step by Step)',
-    category: 'Social Media Monetization',
+    category: 'Social Media',
     description: 'A complete walkthrough on setting up a professional Facebook page to attract customers and grow your brand.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'social media',
@@ -62,7 +62,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'monetize-youtube-shorts-2025',
     title: 'How to Monetize YouTube Shorts in 2025',
-    category: 'Social Media Monetization',
+    category: 'Social Media',
     description: 'Unlock the potential of YouTube Shorts and learn how to turn your short-form content into a revenue source.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'video creator',
@@ -73,7 +73,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'tiktok-monetization-trending-sounds',
     title: 'TikTok Monetization: How to Earn from Trending Sounds',
-    category: 'Social Media Monetization',
+    category: 'Social Media',
     description: 'Capitalize on viral trends by learning how to use trending sounds to monetize your TikTok presence.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'phone screen',
@@ -84,7 +84,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'grow-telegram-channel-get-paid',
     title: 'How to Grow a Telegram Channel and Get Paid',
-    category: 'Social Media Monetization',
+    category: 'Social Media',
     description: 'Strategies for building a large and engaged Telegram channel and the different ways to monetize it.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'messaging app',
@@ -96,7 +96,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'use-chatgpt-to-make-money',
     title: 'How to Use ChatGPT to Make Money Online',
-    category: 'AI & Tech',
+    category: 'AI/Tech',
     description: 'Practical ways you can leverage ChatGPT to create new income streams and automate tasks.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'artificial intelligence',
@@ -107,7 +107,7 @@ export const blogPosts: Post[] = [
   {
     slug: '5-ways-ai-can-help-start-side-hustle',
     title: '5 Ways AI Can Help You Start a Side Hustle',
-    category: 'AI & Tech',
+    category: 'AI/Tech',
     description: 'Discover how AI tools can simplify the process of launching and running a successful side business.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'robot assistant',
@@ -118,7 +118,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'build-no-code-app-in-1-hour-glide',
     title: 'How to Build a No-Code App in 1 Hour (Glide Tutorial)',
-    category: 'AI & Tech',
+    category: 'App/Web Reviews',
     description: 'A step-by-step tutorial on using Glide to build a fully functional application without any coding knowledge.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'app development',
@@ -129,7 +129,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'create-telegram-bot-without-coding',
     title: 'How to Create a Telegram Bot Without Coding',
-    category: 'AI & Tech',
+    category: 'AI/Tech',
     description: 'Learn how to build and deploy your own Telegram bot using no-code platforms.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'robot chat',
@@ -141,7 +141,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'top-10-fiverr-gigs-with-ai-tools',
     title: 'Top 10 Fiverr Gigs You Can Start With AI Tools',
-    category: 'Freelancing & Jobs',
+    category: 'Top 10s',
     description: 'Find out the most in-demand Fiverr services you can offer by leveraging powerful AI tools.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'freelance work',
@@ -152,7 +152,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'start-freelancing-with-zero-experience',
     title: 'How to Start Freelancing with Zero Experience',
-    category: 'Freelancing & Jobs',
+    category: 'Freelancing',
     description: 'A roadmap for aspiring freelancers on how to land their first client and build a successful career from scratch.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'home office',
@@ -163,7 +163,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'upwork-vs-fiverr-2025',
     title: 'Upwork vs Fiverr: Which is Better in 2025?',
-    category: 'Freelancing & Jobs',
+    category: 'Freelancing',
     description: 'An in-depth comparison of the two leading freelance platforms to help you choose the right one for your skills.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'decision choice',
@@ -174,7 +174,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'get-paid-online-payment-gateways',
     title: 'How to Get Paid Online (Payoneer, Binance, Wise, Flutterwave)',
-    category: 'Freelancing & Jobs',
+    category: 'GetPaidTo',
     description: 'A guide to the best online payment platforms for freelancers and businesses to receive payments globally.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'online payment',
@@ -186,7 +186,7 @@ export const blogPosts: Post[] = [
   {
     slug: '7-tools-for-remote-workers-2025',
     title: '7 Tools Every Remote Worker Needs in 2025',
-    category: 'Productivity & Lifestyle',
+    category: 'Productivity',
     description: 'Boost your productivity and collaboration with these essential tools for working from anywhere.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'desk setup',
@@ -197,7 +197,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'time-management-for-side-hustlers',
     title: 'How to Manage Your Time Like a Pro (For Side Hustlers)',
-    category: 'Productivity & Lifestyle',
+    category: 'Productivity',
     description: 'Learn effective time management techniques to balance a full-time job with your side hustle.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'calendar planning',
@@ -208,7 +208,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'build-personal-brand-online-30-days',
     title: 'How to Build Your Personal Brand Online in 30 Days',
-    category: 'Productivity & Lifestyle',
+    category: 'Productivity',
     description: 'A 30-day challenge to help you create a strong and authentic personal brand on social media and beyond.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'personal branding',
@@ -219,7 +219,7 @@ export const blogPosts: Post[] = [
   {
     slug: 'best-apps-to-earn-rewards-2025',
     title: 'Best Apps to Earn Rewards from Daily Tasks (2025 list)',
-    category: 'Productivity & Lifestyle',
+    category: 'GetPaidTo',
     description: 'A curated list of mobile apps that reward you for completing simple daily tasks, surveys, and more.',
     image: 'https://picsum.photos/600/400',
     dataAiHint: 'gift card',
@@ -241,6 +241,7 @@ export const courses: Course[] = [
     hours: 10,
     isFeatured: true,
     progress: 0,
+    level: 'Premium',
   },
   {
     slug: 'ai-prompt-engineering-101',
@@ -252,6 +253,7 @@ export const courses: Course[] = [
     lessons: 15,
     hours: 5,
     progress: 0,
+    level: 'Free',
   },
   {
     slug: 'youtube-growth-adsense',
@@ -263,6 +265,7 @@ export const courses: Course[] = [
     lessons: 30,
     hours: 12,
     progress: 0,
+    level: 'Premium',
   },
   {
     slug: 'how-to-create-telegram-bot-course',
@@ -274,6 +277,7 @@ export const courses: Course[] = [
     lessons: 20,
     hours: 8,
     progress: 30,
+    level: 'Free',
   }
 ];
 
@@ -285,11 +289,17 @@ export const topCategories = [
 ];
 
 export const blogCategories = [
-    { name: 'Money & Finance', icon: DollarSign, slug: 'money-finance' },
-    { name: 'Social Media Monetization', icon: Tv, slug: 'social-media-monetization' },
-    { name: 'AI & Tech', icon: Code, slug: 'ai-tech' },
-    { name: 'Freelancing & Jobs', icon: Briefcase, slug: 'freelancing-jobs' },
-    { name: 'Productivity & Lifestyle', icon: Clock, slug: 'productivity-lifestyle' },
+    { name: 'Finance', icon: DollarSign, slug: 'finance' },
+    { name: 'Social Media', icon: Tv, slug: 'social-media' },
+    { name: 'AI/Tech', icon: Code, slug: 'ai-tech' },
+    { name: 'Freelancing', icon: Briefcase, slug: 'freelancing' },
+    { name: 'Productivity', icon: Clock, slug: 'productivity' },
+    { name: 'GetPaidTo', icon: Rocket, slug: 'getpaidto' },
+    { name: 'App/Web Reviews', icon: BarChart, slug: 'app-web-reviews' },
+    { name: 'Crypto News', icon: Newspaper, slug: 'crypto-news' },
+    { name: 'Airdrop', icon: Droplets, slug: 'airdrop' },
+    { name: 'Sports', icon: Gamepad, slug: 'sports' },
+    { name: 'Top 10s', icon: Trophy, slug: 'top-10s' },
 ];
 
 export const courseTracks = [

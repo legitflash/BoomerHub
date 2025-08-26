@@ -23,6 +23,7 @@ export type Course = {
   hours: number;
   isFeatured?: boolean;
   progress?: number;
+  level?: 'Free' | 'Premium';
 };
 
 export type Category = {
