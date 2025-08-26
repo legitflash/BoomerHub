@@ -220,6 +220,7 @@ function BlogPostContent({ post }: { post: Post }) {
   );
 }
 
+// This is the main page component, which is a Server Component.
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = blogPosts.find((p) => p.slug === params.slug);
 
@@ -227,5 +228,6 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     notFound();
   }
 
+  // We pass the fetched post data to the Client Component.
   return <BlogPostContent post={post} />;
 }
