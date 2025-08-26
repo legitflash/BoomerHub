@@ -33,6 +33,12 @@ export default function QuizPage({ params }: { params: { slug: string } }) {
         },
     ];
 
+    const completionDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+
     return (
         <div className="container py-12 md:py-24 max-w-2xl">
             <header className="text-center mb-12">
@@ -65,7 +71,7 @@ export default function QuizPage({ params }: { params: { slug: string } }) {
                 </Card>
                 <div className="mt-8 flex justify-center">
                     <Button asChild size="lg">
-                        <Link href={`/certification/view?course=${encodeURIComponent(course.title)}&user=${encodeURIComponent("Valued Student")}`}>
+                        <Link href={`/certification/view?course=${encodeURIComponent(course.title)}&user=${encodeURIComponent("Valued Student")}&date=${encodeURIComponent(completionDate)}`}>
                             Submit & View Certificate <ArrowRight className="ml-2 h-5 w-5" />
                         </Link>
                     </Button>
