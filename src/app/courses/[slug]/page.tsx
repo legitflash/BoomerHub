@@ -1,3 +1,4 @@
+
 'use client';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -9,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { CheckCircle2, BookOpen, Clock, Award, FileText, Trophy } from 'lucide-react';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 
 type Section = {
   title: string;
@@ -144,7 +145,7 @@ default: (
 ),
 };
 
-function CourseContent({ params }: { params: { slug: string } }) {
+function CoursePageClient({ params }: { params: { slug: string } }) {
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -248,7 +249,13 @@ function CourseContent({ params }: { params: { slug: string } }) {
 }
 
 export default function CoursePage({ params }: { params: { slug: string } }) {
-    return <CourseContent params={params} />;
+    // This is a server component, but we are rendering a client component
+    // that needs access to the router, so we wrap it in a Suspense boundary.
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <CoursePageClient params={params} />
+        </Suspense>
+    );
 }
 
 export async function generateStaticParams() {
