@@ -3,65 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Badge } from "@/components/ui/badge";
 import { Check, Flame, TrendingUp, X } from "lucide-react";
 import Link from "next/link";
+import { predictions } from "@/lib/data";
 
-const predictions = [
-  {
-    id: 1,
-    league: "Premier League",
-    match: "Man City vs. Arsenal",
-    prediction: "Man City to Win",
-    odds: "1.85",
-    confidence: "high",
-    status: "Won",
-  },
-  {
-    id: 2,
-    league: "La Liga",
-    match: "Real Madrid vs. Barcelona",
-    prediction: "Over 2.5 Goals",
-    odds: "1.70",
-    confidence: "high",
-    status: "Pending",
-    isHot: true,
-  },
-  {
-    id: 3,
-    league: "Serie A",
-    match: "Inter Milan vs. Juventus",
-    prediction: "Both Teams to Score",
-    odds: "1.90",
-    confidence: "medium",
-    status: "Lost",
-  },
-    {
-    id: 4,
-    league: "Bundesliga",
-    match: "Bayern Munich vs. Dortmund",
-    prediction: "Bayern -1.5 Handicap",
-    odds: "2.10",
-    confidence: "high",
-    status: "Pending",
-    isHot: true,
-  },
-   {
-    id: 5,
-    league: "Ligue 1",
-    match: "PSG vs. Monaco",
-    prediction: "Under 3.5 Goals",
-    odds: "1.65",
-    confidence: "medium",
-    status: "Won",
-  },
-  {
-    id: 6,
-    league: "Champions League",
-    match: "Liverpool vs. Atletico Madrid",
-    prediction: "Liverpool to Qualify",
-    odds: "1.50",
-    confidence: "high",
-    status: "Pending",
-  },
-];
 
 export default function BettingPredictionsPage() {
   const getStatusIcon = (status: string) => {
@@ -127,7 +70,9 @@ export default function BettingPredictionsPage() {
                     {getStatusIcon(p.status)}
                     <span>{p.status}</span>
                 </div>
-                <Button variant="secondary" size="sm">Details</Button>
+                <Button variant="secondary" size="sm" asChild>
+                  <Link href={`/blog/category/betting-predictions/${p.id}`}>Details</Link>
+                </Button>
             </CardFooter>
           </Card>
         ))}

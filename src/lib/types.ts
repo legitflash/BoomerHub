@@ -30,3 +30,26 @@ export type Category = {
   name: string;
   icon: React.ComponentType<{ className?: string }>;
 };
+
+export type Prediction = {
+  id: number;
+  league: string;
+  match: string;
+  prediction: string;
+  odds: string;
+  confidence: 'high' | 'medium' | 'low' | string;
+  status: 'Won' | 'Lost' | 'Pending';
+  isHot: boolean;
+  teams: {
+    home: {
+      name: string;
+      logo: string;
+      form: string[];
+    };
+    away: {
+      name: string;
+      logo: string;
+      form: string[];
+    };
+  };
+};

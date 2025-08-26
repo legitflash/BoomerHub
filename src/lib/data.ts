@@ -1,4 +1,4 @@
-import type { Post, Course } from './types';
+import type { Post, Course, Prediction } from './types';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp } from 'lucide-react';
 
 export const blogPosts: Post[] = [
@@ -333,6 +333,92 @@ export const courseTracks = [
     { name: 'Social Media Growth & Monetization', icon: Users, slug: 'social-media-growth' },
 ]
 
+export const predictions: Prediction[] = [
+  {
+    id: 1,
+    league: "Premier League",
+    match: "Man City vs. Arsenal",
+    prediction: "Man City to Win",
+    odds: "1.85",
+    confidence: "high",
+    status: "Won",
+    isHot: false,
+    teams: {
+      home: { name: "Man City", logo: "/placeholder.svg", form: ["W", "W", "D", "W", "L"] },
+      away: { name: "Arsenal", logo: "/placeholder.svg", form: ["W", "D", "W", "W", "W"] }
+    }
+  },
+  {
+    id: 2,
+    league: "La Liga",
+    match: "Real Madrid vs. Barcelona",
+    prediction: "Over 2.5 Goals",
+    odds: "1.70",
+    confidence: "high",
+    status: "Pending",
+    isHot: true,
+    teams: {
+      home: { name: "Real Madrid", logo: "/placeholder.svg", form: ["W", "W", "W", "D", "W"] },
+      away: { name: "Barcelona", logo: "/placeholder.svg", form: ["L", "W", "W", "W", "D"] }
+    }
+  },
+  {
+    id: 3,
+    league: "Serie A",
+    match: "Inter Milan vs. Juventus",
+    prediction: "Both Teams to Score",
+    odds: "1.90",
+    confidence: "medium",
+    status: "Lost",
+    isHot: false,
+    teams: {
+      home: { name: "Inter Milan", logo: "/placeholder.svg", form: ["D", "W", "L", "W", "W"] },
+      away: { name: "Juventus", logo: "/placeholder.svg", form: ["W", "D", "L", "W", "D"] }
+    }
+  },
+    {
+    id: 4,
+    league: "Bundesliga",
+    match: "Bayern Munich vs. Dortmund",
+    prediction: "Bayern -1.5 Handicap",
+    odds: "2.10",
+    confidence: "high",
+    status: "Pending",
+    isHot: true,
+    teams: {
+      home: { name: "Bayern Munich", logo: "/placeholder.svg", form: ["W", "W", "W", "W", "L"] },
+      away: { name: "Dortmund", logo: "/placeholder.svg", form: ["W", "L", "D", "W", "W"] }
+    }
+  },
+   {
+    id: 5,
+    league: "Ligue 1",
+    match: "PSG vs. Monaco",
+    prediction: "Under 3.5 Goals",
+    odds: "1.65",
+    confidence: "medium",
+    status: "Won",
+    isHot: false,
+    teams: {
+      home: { name: "PSG", logo: "/placeholder.svg", form: ["W", "D", "W", "D", "W"] },
+      away: { name: "Monaco", logo: "/placeholder.svg", form: ["L", "W", "D", "L", "W"] }
+    }
+  },
+  {
+    id: 6,
+    league: "Champions League",
+    match: "Liverpool vs. Atletico Madrid",
+    prediction: "Liverpool to Qualify",
+    odds: "1.50",
+    confidence: "high",
+    status: "Pending",
+    isHot: false,
+    teams: {
+      home: { name: "Liverpool", logo: "/placeholder.svg", form: ["W", "W", "L", "D", "W"] },
+      away: { name: "Atletico Madrid", logo: "/placeholder.svg", form: ["D", "L", "W", "W", "D"] }
+    }
+  },
+];
     
 
     
