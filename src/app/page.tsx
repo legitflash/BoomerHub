@@ -24,7 +24,7 @@ export default function Home() {
                   Insights for Growth.
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                  Explore our articles to master new skills in finance, tech, and online business.
+                  Explore our articles to master new skills in finance, tech, sports betting, and online business.
                 </p>
               </div>
               <IntelligentSearchForm />

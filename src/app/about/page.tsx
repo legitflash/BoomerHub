@@ -15,7 +15,7 @@ export default function AboutPage() {
       <section className="text-center">
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">About BoomerHub</h1>
         <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-xl">
-          We are dedicated to providing insightful, high-quality articles and resources to help our readers navigate the digital economy and achieve their personal and financial goals.
+          We are dedicated to providing insightful, high-quality articles and resources on a wide range of topics, from navigating the digital economy and finance to expert football tips, reviews of the latest apps, and guides to get-paid-to sites.
         </p>
       </section>
 
@@ -33,10 +33,10 @@ export default function AboutPage() {
         <div className="space-y-4">
           <h2 className="text-3xl font-bold tracking-tighter font-headline">Our Mission</h2>
           <p className="text-muted-foreground">
-            In a rapidly changing world, knowledge is power. BoomerHub was founded on the principle that everyone deserves access to reliable and practical information. We break down complex topics into easy-to-understand articles, focusing on actionable advice that can be applied immediately to improve your skills, career, and financial well-being.
+            In a rapidly changing world, knowledge is power. BoomerHub was founded on the principle that everyone deserves access to reliable and practical information. We break down complex topics—from financial strategies and tech reviews to sports analysis and online earning opportunities—into easy-to-understand articles. Our focus is on actionable advice that you can apply immediately.
           </p>
           <p className="text-muted-foreground">
-            Whether you're exploring forex, mastering AI tools, or building a social media empire, our blog is your partner in growth.
+            Whether you're looking for the latest football tips, exploring forex, mastering AI tools, or discovering new apps, our blog is your partner in growth.
           </p>
         </div>
       </section>
