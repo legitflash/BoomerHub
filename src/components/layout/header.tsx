@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, GraduationCap } from 'lucide-react';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 export function Header() {
   return (
@@ -32,6 +33,11 @@ export function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="pr-0">
+                <SheetHeader>
+                  <SheetTitle>
+                    <VisuallyHidden>Navigation Menu</VisuallyHidden>
+                  </SheetTitle>
+                </SheetHeader>
                 <Link href="/" className="mr-6 flex items-center space-x-2 p-4">
                   <GraduationCap className="h-6 w-6 text-primary" />
                   <span className="font-bold">Boomer Academy</span>
