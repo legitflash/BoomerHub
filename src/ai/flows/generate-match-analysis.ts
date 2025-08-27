@@ -15,8 +15,9 @@ import { getMatchData } from '@/services/match-api-service';
 const getMatchDataTool = ai.defineTool(
   {
     name: 'getMatchData',
-    description: 'Get live and historical data for an upcoming football match.',
+    description: 'Get live and historical data for an upcoming football match in a specific league.',
     inputSchema: z.object({
+      league: z.string().describe("The league the match is in. E.g., 'English Premier League'"),
       homeTeam: z.string().describe('The name of the home team.'),
       awayTeam: z.string().describe('The name of the away team.'),
     }),
@@ -39,14 +40,13 @@ const getMatchDataTool = ai.defineTool(
     }),
   },
   async (input) => {
-    // In a real app, you would fetch this from a live sports data API.
-    // For now, we'll use our mock service.
-    return getMatchData(input.homeTeam, input.awayTeam);
+    return getMatchData(input.league, input.homeTeam, input.awayTeam);
   }
 );
 
 
 const GenerateMatchAnalysisInputSchema = z.object({
+  league: z.string().describe("The league the match is in. E.g., 'English Premier League'"),
   homeTeam: z.string().describe('The name of the home team.'),
   awayTeam: z.string().describe('The name of the away team.'),
 });
@@ -70,9 +70,9 @@ const prompt = ai.definePrompt({
   input: {schema: GenerateMatchAnalysisInputSchema},
   output: {schema: GenerateMatchAnalysisOutputSchema},
   tools: [getMatchDataTool],
-  prompt: `You are a world-class sports analyst specializing in football (soccer). Your task is to provide a detailed, insightful, and unbiased analysis for an upcoming match between two teams: {{{homeTeam}}} (Home) and {{{awayTeam}}} (Away).
+  prompt: `You are a world-class sports analyst specializing in football (soccer). Your task is to provide a detailed, insightful, and unbiased analysis for an upcoming match between two teams: {{{homeTeam}}} (Home) and {{{awayTeam}}} (Away) in the {{{league}}}.
 
-  First, use the getMatchData tool to fetch the latest, most relevant data for the two teams. This includes their recent form, head-to-head records, and player availability (injuries/suspensions).
+  First, use the getMatchData tool to fetch the latest, most relevant data for the two teams within their league. This includes their recent form, head-to-head records, and player availability (injuries/suspensions).
 
   Then, based *only* on the data returned by the tool, generate a comprehensive analysis. Your analysis must be plausible and sound like it comes from a true expert.
 

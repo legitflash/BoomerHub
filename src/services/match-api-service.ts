@@ -34,10 +34,12 @@ async function apiFetch(endpoint: string): Promise<any> {
     }
 }
 
-// Get team details, primarily the ID
-async function getTeamId(teamName: string): Promise<string | null> {
-    const data = await apiFetch(`searchteams.php?t=${encodeURIComponent(teamName)}`);
-    return data?.teams?.[0]?.idTeam || null;
+// Get team details, primarily the ID, by searching within a league
+async function getTeamId(teamName: string, leagueName: string): Promise<string | null> {
+    // Search all teams in the league for a more reliable lookup
+    const data = await apiFetch(`search_all_teams.php?l=${encodeURIComponent(leagueName)}`);
+    const team = data?.teams?.find((t: any) => t.strTeam.toLowerCase() === teamName.toLowerCase());
+    return team?.idTeam || null;
 }
 
 // Get the last 5 results for a team
@@ -86,13 +88,14 @@ function getMockInjuries(players: string[], teamName: string): string[] {
 
 /**
  * Fetches real match data for two given teams from TheSportsDB.
+ * @param leagueName The name of the league the match is in.
  * @param homeTeamName The name of the home team.
  * @param awayTeamName The name of the away team.
  * @returns A promise that resolves with the match data.
  */
-export async function getMatchData(homeTeamName: string, awayTeamName: string): Promise<HeadToHeadData> {
-    const homeTeamId = await getTeamId(homeTeamName);
-    const awayTeamId = await getTeamId(awayTeamName);
+export async function getMatchData(leagueName: string, homeTeamName: string, awayTeamName: string): Promise<HeadToHeadData> {
+    const homeTeamId = await getTeamId(homeTeamName, leagueName);
+    const awayTeamId = await getTeamId(awayTeamName, leagueName);
 
     if (!homeTeamId || !awayTeamId) {
         throw new Error('Could not find one or both teams.');

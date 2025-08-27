@@ -25,11 +25,12 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 // Dummy data - in a real app, this would come from an API
-const countries = {
-  'England': ['Premier League', 'Championship'],
-  'Spain': ['La Liga', 'Segunda División'],
-  'Germany': ['Bundesliga', '2. Bundesliga'],
-  'Italy': ['Serie A', 'Serie B'],
+const countries: Record<string, string[]> = {
+  'England': ['English Premier League', 'English League Championship'],
+  'Spain': ['Spanish La Liga', 'Spanish Segunda Division'],
+  'Germany': ['German Bundesliga', 'German 2. Bundesliga'],
+  'Italy': ['Italian Serie A', 'Italian Serie B'],
+  'France': ['French Ligue 1'],
 };
 
 export default function MatchPredictionPage() {
@@ -59,12 +60,16 @@ export default function MatchPredictionPage() {
     setError(null);
     setAnalysis(null);
     try {
-      const result = await generateMatchAnalysis({ homeTeam: values.homeTeam, awayTeam: values.awayTeam });
+      const result = await generateMatchAnalysis({ 
+        league: values.league,
+        homeTeam: values.homeTeam, 
+        awayTeam: values.awayTeam 
+      });
       setAnalysis(result);
     } catch (e: any) {
       console.error(e);
       if (e.message?.includes('Could not find one or both teams')) {
-         setError('Could not find one or both teams. Please check the spellings and try again.');
+         setError('Could not find one or both teams in the selected league. Please check the spellings and try again.');
       } else {
         setError('An error occurred while generating the analysis. Please try again.');
       }
@@ -123,7 +128,7 @@ export default function MatchPredictionPage() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>League</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!leagues.length}>
+                          <Select onValueChange={field.onChange} value={field.value} disabled={!leagues.length}>
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select a league" />
