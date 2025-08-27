@@ -109,9 +109,3 @@ export default function BlogCategoryPage({ params }: { params: { slug: string } 
     </div>
   );
 }
-
-export async function generateStaticParams() {
-  return blogCategories.map((category) => ({
-    slug: category.slug,
-  }));
-}
