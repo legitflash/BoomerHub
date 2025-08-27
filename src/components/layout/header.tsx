@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, User, LogOut, Bot } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, User, LogOut, Bot, Bookmark } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
@@ -161,7 +161,13 @@ export function Header() {
                 <DropdownMenuContent>
                   <DropdownMenuItem disabled>{user.displayName || user.email}</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOutUser}>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile/saved-posts" className='cursor-pointer'>
+                        <Bookmark className="mr-2 h-4 w-4" /> My Saved Posts
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOutUser} className='cursor-pointer'>
                     <LogOut className="mr-2 h-4 w-4"/>
                     Sign Out
                   </DropdownMenuItem>

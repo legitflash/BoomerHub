@@ -1,7 +1,11 @@
+
 'use server';
 
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, writeBatch, doc, deleteDoc } from 'firebase/firestore';
+import { blogPosts } from '@/lib/data';
+import type { Post } from '@/lib/types';
+
 
 export async function getSavesForPost(slug: string, userId?: string | null): Promise<{ count: number; isSaved: boolean }> {
   try {
@@ -34,7 +38,7 @@ export async function toggleSave(slug: string, userId: string): Promise<{ count:
     if (userSaveSnapshot.empty) {
       // User hasn't saved it yet, so add a save
       const newSaveRef = doc(savesCollection);
-      await writeBatch(db).set(newSaveRef, { postId: slug, userId }).commit();
+      await writeBatch(db).set(newSaveRef, { postId: slug, userId, savedAt: new Date() }).commit();
     } else {
       // User has saved it, so remove the save
       const saveDoc = userSaveSnapshot.docs[0];
@@ -48,5 +52,23 @@ export async function toggleSave(slug: string, userId: string): Promise<{ count:
     console.error('Error toggling save:', error);
     // In case of an error, return the current state without changes
     return getSavesForPost(slug, userId);
+  }
+}
+
+export async function getSavedPostsForUser(userId: string): Promise<Post[]> {
+  try {
+    const savesCollection = collection(db, 'saves');
+    const q = query(savesCollection, where('userId', '==', userId));
+    const querySnapshot = await getDocs(q);
+    
+    const savedPostSlugs = new Set(querySnapshot.docs.map(doc => doc.data().postId));
+    
+    // Filter the main blogPosts array to find the full post objects
+    const userSavedPosts = blogPosts.filter(post => savedPostSlugs.has(post.slug));
+    
+    return userSavedPosts;
+  } catch (error) {
+    console.error('Error getting saved posts for user:', error);
+    return [];
   }
 }
