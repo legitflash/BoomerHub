@@ -9,8 +9,8 @@ import { ArrowLeft, Check, TrendingUp, Users, Shield, X, Flame } from 'lucide-re
 import Image from 'next/image';
 import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 
-export default async function MatchAnalysisPage({ params }: { params: { id: string } }) {
-  const prediction = predictions.find((p) => p.id.toString() === params.id);
+export default async function MatchAnalysisPage({ params: { id } }: { params: { id: string } }) {
+  const prediction = predictions.find((p) => p.id.toString() === id);
 
   if (!prediction) {
     notFound();

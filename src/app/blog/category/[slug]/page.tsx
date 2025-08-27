@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -13,13 +13,13 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Search } from 'lucide-react';
 import type { Post } from '@/lib/types';
 
-export default function BlogCategoryPage({ params }: { params: { slug: string } }) {
+export default function BlogCategoryPage({ params: { slug } }: { params: { slug: string } }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
 
-  const category = blogCategories.find((c) => c.slug === params.slug);
+  const category = blogCategories.find((c) => c.slug === slug);
   
-  const postsForCategory = blogPosts.filter((p) => p.category.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === params.slug);
+  const postsForCategory = blogPosts.filter((p) => p.category.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === slug);
 
   useEffect(() => {
     const results = postsForCategory.filter(post =>
@@ -27,11 +27,11 @@ export default function BlogCategoryPage({ params }: { params: { slug: string } 
       post.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredPosts(results);
-  }, [searchTerm, params.slug]);
+  }, [searchTerm, slug, postsForCategory]);
 
   if (!category) {
     // We have a special page for betting predictions
-    if (params.slug !== 'betting-predictions') {
+    if (slug !== 'betting-predictions') {
         notFound();
     }
     // Let the betting predictions page handle itself. This is a bit of a workaround.
