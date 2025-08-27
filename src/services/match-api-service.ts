@@ -1,3 +1,4 @@
+
 /**
  * @fileOverview A service to fetch live match data from TheSportsDB.com API.
  */
@@ -36,14 +37,17 @@ async function apiFetch(url: string): Promise<any> {
     }
 }
 
-// Get team details, primarily the ID, by searching for team name
-async function getTeamId(teamName: string): Promise<string | null> {
-    const data = await apiFetch(`${V2_BASE_URL}/search/team/${encodeURIComponent(teamName)}`);
-    // The API returns a 'teams' array which might be null if no team is found
-    if (!data || !data.teams) {
+// Get team details, primarily the ID, by searching for team name within a league
+async function getTeamId(teamName: string, leagueName: string): Promise<string | null> {
+    // 1. Get all teams in the league
+    const leagueData = await apiFetch(`${V1_BASE_URL}/search_all_teams.php?l=${encodeURIComponent(leagueName)}`);
+    if (!leagueData || !leagueData.teams) {
+      console.log(`Could not fetch teams for league: ${leagueName}`);
       return null;
     }
-    const team = data.teams[0];
+
+    // 2. Find the team ID by matching the name
+    const team = leagueData.teams.find((t: any) => t.strTeam.toLowerCase() === teamName.toLowerCase());
     return team?.idTeam || null;
 }
 
@@ -96,11 +100,12 @@ function getMockInjuries(players: string[], teamName: string): string[] {
  * Fetches real match data for two given teams from TheSportsDB.
  * @param homeTeamName The name of the home team.
  * @param awayTeamName The name of the away team.
+ * @param leagueName The league the match is being played in.
  * @returns A promise that resolves with the match data.
  */
-export async function getMatchData(homeTeamName: string, awayTeamName: string): Promise<HeadToHeadData> {
-    const homeTeamId = await getTeamId(homeTeamName);
-    const awayTeamId = await getTeamId(awayTeamName);
+export async function getMatchData(homeTeamName: string, awayTeamName: string, leagueName: string): Promise<HeadToHeadData> {
+    const homeTeamId = await getTeamId(homeTeamName, leagueName);
+    const awayTeamId = await getTeamId(awayTeamName, leagueName);
 
     if (!homeTeamId || !awayTeamId) {
         throw new Error('Could not find one or both teams.');

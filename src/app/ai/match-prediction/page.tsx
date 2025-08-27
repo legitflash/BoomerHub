@@ -24,7 +24,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Dummy data - in a real app, this would come from an API
+// In a real app, this would come from an API
 const countries: Record<string, string[]> = {
     'Argentina': ['Argentine Primera División', 'Primera Nacional'],
     'Australia': ['A-League'],
@@ -40,7 +40,7 @@ const countries: Record<string, string[]> = {
     'Denmark': ['Danish Superliga'],
     'Ecuador': ['Ecuadorian Serie A'],
     'Egypt': ['Egyptian Premier League'],
-    'England': ['English Premier League', 'English League Championship', 'English League One'],
+    'England': ['English Premier League', 'English League Championship', 'English League One', 'English League Two', 'National League'],
     'Finland': ['Veikkausliiga'],
     'France': ['French Ligue 1', 'French Ligue 2'],
     'Germany': ['German Bundesliga', 'German 2. Bundesliga', '3. Liga'],
@@ -108,7 +108,8 @@ export default function MatchPredictionPage() {
     try {
       const result = await generateMatchAnalysis({ 
         homeTeam: values.homeTeam, 
-        awayTeam: values.awayTeam 
+        awayTeam: values.awayTeam,
+        league: values.league,
       });
       setAnalysis(result);
     } catch (e: any) {

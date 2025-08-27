@@ -15,10 +15,11 @@ import { getMatchData } from '@/services/match-api-service';
 const getMatchDataTool = ai.defineTool(
   {
     name: 'getMatchData',
-    description: 'Get live and historical data for an upcoming football match.',
+    description: 'Get live and historical data for an upcoming football match within a specific league.',
     inputSchema: z.object({
       homeTeam: z.string().describe('The name of the home team.'),
       awayTeam: z.string().describe('The name of the away team.'),
+      league: z.string().describe('The league the match is being played in.'),
     }),
     outputSchema: z.object({
         homeTeam: z.object({
@@ -39,7 +40,7 @@ const getMatchDataTool = ai.defineTool(
     }),
   },
   async (input) => {
-    return getMatchData(input.homeTeam, input.awayTeam);
+    return getMatchData(input.homeTeam, input.awayTeam, input.league);
   }
 );
 
@@ -47,6 +48,7 @@ const getMatchDataTool = ai.defineTool(
 const GenerateMatchAnalysisInputSchema = z.object({
   homeTeam: z.string().describe('The name of the home team.'),
   awayTeam: z.string().describe('The name of the away team.'),
+  league: z.string().describe('The league the match is being played in.'),
 });
 export type GenerateMatchAnalysisInput = z.infer<typeof GenerateMatchAnalysisInputSchema>;
 
@@ -68,7 +70,7 @@ const prompt = ai.definePrompt({
   input: {schema: GenerateMatchAnalysisInputSchema},
   output: {schema: GenerateMatchAnalysisOutputSchema},
   tools: [getMatchDataTool],
-  prompt: `You are a world-class sports analyst specializing in football (soccer). Your task is to provide a detailed, insightful, and unbiased analysis for an upcoming match between two teams: {{{homeTeam}}} (Home) and {{{awayTeam}}} (Away).
+  prompt: `You are a world-class sports analyst specializing in football (soccer). Your task is to provide a detailed, insightful, and unbiased analysis for an upcoming match between two teams: {{{homeTeam}}} (Home) and {{{awayTeam}}} (Away) in the {{{league}}}.
 
   First, use the getMatchData tool to fetch the latest, most relevant data for the two teams. This includes their recent form, head-to-head records, and player availability (injuries/suspensions).
 
