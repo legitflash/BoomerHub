@@ -61,9 +61,13 @@ export default function MatchPredictionPage() {
     try {
       const result = await generateMatchAnalysis({ homeTeam: values.homeTeam, awayTeam: values.awayTeam });
       setAnalysis(result);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      setError('An error occurred while generating the analysis. Please try again.');
+      if (e.message?.includes('Could not find one or both teams')) {
+         setError('Could not find one or both teams. Please check the spellings and try again.');
+      } else {
+        setError('An error occurred while generating the analysis. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
