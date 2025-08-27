@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { createUserProfile } from "@/services/user-service";
 
 const formSchema = z.object({
     firstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
@@ -40,35 +41,47 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      await updateProfile(userCredential.user, {
-        displayName: `${values.firstName} ${values.lastName}`
-      });
-      toast({ title: "Success", description: "Account created successfully." });
-      router.push("/blog");
-    } catch (error: any) {
+  const handleSuccess = (user: any) => {
+     toast({ title: "Success", description: "Account created successfully." });
+     router.push("/blog");
+  }
+
+  const handleError = (error: any) => {
       toast({
         variant: "destructive",
         title: "Registration failed",
         description: error.message,
       });
+  }
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const displayName = `${values.firstName} ${values.lastName}`;
+      await updateProfile(userCredential.user, { displayName });
+      
+      // Create user profile in Firestore
+      await createUserProfile(userCredential.user, {
+          firstName: values.firstName,
+          lastName: values.lastName,
+      });
+
+      handleSuccess(userCredential.user);
+    } catch (error: any) {
+      handleError(error);
     }
   };
 
   const handleGoogleSignUp = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      toast({ title: "Success", description: "Signed up successfully with Google." });
-      router.push("/blog");
+      const result = await signInWithPopup(auth, provider);
+       // Create user profile in Firestore for new Google user
+       await createUserProfile(result.user, {});
+       toast({ title: "Success", description: "Signed up successfully with Google." });
+       router.push("/blog");
     } catch (error: any) {
-       toast({
-        variant: "destructive",
-        title: "Google sign up failed",
-        description: error.message,
-      });
+       handleError(error)
     }
   };
 

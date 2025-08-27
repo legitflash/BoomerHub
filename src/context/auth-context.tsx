@@ -2,8 +2,10 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
 import { app } from '@/lib/firebase';
+import { getUserProfile } from '@/services/user-service';
+import { User } from '@/lib/types';
 
 interface AuthContextType {
   user: User | null;
@@ -23,8 +25,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const auth = getAuth(app);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        // User is signed in, let's get their profile from Firestore
+        const profile = await getUserProfile(firebaseUser.uid);
+        setUser({
+          ...firebaseUser,
+          ...(profile || {}), // Merge profile data
+        });
+      } else {
+        // User is signed out
+        setUser(null);
+      }
       setLoading(false);
     });
 

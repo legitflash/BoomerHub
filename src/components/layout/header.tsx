@@ -29,9 +29,6 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
   </Link>
 );
 
-// In a real application, this would likely be managed via a database or Firebase Custom Claims.
-const ADMIN_USER_IDS = ['YOUR_ADMIN_USER_ID_HERE'];
-
 export function Header() {
   const { user, signOutUser } = useAuth();
 
@@ -45,9 +42,7 @@ export function Header() {
     }
     return email[0].toUpperCase();
   }
-
-  const isAdmin = user && ADMIN_USER_IDS.includes(user.uid);
-
+  
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
@@ -160,7 +155,7 @@ export function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                      <Avatar className="h-8 w-8">
-                       <AvatarFallback>{getInitials(user.email!, user.displayName)}</AvatarFallback>
+                       <AvatarFallback>{getInitials(user.email, user.displayName)}</AvatarFallback>
                      </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
@@ -184,7 +179,7 @@ export function Header() {
                         <Star className="mr-2 h-4 w-4" /> Go Premium
                     </Link>
                   </DropdownMenuItem>
-                   {isAdmin && (
+                   {user.isAdmin && (
                     <DropdownMenuItem asChild>
                       <Link href="/admin" className='cursor-pointer'>
                           <Shield className="mr-2 h-4 w-4" /> Admin Panel
