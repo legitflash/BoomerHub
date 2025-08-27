@@ -1,3 +1,4 @@
+
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -7,13 +8,13 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "API_KEY",
-  authDomain: "PROJECT_ID.firebaseapp.com",
-  projectId: "PROJECT_ID",
-  storageBucket: "PROJECT_ID.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID",
-  measurementId: "G-MEASUREMENT_ID"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: "YOUR_MEASUREMENT_ID"
 };
 
 // Initialize Firebase
