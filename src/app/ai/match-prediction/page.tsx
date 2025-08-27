@@ -26,12 +26,58 @@ type FormValues = z.infer<typeof formSchema>;
 
 // Dummy data - in a real app, this would come from an API
 const countries: Record<string, string[]> = {
-  'England': ['English Premier League', 'English League Championship'],
-  'Spain': ['Spanish La Liga', 'Spanish Segunda Division'],
-  'Germany': ['German Bundesliga', 'German 2. Bundesliga'],
-  'Italy': ['Italian Serie A', 'Italian Serie B'],
-  'France': ['French Ligue 1'],
+    'Argentina': ['Argentine Primera División', 'Primera Nacional'],
+    'Australia': ['A-League'],
+    'Austria': ['Austrian Bundesliga', '2. Liga'],
+    'Belgium': ['Belgian Pro League'],
+    'Brazil': ['Brasileirão Série A', 'Brasileirão Série B'],
+    'Canada': ['Canadian Premier League'],
+    'Chile': ['Chilean Primera División'],
+    'China': ['Chinese Super League'],
+    'Colombia': ['Categoría Primera A'],
+    'Croatia': ['HNL'],
+    'Czech Republic': ['Czech First League'],
+    'Denmark': ['Danish Superliga'],
+    'Ecuador': ['Ecuadorian Serie A'],
+    'Egypt': ['Egyptian Premier League'],
+    'England': ['English Premier League', 'English League Championship', 'English League One'],
+    'Finland': ['Veikkausliiga'],
+    'France': ['French Ligue 1', 'French Ligue 2'],
+    'Germany': ['German Bundesliga', 'German 2. Bundesliga', '3. Liga'],
+    'Greece': ['Super League Greece'],
+    'India': ['Indian Super League'],
+    'Ireland': ['League of Ireland Premier Division'],
+    'Israel': ['Israeli Premier League'],
+    'Italy': ['Italian Serie A', 'Italian Serie B'],
+    'Japan': ['J1 League', 'J2 League'],
+    'Mexico': ['Liga MX'],
+    'Morocco': ['Botola Pro'],
+    'Netherlands': ['Eredivisie', 'Eerste Divisie'],
+    'Nigeria': ['Nigeria Professional Football League'],
+    'Norway': ['Eliteserien'],
+    'Paraguay': ['Paraguayan Primera División'],
+    'Peru': ['Peruvian Primera División'],
+    'Poland': ['Ekstraklasa'],
+    'Portugal': ['Primeira Liga', 'Liga Portugal 2'],
+    'Qatar': ['Qatar Stars League'],
+    'Romania': ['Liga I'],
+    'Russia': ['Russian Premier League'],
+    'Saudi Arabia': ['Saudi Pro League'],
+    'Scotland': ['Scottish Premiership', 'Scottish Championship'],
+    'Serbia': ['Serbian SuperLiga'],
+    'South Africa': ['South African Premier Division'],
+    'South Korea': ['K League 1'],
+    'Spain': ['Spanish La Liga', 'Spanish Segunda Division'],
+    'Sweden': ['Allsvenskan'],
+    'Switzerland': ['Swiss Super League'],
+    'Turkey': ['Süper Lig', 'TFF 1. Lig'],
+    'Ukraine': ['Ukrainian Premier League'],
+    'United Arab Emirates': ['UAE Pro League'],
+    'Uruguay': ['Uruguayan Primera División'],
+    'USA': ['Major League Soccer (MLS)'],
+    'Wales': ['Cymru Premier'],
 };
+
 
 export default function MatchPredictionPage() {
   const [leagues, setLeagues] = useState<string[]>([]);
@@ -112,7 +158,7 @@ export default function MatchPredictionPage() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {Object.keys(countries).map(country => (
+                              {Object.keys(countries).sort().map(country => (
                                 <SelectItem key={country} value={country}>{country}</SelectItem>
                               ))}
                             </SelectContent>
