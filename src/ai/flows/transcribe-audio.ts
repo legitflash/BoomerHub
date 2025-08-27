@@ -41,9 +41,7 @@ const prompt = ai.definePrompt({
   Your response must include both the detected language and the full transcription.
 
   Audio: {{media url=audioDataUri}}`,
-  config: {
-    model: 'googleai/gemini-2.5-flash-transcription',
-  }
+  model: 'googleai/gemini-2.5-flash-transcription',
 });
 
 const transcribeAudioFlow = ai.defineFlow(
