@@ -4,7 +4,7 @@
 import fetch from 'node-fetch';
 
 const API_KEY = '1'; // Free API key for TheSportsDB
-const BASE_URL = `https://www.thesportsdb.com/api/v1/json/${API_KEY}`;
+const BASE_URL = `https://www.thesportsdb.com/api/v2/json/${API_KEY}`;
 
 interface TeamData {
     form: string;
