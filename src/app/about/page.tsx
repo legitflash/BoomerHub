@@ -23,7 +23,7 @@ export default function AboutPage() {
       <section className="grid md:grid-cols-2 gap-12 items-center">
         <div>
           <Image 
-            src="https://picsum.photos/600/400" 
+            src="https://picsum.photos/seed/business-meeting/600/400" 
             alt="BoomerHub Team Presentation" 
             width={600} 
             height={400} 
