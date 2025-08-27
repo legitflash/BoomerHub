@@ -61,7 +61,6 @@ export default function MatchPredictionPage() {
     setAnalysis(null);
     try {
       const result = await generateMatchAnalysis({ 
-        league: values.league,
         homeTeam: values.homeTeam, 
         awayTeam: values.awayTeam 
       });
@@ -69,7 +68,7 @@ export default function MatchPredictionPage() {
     } catch (e: any) {
       console.error(e);
       if (e.message?.includes('Could not find one or both teams')) {
-         setError('Could not find one or both teams in the selected league. Please check the spellings and try again.');
+         setError('Could not find one or both teams. Please check the spellings and try again.');
       } else {
         setError('An error occurred while generating the analysis. Please try again.');
       }
@@ -132,7 +131,7 @@ export default function MatchPredictionPage() {
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select a league" />
-                              </SelectTrigger>
+                              </Trigger>
                             </FormControl>
                             <SelectContent>
                               {leagues.map(league => (
