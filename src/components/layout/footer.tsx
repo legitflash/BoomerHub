@@ -1,14 +1,14 @@
 
 import Link from 'next/link';
 import { GraduationCap, Mail, MessageCircle } from 'lucide-react';
-import { blogCategories } from '@/lib/data';
+import { blogCategories, aiToolsCategories } from '@/lib/data';
 
 export function Footer() {
   return (
     <footer className="border-t bg-secondary/50">
       <div className="container py-12 text-sm">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+          <div className="flex flex-col gap-4 col-span-2 md:col-span-1">
             <div className="flex items-center gap-2">
               <GraduationCap className="h-6 w-6 text-primary" />
               <span className="font-bold">BoomerHub</span>
@@ -27,6 +27,19 @@ export function Footer() {
                 <li key={category.slug}>
                   <Link href={`/blog/category/${category.slug}`} className="text-muted-foreground hover:text-primary">
                     {category.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">AI Tools</h4>
+            <ul className="space-y-2">
+              {aiToolsCategories.map((tool) => (
+                <li key={tool.slug}>
+                  <Link href={tool.slug} className="text-muted-foreground hover:text-primary">
+                    {tool.name}
                   </Link>
                 </li>
               ))}

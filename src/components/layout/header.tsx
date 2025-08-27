@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, User, LogOut } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, User, LogOut, Bot } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import {
   Accordion,
@@ -17,8 +18,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { blogCategories } from '@/lib/data';
+import { blogCategories, aiToolsCategories } from '@/lib/data';
 import { useAuth } from '@/context/auth-context';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const NavLink = ({ href, children }: { href: string; children: React.React.Node }) => (
   <Link href={href} className="text-foreground/60 transition-colors hover:text-foreground/80">
@@ -45,6 +47,24 @@ export function Header() {
               {blogCategories.map((category) => (
                 <DropdownMenuItem key={category.slug} asChild>
                   <Link href={`/blog/category/${category.slug}`}>{category.name}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+           <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 focus:outline-none focus:ring-0">
+                   <Bot className="h-4 w-4 mr-1"/> Boomerhub AI <ChevronDown className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {aiToolsCategories.map((tool) => (
+                <DropdownMenuItem key={tool.slug} asChild>
+                  <Link href={tool.slug} className="flex items-center gap-2">
+                    <tool.icon className="h-4 w-4" />
+                    {tool.name}
+                  </Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -85,6 +105,17 @@ export function Header() {
                       <AccordionContent className="flex flex-col space-y-2 pl-4">
                          {blogCategories.map((category) => (
                           <Link key={category.slug} href={`/blog/category/${category.slug}`}>{category.name}</Link>
+                        ))}
+                      </AccordionContent>
+                    </AccordionItem>
+                     <AccordionItem value="ai-tools">
+                      <AccordionTrigger className="flex items-center gap-2"><Bot className="h-4 w-4" /> Boomerhub AI</AccordionTrigger>
+                      <AccordionContent className="flex flex-col space-y-2 pl-4">
+                         {aiToolsCategories.map((tool) => (
+                           <Link key={tool.slug} href={tool.slug} className="flex items-center gap-2">
+                            <tool.icon className="h-4 w-4" />
+                            {tool.name}
+                          </Link>
                         ))}
                       </AccordionContent>
                     </AccordionItem>
