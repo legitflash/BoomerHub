@@ -1,4 +1,7 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -6,11 +9,26 @@ import { blogPosts, blogCategories } from '@/lib/data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { ArrowLeft, Search } from 'lucide-react';
+import type { Post } from '@/lib/types';
 
 export default function BlogCategoryPage({ params }: { params: { slug: string } }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+
   const category = blogCategories.find((c) => c.slug === params.slug);
   
+  const postsForCategory = blogPosts.filter((p) => p.category.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === params.slug);
+
+  useEffect(() => {
+    const results = postsForCategory.filter(post =>
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredPosts(results);
+  }, [searchTerm, params.slug]);
+
   if (!category) {
     // We have a special page for betting predictions
     if (params.slug !== 'betting-predictions') {
@@ -20,9 +38,7 @@ export default function BlogCategoryPage({ params }: { params: { slug: string } 
     // A better solution would be to merge the logic, but for now this works.
     return null;
   }
-
-  const posts = blogPosts.filter((p) => p.category.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === category.slug);
-
+  
   return (
     <div className="container py-12 md:py-16">
       <div className="mb-8">
@@ -40,10 +56,23 @@ export default function BlogCategoryPage({ params }: { params: { slug: string } 
           Browse all articles in the "{category.name}" category.
         </p>
       </header>
+
+      <div className="max-w-lg mx-auto mb-12">
+        <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input 
+                type="text"
+                placeholder={`Search in ${category.name}...`}
+                className="pl-10 h-12 text-base"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </div>
+      </div>
       
-      {posts.length > 0 ? (
+      {filteredPosts.length > 0 ? (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <Card key={post.slug} className="group flex flex-col">
               <Link href={`/blog/${post.slug}`} className="block">
                 <Image
@@ -75,7 +104,7 @@ export default function BlogCategoryPage({ params }: { params: { slug: string } 
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground">No posts found in this category yet.</p>
+        <p className="text-center text-muted-foreground">No posts found for your search term.</p>
       )}
     </div>
   );
