@@ -22,7 +22,7 @@ import { blogCategories, aiToolsCategories } from '@/lib/data';
 import { useAuth } from '@/context/auth-context';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
-const NavLink = ({ href, children }: { href: string; children: React.React.Node }) => (
+const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <Link href={href} className="text-foreground/60 transition-colors hover:text-foreground/80">
     {children}
   </Link>
