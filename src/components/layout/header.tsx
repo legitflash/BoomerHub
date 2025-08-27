@@ -32,7 +32,7 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 export function Header() {
   const { user, signOutUser } = useAuth();
 
-  const getInitials = (email: string, displayName?: string | null) => {
+  const getInitials = (email?: string | null, displayName?: string | null) => {
     if (displayName) {
       const names = displayName.split(' ');
       if (names.length > 1) {
@@ -40,7 +40,10 @@ export function Header() {
       }
       return displayName[0].toUpperCase();
     }
-    return email[0].toUpperCase();
+    if (email) {
+      return email[0].toUpperCase();
+    }
+    return 'U';
   }
   
   return (
