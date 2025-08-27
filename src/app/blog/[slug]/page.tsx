@@ -10,7 +10,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Share2, Loader2, Bookmark, Languages, Globe } from 'lucide-react';
+import { Share2, Loader2, Bookmark, Languages, Globe, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/auth-context';
 import { getSavesForPost, toggleSave } from '@/services/saves-service';
@@ -100,7 +100,7 @@ function BlogPostContent({ post }: { post: Post }) {
       try {
         await navigator.share({
           title: post.title,
-          text: post.description,
+          text: `${post.description} via BoomerHub`,
           url: window.location.href,
         });
       } catch (error) {
@@ -114,6 +114,29 @@ function BlogPostContent({ post }: { post: Post }) {
         });
     }
   };
+  
+  const handleDownload = async () => {
+    try {
+        const response = await fetch(post.image);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${post.slug}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading image:', error);
+        toast({
+            variant: "destructive",
+            title: "Download failed",
+            description: "Could not download the image. Please try again.",
+        });
+    }
+  };
+
 
   const handleTranslate = async (language: string) => {
     if (isTranslating) return;
@@ -214,8 +237,9 @@ function BlogPostContent({ post }: { post: Post }) {
                   <span>{post.date}</span>
               </div>
           </div>
-          <div className="mt-6 flex items-center justify-center gap-2 border-t border-b py-4">
+          <div className="mt-6 flex items-center justify-center flex-wrap gap-2 border-t border-b py-4">
               <Button variant="ghost" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
+              <Button variant="ghost" size="sm" onClick={handleDownload}><Download className="mr-2"/> Download Image</Button>
               <Button variant="ghost" size="sm" onClick={handleSave} disabled={isTogglingSave || isLoadingSaves}>
                 {isTogglingSave ? <Loader2 className="mr-2 animate-spin"/> : <Bookmark className={`mr-2 ${isSaved ? 'fill-current' : ''}`}/>}
                 {isSaved ? 'Saved' : 'Save'} ({saves})
@@ -245,6 +269,7 @@ function BlogPostContent({ post }: { post: Post }) {
           data-ai-hint={post.dataAiHint}
           className="rounded-lg object-cover aspect-video mb-8"
           priority
+          crossOrigin="anonymous" 
         />
 
         <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">

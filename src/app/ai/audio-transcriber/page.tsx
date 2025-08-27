@@ -15,17 +15,17 @@ import { transcribeAudio } from '@/ai/flows/transcribe-audio';
 import type { TranscribeAudioOutput } from '@/ai/flows/transcribe-audio';
 import { Badge } from '@/components/ui/badge';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3"];
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+const ACCEPTED_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3", "audio/flac", "audio/x-m4a"];
 
 const formSchema = z.object({
   audioFile: z
     .any()
     .refine((files) => files?.length == 1, "Audio file is required.")
-    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+    .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 50MB.`)
     .refine(
       (files) => ACCEPTED_AUDIO_TYPES.includes(files?.[0]?.type),
-      ".mp3, .wav, and .ogg files are accepted."
+      ".mp3, .wav, .ogg and other audio files are accepted."
     ),
 });
 
@@ -85,7 +85,7 @@ export default function AudioTranscriberPage() {
         <Card>
           <CardHeader>
             <CardTitle>Upload Audio</CardTitle>
-            <CardDescription>Select an audio file (mp3, wav, ogg) to transcribe. Max size: 5MB.</CardDescription>
+            <CardDescription>Select an audio file to transcribe. Max size: 50MB.</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
