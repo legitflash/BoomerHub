@@ -1,4 +1,3 @@
-
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -81,7 +80,6 @@ export function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <NavLink href="/livescores">Livescores</NavLink>
           <NavLink href="/about">About</NavLink>
           <NavLink href="/contact">Contact</NavLink>
         </nav>
@@ -133,7 +131,6 @@ export function Header() {
                     </AccordionItem>
                   </Accordion>
                   <div className="flex flex-col space-y-3 mt-4 border-t pt-4">
-                    <Link href="/livescores" className="text-foreground">Livescores</Link>
                     <Link href="/about" className="text-foreground">About</Link>
                     <Link href="/contact" className="text-foreground">Contact</Link>
                   </div>
