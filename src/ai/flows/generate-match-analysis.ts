@@ -10,6 +10,41 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { getMatchData } from '@/services/match-api-service';
+
+const getMatchDataTool = ai.defineTool(
+  {
+    name: 'getMatchData',
+    description: 'Get live and historical data for an upcoming football match.',
+    inputSchema: z.object({
+      homeTeam: z.string().describe('The name of the home team.'),
+      awayTeam: z.string().describe('The name of the away team.'),
+    }),
+    outputSchema: z.object({
+        homeTeam: z.object({
+            form: z.string().describe("The last 5 matches results (e.g., 'WWLDW')."),
+            last5Results: z.array(z.string()).describe('The scores of the last 5 matches.'),
+            keyPlayers: z.array(z.string()).describe('List of key players.'),
+            injuries: z.array(z.string()).describe('List of injured players.'),
+        }),
+        awayTeam: z.object({
+            form: z.string().describe("The last 5 matches results (e.g., 'WWLDW')."),
+            last5Results: z.array(z.string()).describe('The scores of the last 5 matches.'),
+            keyPlayers: z.array(z.string()).describe('List of key players.'),
+            injuries: z
+            .array(z.string())
+            .describe('List of injured or suspended players.'),
+        }),
+        headToHead: z.array(z.string()).describe('The results of the last 3 head-to-head matches.'),
+    }),
+  },
+  async (input) => {
+    // In a real app, you would fetch this from a live sports data API.
+    // For now, we'll use our mock service.
+    return getMatchData(input.homeTeam, input.awayTeam);
+  }
+);
+
 
 const GenerateMatchAnalysisInputSchema = z.object({
   homeTeam: z.string().describe('The name of the home team.'),
@@ -34,18 +69,21 @@ const prompt = ai.definePrompt({
   name: 'generateMatchAnalysisPrompt',
   input: {schema: GenerateMatchAnalysisInputSchema},
   output: {schema: GenerateMatchAnalysisOutputSchema},
+  tools: [getMatchDataTool],
   prompt: `You are a world-class sports analyst specializing in football (soccer). Your task is to provide a detailed, insightful, and unbiased analysis for an upcoming match between two teams: {{{homeTeam}}} (Home) and {{{awayTeam}}} (Away).
 
-  Based on general knowledge of football teams, their historical performance, and common tactical matchups, generate a comprehensive analysis. Do not use any real-time data or external APIs. Your analysis should be plausible and sound like it comes from a true expert.
+  First, use the getMatchData tool to fetch the latest, most relevant data for the two teams. This includes their recent form, head-to-head records, and player availability (injuries/suspensions).
+
+  Then, based *only* on the data returned by the tool, generate a comprehensive analysis. Your analysis must be plausible and sound like it comes from a true expert.
 
   Please provide the following:
-  1.  **Head-to-Head Summary**: Briefly describe the historical dynamic between the two teams. Are they rivals? Is one team usually dominant?
-  2.  **Form Analysis**: Comment on the likely current form of both teams. Even without real data, you can create a narrative (e.g., "The home team has been on a strong run, looking unbeatable at their home stadium," or "The away team is struggling with consistency, especially in their away matches.").
-  3.  **Expert Opinion & Rationale**: This is the most important part. Provide a detailed rationale for your prediction. Discuss potential key matchups, tactical advantages, and why you believe a certain outcome is likely. Make it compelling and logical.
+  1.  **Head-to-Head Summary**: Briefly summarize the historical dynamic between the two teams based on the provided data.
+  2.  **Form Analysis**: Comment on the current form of both teams using the form and recent results from the tool.
+  3.  **Expert Opinion & Rationale**: This is the most important part. Provide a detailed rationale for your prediction. Discuss key players, injuries, and tactical advantages based on the data.
   4.  **Prediction**: State a clear, final prediction. This can be a match winner, a score-related bet (like 'Over 2.5 Goals'), or another common betting market.
   5.  **Confidence Level**: Assign a confidence level of High, Medium, or Low to your prediction.
 
-  Your response must be in the requested JSON format.`,
+  Your response must be in the requested JSON format. Do not use any information outside of what the getMatchData tool provides.`,
 });
 
 const generateMatchAnalysisFlow = ai.defineFlow(
