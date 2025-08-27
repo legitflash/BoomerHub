@@ -4,7 +4,9 @@
 import fetch from 'node-fetch';
 
 const API_KEY = process.env.THESPORTSDB_API_KEY || '1'; // Use paid key from env, fallback to free
-const BASE_URL = `https://www.thesportsdb.com/api/v1/json/${API_KEY}`;
+const V1_BASE_URL = `https://www.thesportsdb.com/api/v1/json/${API_KEY}`;
+const V2_BASE_URL = `https://www.thesportsdb.com/api/v2/json/${API_KEY}`;
+
 
 interface TeamData {
     form: string;
@@ -20,23 +22,23 @@ interface HeadToHeadData {
 }
 
 // Helper to safely fetch from the API
-async function apiFetch(endpoint: string): Promise<any> {
+async function apiFetch(url: string): Promise<any> {
     try {
-        const response = await fetch(`${BASE_URL}/${endpoint}`);
+        const response = await fetch(url);
         if (!response.ok) {
-            console.error(`API Error for ${endpoint}: ${response.statusText}`);
+            console.error(`API Error for ${url}: ${response.statusText}`);
             return null;
         }
         return await response.json();
     } catch (error) {
-        console.error(`Network Error for ${endpoint}:`, error);
+        console.error(`Network Error for ${url}:`, error);
         return null;
     }
 }
 
 // Get team details, primarily the ID, by searching for team name
 async function getTeamId(teamName: string): Promise<string | null> {
-    const data = await apiFetch(`searchteams.php?t=${encodeURIComponent(teamName)}`);
+    const data = await apiFetch(`${V2_BASE_URL}/search/team/${encodeURIComponent(teamName)}`);
     // The API returns a 'teams' array which might be null if no team is found
     if (!data || !data.teams) {
       return null;
@@ -46,9 +48,9 @@ async function getTeamId(teamName: string): Promise<string | null> {
 }
 
 
-// Get the last 5 results for a team
+// Get the last 5 results for a team - this is a v1 endpoint
 async function getTeamForm(teamId: string, teamName: string): Promise<{ form: string; results: string[] }> {
-    const data = await apiFetch(`eventslast.php?id=${teamId}`);
+    const data = await apiFetch(`${V1_BASE_URL}/eventslast.php?id=${teamId}`);
     if (!data?.results) return { form: '-----', results: [] };
 
     const form = data.results.map((event: any) => {
@@ -65,17 +67,17 @@ async function getTeamForm(teamId: string, teamName: string): Promise<{ form: st
     return { form, results };
 }
 
-// Get key players for a team
+// Get key players for a team - this is a v1 endpoint
 async function getKeyPlayers(teamId: string): Promise<string[]> {
-    const data = await apiFetch(`lookup_all_players.php?id=${teamId}`);
+    const data = await apiFetch(`${V1_BASE_URL}/lookup_all_players.php?id=${teamId}`);
     if (!data?.player) return [];
     // Just return the first 3 players as "key players"
     return data.player.slice(0, 3).map((p: any) => p.strPlayer);
 }
 
-// Get H2H results
+// Get H2H results using v2 search
 async function getHeadToHead(homeTeamName: string, awayTeamName: string): Promise<string[]> {
-    const data = await apiFetch(`searchevents.php?e=${encodeURIComponent(homeTeamName)} vs ${encodeURIComponent(awayTeamName)}`);
+    const data = await apiFetch(`${V2_BASE_URL}/search/event/${encodeURIComponent(homeTeamName)}_vs_${encodeURIComponent(awayTeamName)}`);
     if (!data?.event) return [];
     // Return the last 3 H2H results
     return data.event.slice(0, 3).map((e: any) => `${e.strEvent}: ${e.intHomeScore}-${e.intAwayScore}`);
