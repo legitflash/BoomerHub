@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { getAuth, createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button"
 import {
@@ -71,20 +71,6 @@ export default function RegisterPage() {
       handleError(error);
     }
   };
-
-  const handleGoogleSignUp = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-       // Create user profile in Firestore for new Google user
-       await createUserProfile(result.user, {});
-       toast({ title: "Success", description: "Signed up successfully with Google." });
-       router.push("/blog");
-    } catch (error: any) {
-       handleError(error)
-    }
-  };
-
 
   return (
      <div className="flex items-center justify-center min-h-[calc(100vh-14rem)]">
@@ -157,9 +143,6 @@ export default function RegisterPage() {
               </Button>
             </form>
           </Form>
-            <Button variant="outline" className="w-full mt-4" onClick={handleGoogleSignUp}>
-              Sign up with Google
-            </Button>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
             <Link href="/auth/login" className="underline">

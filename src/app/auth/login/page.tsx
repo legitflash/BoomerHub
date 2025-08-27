@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { Button } from "@/components/ui/button"
 import {
@@ -61,15 +61,6 @@ export default function LoginPage() {
     }
   };
   
-  const handleGoogleSignIn = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, provider);
-      handleSuccess();
-    } catch (error: any) {
-      handleError(error);
-    }
-  };
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-14rem)]">
@@ -119,9 +110,6 @@ export default function LoginPage() {
               </Button>
             </form>
           </Form>
-           <Button variant="outline" className="w-full mt-4" onClick={handleGoogleSignIn}>
-              Sign In with Google
-           </Button>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/auth/register" className="underline">
