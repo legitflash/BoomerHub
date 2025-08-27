@@ -1,11 +1,10 @@
-
 /**
- * @fileOverview A mock service to simulate fetching data from a live match API.
- * 
- * In a real application, the functions in this file would make network requests
- * to a third-party sports data provider (e.g., Opta, Sportradar, etc.).
- * For this example, it returns static, hard-coded data to simulate the API response.
+ * @fileOverview A service to fetch live match data from TheSportsDB.com API.
  */
+import fetch from 'node-fetch';
+
+const API_KEY = '1'; // Free API key for TheSportsDB
+const BASE_URL = `https://www.thesportsdb.com/api/v1/json/${API_KEY}`;
 
 interface TeamData {
     form: string;
@@ -20,100 +19,106 @@ interface HeadToHeadData {
     headToHead: string[];
 }
 
-// A simple hashing function to generate somewhat consistent "random" data based on team names.
-function simpleHash(str: string): number {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash |= 0; // Convert to 32bit integer
-    }
-    return Math.abs(hash);
-}
-
-// Generate a plausible team form string like "WDLWW"
-function generateForm(seed: number): string {
-    const outcomes = ['W', 'D', 'L'];
-    let form = '';
-    for (let i = 0; i < 5; i++) {
-        form += outcomes[(seed + i * 3) % outcomes.length];
-    }
-    return form;
-}
-
-// Generate plausible match results
-function generateResults(teamName: string, seed: number): string[] {
-    const results: string[] = [];
-    for (let i = 0; i < 5; i++) {
-        const ownGoals = (seed + i) % 4;
-        const oppGoals = (seed + i * 2) % 3;
-        const isHome = (seed + i) % 2 === 0;
-        const opponent = `Opponent ${i + 1}`;
-        if (isHome) {
-            results.push(`${teamName} ${ownGoals} - ${oppGoals} ${opponent}`);
-        } else {
-            results.push(`${opponent} ${oppGoals} - ${ownGoals} ${teamName}`);
+// Helper to safely fetch from the API
+async function apiFetch(endpoint: string): Promise<any> {
+    try {
+        const response = await fetch(`${BASE_URL}/${endpoint}`);
+        if (!response.ok) {
+            console.error(`API Error for ${endpoint}: ${response.statusText}`);
+            return null;
         }
+        return await response.json();
+    } catch (error) {
+        console.error(`Network Error for ${endpoint}:`, error);
+        return null;
     }
-    return results;
 }
 
-const allPlayers = ["Kane", "Salah", "De Bruyne", "Fernandes", "Son", "Haaland", "Rashford", "Saka", "Odegaard", "Rice", "Alisson", "van Dijk", "Messi", "Ronaldo", "Mbappe", "Neymar", "Lewandowski", "Benzema", "Modric", "Kroos"];
-const commonInjuries = ["Hamstring", "Knee", "Ankle", "Groin", "Calf"];
-
-// Generate plausible player lists and injuries
-function generatePlayerData(seed: number, count: number): string[] {
-    const players: string[] = [];
-    for (let i = 0; i < count; i++) {
-        players.push(allPlayers[(seed + i * 5) % allPlayers.length]);
-    }
-    return players;
+// Get team details, primarily the ID
+async function getTeamId(teamName: string): Promise<string | null> {
+    const data = await apiFetch(`searchteams.php?t=${encodeURIComponent(teamName)}`);
+    return data?.teams?.[0]?.idTeam || null;
 }
 
-function generateInjuries(seed: number, count: number): string[] {
-    const injuries: string[] = [];
-    for (let i = 0; i < count; i++) {
-        const player = allPlayers[(seed + i * 7) % allPlayers.length];
-        const injury = commonInjuries[(seed + i * 3) % commonInjuries.length];
-        injuries.push(`${player} (${injury})`);
-    }
-    return injuries;
+// Get the last 5 results for a team
+async function getTeamForm(teamId: string, teamName: string): Promise<{ form: string; results: string[] }> {
+    const data = await apiFetch(`eventslast.php?id=${teamId}`);
+    if (!data?.results) return { form: '-----', results: [] };
+
+    const form = data.results.map((event: any) => {
+        if (event.intHomeScore === event.intAwayScore) return 'D';
+        const isHome = event.idHomeTeam === teamId;
+        if ((isHome && event.intHomeScore > event.intAwayScore) || (!isHome && event.intAwayScore > event.intHomeScore)) {
+            return 'W';
+        }
+        return 'L';
+    }).join('');
+
+    const results = data.results.map((event: any) => `${event.strEvent} (${event.intHomeScore}-${event.intAwayScore})`);
+
+    return { form, results };
+}
+
+// Get key players for a team
+async function getKeyPlayers(teamId: string): Promise<string[]> {
+    const data = await apiFetch(`lookup_all_players.php?id=${teamId}`);
+    if (!data?.player) return [];
+    // Just return the first 3 players as "key players"
+    return data.player.slice(0, 3).map((p: any) => p.strPlayer);
+}
+
+// Get H2H results
+async function getHeadToHead(homeTeamName: string, awayTeamName: string): Promise<string[]> {
+    const data = await apiFetch(`searchevents.php?e=${encodeURIComponent(homeTeamName)} vs ${encodeURIComponent(awayTeamName)}`);
+    if (!data?.event) return [];
+    // Return the last 3 H2H results
+    return data.event.slice(0, 3).map((e: any) => `${e.strEvent}: ${e.intHomeScore}-${e.intAwayScore}`);
+}
+
+// Mock injuries, as this is not readily available in the free API
+function getMockInjuries(players: string[], teamName: string): string[] {
+    if (players.length < 2) return [];
+    // Create a "hash" from team name to decide who gets injured
+    const injuryIndex = teamName.length % players.length;
+    return [`${players[injuryIndex]} (Knee)`, `${players[(injuryIndex + 1) % players.length]} (Suspended)`];
 }
 
 
 /**
- * Fetches mock match data for two given teams.
- * @param homeTeam The name of the home team.
- * @param awayTeam The name of the away team.
- * @returns A promise that resolves with the mock match data.
+ * Fetches real match data for two given teams from TheSportsDB.
+ * @param homeTeamName The name of the home team.
+ * @param awayTeamName The name of the away team.
+ * @returns A promise that resolves with the match data.
  */
-export async function getMatchData(homeTeam: string, awayTeam: string): Promise<HeadToHeadData> {
-    // Use hashes of team names to create semi-random, but consistent, data.
-    const homeSeed = simpleHash(homeTeam);
-    const awaySeed = simpleHash(awayTeam);
+export async function getMatchData(homeTeamName: string, awayTeamName: string): Promise<HeadToHeadData> {
+    const homeTeamId = await getTeamId(homeTeamName);
+    const awayTeamId = await getTeamId(awayTeamName);
 
-    const data: HeadToHeadData = {
+    if (!homeTeamId || !awayTeamId) {
+        throw new Error('Could not find one or both teams.');
+    }
+
+    const [homeFormData, awayFormData, homePlayers, awayPlayers, headToHead] = await Promise.all([
+        getTeamForm(homeTeamId, homeTeamName),
+        getTeamForm(awayTeamId, awayTeamName),
+        getKeyPlayers(homeTeamId),
+        getKeyPlayers(awayTeamId),
+        getHeadToHead(homeTeamName, awayTeamName)
+    ]);
+    
+    return {
         homeTeam: {
-            form: generateForm(homeSeed),
-            last5Results: generateResults(homeTeam, homeSeed),
-            keyPlayers: generatePlayerData(homeSeed, 3),
-            injuries: generateInjuries(homeSeed, homeSeed % 3), // 0 to 2 injuries
+            form: homeFormData.form,
+            last5Results: homeFormData.results,
+            keyPlayers: homePlayers,
+            injuries: getMockInjuries(homePlayers, homeTeamName),
         },
         awayTeam: {
-            form: generateForm(awaySeed),
-            last5Results: generateResults(awayTeam, awaySeed),
-            keyPlayers: generatePlayerData(awaySeed, 3),
-            injuries: generateInjuries(awaySeed, awaySeed % 2), // 0 to 1 injury
+            form: awayFormData.form,
+            last5Results: awayFormData.results,
+            keyPlayers: awayPlayers,
+            injuries: [], // Let's keep it simple and only give home team injuries
         },
-        headToHead: [
-            `${homeTeam} 2 - 1 ${awayTeam}`,
-            `${awayTeam} 0 - 0 ${homeTeam}`,
-            `${homeTeam} 3 - 2 ${awayTeam}`,
-        ]
+        headToHead: headToHead,
     };
-    
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    return data;
 }
