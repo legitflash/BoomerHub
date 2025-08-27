@@ -145,7 +145,7 @@ function BlogPostContent({ post }: { post: Post }) {
 
   const relatedPosts = blogPosts
     .filter((p) => p.category === post.category && p.slug !== post.slug)
-    .slice(0, 3);
+    .slice(0, 5);
     
   const articleBody = (
      <>
