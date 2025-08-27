@@ -31,6 +31,17 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 export function Header() {
   const { user, signOutUser } = useAuth();
 
+  const getInitials = (email: string, displayName?: string | null) => {
+    if (displayName) {
+      const names = displayName.split(' ');
+      if (names.length > 1) {
+        return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+      }
+      return displayName[0].toUpperCase();
+    }
+    return email[0].toUpperCase();
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center">
@@ -143,12 +154,12 @@ export function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                      <Avatar className="h-8 w-8">
-                       <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                       <AvatarFallback>{getInitials(user.email!, user.displayName)}</AvatarFallback>
                      </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem disabled>{user.email}</DropdownMenuItem>
+                  <DropdownMenuItem disabled>{user.displayName || user.email}</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOutUser}>
                     <LogOut className="mr-2 h-4 w-4"/>
