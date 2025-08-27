@@ -52,3 +52,15 @@ export type SavedPost = {
     userId: string;
     postId: string;
 };
+
+export type Livescore = {
+    idEvent: string;
+    strEvent: string;
+    strLeague: string;
+    strHomeTeam: string;
+    strAwayTeam: string;
+    intHomeScore: string;
+    intAwayScore: string;
+    strStatus: string;
+    strProgress: string;
+}

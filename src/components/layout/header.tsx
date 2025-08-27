@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, User, LogOut, Bot, Bookmark } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, User, LogOut, Bot, Bookmark, Tv } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
@@ -81,6 +81,7 @@ export function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          <NavLink href="/livescores">Livescores</NavLink>
           <NavLink href="/about">About</NavLink>
           <NavLink href="/contact">Contact</NavLink>
         </nav>
@@ -132,6 +133,7 @@ export function Header() {
                     </AccordionItem>
                   </Accordion>
                   <div className="flex flex-col space-y-3 mt-4 border-t pt-4">
+                    <Link href="/livescores" className="text-foreground">Livescores</Link>
                     <Link href="/about" className="text-foreground">About</Link>
                     <Link href="/contact" className="text-foreground">Contact</Link>
                   </div>
