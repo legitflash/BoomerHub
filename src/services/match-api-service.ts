@@ -3,7 +3,7 @@
  */
 import fetch from 'node-fetch';
 
-const API_KEY = '1'; // Free API key for TheSportsDB
+const API_KEY = process.env.THESPORTSDB_API_KEY || '1'; // Use paid key from env, fallback to free
 const BASE_URL = `https://www.thesportsdb.com/api/v2/json/${API_KEY}`;
 
 interface TeamData {
