@@ -131,7 +131,7 @@ export default function MatchPredictionPage() {
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select a league" />
-                              </Trigger>
+                              </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               {leagues.map(league => (
