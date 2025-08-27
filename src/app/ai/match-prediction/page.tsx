@@ -285,7 +285,9 @@ export default function MatchPredictionPage() {
           <Card className="animate-in fade-in">
             <CardHeader className="text-center bg-muted/50">
               <CardTitle className="text-2xl text-primary">{analysis.prediction}</CardTitle>
-              <CardDescription>Confidence: {analysis.confidence}</CardDescription>
+              <CardDescription>
+                Correct Score: {analysis.correctScore} | Confidence: {analysis.confidence}
+              </CardDescription>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">

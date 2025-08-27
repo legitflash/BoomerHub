@@ -20,7 +20,7 @@ export default async function MatchAnalysisPage({ params }: { params: { id: stri
   const homeTeam = teams.home;
   const awayTeam = teams.away;
   
-  const analysis = await generateMatchAnalysis({ homeTeam: homeTeam.name, awayTeam: awayTeam.name });
+  const analysis = await generateMatchAnalysis({ homeTeam: homeTeam.name, awayTeam: awayTeam.name, league: prediction.league });
 
 
   const getStatusInfo = (status: string) => {
@@ -59,10 +59,14 @@ export default async function MatchAnalysisPage({ params }: { params: { id: stri
               <Badge variant="outline">{prediction.league}</Badge>
             </div>
           </div>
-          <CardContent className="p-6 grid md:grid-cols-3 gap-6 text-center">
+          <CardContent className="p-6 grid md:grid-cols-4 gap-6 text-center">
             <div>
               <p className="text-sm text-muted-foreground">Prediction</p>
               <p className="text-xl font-bold text-primary">{analysis.prediction}</p>
+            </div>
+             <div>
+              <p className="text-sm text-muted-foreground">Correct Score</p>
+              <p className="text-xl font-bold text-primary">{analysis.correctScore}</p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground">Confidence</p>

@@ -37,6 +37,7 @@ export type Prediction = {
   league: string;
   match: string;
   prediction: string;
+  correctScore: string;
   odds: string;
   confidence: 'high' | 'medium' | 'low' | string;
   status: 'Won' | 'Lost' | 'Pending';

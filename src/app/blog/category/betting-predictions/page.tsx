@@ -57,6 +57,10 @@ export default function BettingPredictionsPage() {
                 <p className="text-sm font-semibold text-muted-foreground">Prediction</p>
                 <p className="text-lg font-bold">{p.prediction}</p>
               </div>
+              <div>
+                <p className="text-sm font-semibold text-muted-foreground">Correct Score</p>
+                <p className="text-lg font-bold">{p.correctScore}</p>
+              </div>
               <div className="flex justify-between items-center">
                  <div>
                     <p className="text-sm font-semibold text-muted-foreground">Odds</p>

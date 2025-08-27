@@ -21,6 +21,7 @@ export type GenerateMatchAnalysisInput = z.infer<typeof GenerateMatchAnalysisInp
 
 const GenerateMatchAnalysisOutputSchema = z.object({
   prediction: z.string().describe("The final prediction for the match (e.g., 'Home Team to Win', 'Over 2.5 Goals')."),
+  correctScore: z.string().describe("A plausible correct score prediction (e.g., '2-1')."),
   confidence: z.enum(['High', 'Medium', 'Low']).describe('The confidence level for the prediction.'),
   headToHead: z.string().describe("A summary of the teams' head-to-head record."),
   formAnalysis: z.string().describe('An analysis of both teams recent form.'),
@@ -51,7 +52,8 @@ const prompt = ai.definePrompt({
   2.  **Form Analysis**: Comment on the likely current form of both teams. Consider the match date if provided.
   3.  **Expert Opinion & Rationale**: Provide a detailed rationale for your prediction. Discuss key players, and tactical advantages.
   4.  **Prediction**: State a clear, final prediction. This can be a match winner, a score-related bet (like 'Over 2.5 Goals'), or another common betting market.
-  5.  **Confidence Level**: Assign a confidence level of High, Medium, or Low to your prediction.
+  5.  **Correct Score**: Provide a plausible correct score prediction (e.g., '2-1', '1-0').
+  6.  **Confidence Level**: Assign a confidence level of High, Medium, or Low to your prediction.
 
   Your response must be in the requested JSON format.`,
 });
