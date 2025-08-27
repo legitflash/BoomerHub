@@ -15,52 +15,54 @@ export default function PremiumPage() {
     if (!user) {
       router.push('/auth/login?redirect=/premium');
     } else {
-      // Handle subscription logic here (e.g., redirect to a payment gateway)
+      // In a real app, this would redirect to a payment gateway like Stripe or LemonSqueezy
       alert("Redirecting to payment gateway...");
     }
   };
-
 
   const plans = [
     {
       name: "Free",
       price: "$0",
-      description: "Access to all public blog posts and basic AI tools.",
+      description: "Access public posts and use our AI tools with a daily limit.",
       features: [
         "Read all public articles",
-        "Basic AI match predictions",
+        "5 free AI tool requests as a guest",
+        "15 daily AI requests as a free user",
         "Standard email support"
       ],
       cta: "You're on this plan",
       disabled: true
     },
     {
-      name: "Pro",
-      price: "$15",
-      description: "Unlock premium content and advanced AI features.",
+      name: "Premium",
+      price: "$2.99",
+      description: "Unlock all content, advanced features, and higher AI limits.",
       features: [
-        "Access to exclusive articles",
-        "Advanced AI match analysis",
-        "Priority email support",
+        "Access to exclusive articles & tips",
+        "50 daily AI requests",
         "Save unlimited articles",
-        "Ad-free experience"
+        "Ad-free experience",
+        "Priority customer support",
       ],
-      cta: "Upgrade to Pro",
-      disabled: false
+      cta: "Upgrade to Premium",
+      disabled: false,
+      isPrimary: true,
     },
      {
       name: "VIP Tips",
       price: "$50",
-      description: "Get our highest-confidence betting tips and analysis.",
+      description: "For serious bettors who want our highest-confidence tips.",
       features: [
-        "All features from Pro",
+        "All features from Premium",
         "Exclusive VIP betting tips",
         "Direct chat with analysts",
         "In-depth market analysis",
-        "Early access to predictions"
+        "Early access to all predictions"
       ],
       cta: "Get VIP Access",
-      disabled: false
+      disabled: false,
+      isPrimary: false,
     }
   ]
 
@@ -72,13 +74,13 @@ export default function PremiumPage() {
         </div>
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">Premium Plans</h1>
         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
-          Unlock exclusive content, advanced tools, and expert insights.
+          Unlock exclusive content, advanced tools, and expert insights to get ahead.
         </p>
       </header>
 
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         {plans.map(plan => (
-           <Card key={plan.name} className={`flex flex-col ${plan.name === 'Pro' ? 'border-primary border-2' : ''}`}>
+           <Card key={plan.name} className={`flex flex-col ${plan.isPrimary ? 'border-primary border-2 shadow-lg' : ''}`}>
              <CardHeader>
                <CardTitle className="text-2xl font-headline">{plan.name}</CardTitle>
                <CardDescription>{plan.description}</CardDescription>
@@ -98,7 +100,7 @@ export default function PremiumPage() {
                 </ul>
              </CardContent>
              <CardFooter>
-               <Button className="w-full" onClick={handleSubscribe} disabled={plan.disabled}>
+               <Button className="w-full" onClick={handleSubscribe} disabled={plan.disabled} variant={plan.isPrimary ? 'default' : 'secondary'}>
                  {plan.cta}
                </Button>
              </CardFooter>
