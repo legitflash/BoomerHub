@@ -3,15 +3,13 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, User, LogOut, Bot, Bookmark, Tv, Star, Shield } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, Bot } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import {
   Accordion,
@@ -20,8 +18,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { blogCategories, aiToolsCategories } from '@/lib/data';
-import { useAuth } from '@/context/auth-context';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <Link href={href} className="text-foreground/60 transition-colors hover:text-foreground/80">
@@ -30,21 +26,6 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 );
 
 export function Header() {
-  const { user, signOutUser } = useAuth();
-
-  const getInitials = (email?: string | null, displayName?: string | null) => {
-    if (displayName) {
-      const names = displayName.split(' ');
-      if (names.length > 1) {
-        return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
-      }
-      return displayName[0].toUpperCase();
-    }
-    if (email) {
-      return email[0].toUpperCase();
-    }
-    return 'U';
-  }
   
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -153,54 +134,9 @@ export function Header() {
 
           {/* Sign In Button / User Menu */}
           <div className="flex items-center gap-2">
-            {user ? (
-               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                     <Avatar className="h-8 w-8">
-                       <AvatarFallback>{getInitials(user.email, user.displayName)}</AvatarFallback>
-                     </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.displayName || 'User'}</p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile/saved-posts" className='cursor-pointer'>
-                        <Bookmark className="mr-2 h-4 w-4" /> My Saved Posts
-                    </Link>
-                  </DropdownMenuItem>
-                   <DropdownMenuItem asChild>
-                    <Link href="/premium" className='cursor-pointer'>
-                        <Star className="mr-2 h-4 w-4" /> Go Premium
-                    </Link>
-                  </DropdownMenuItem>
-                   {user.isAdmin && (
-                    <DropdownMenuItem asChild>
-                      <Link href="/admin" className='cursor-pointer'>
-                          <Shield className="mr-2 h-4 w-4" /> Admin Panel
-                      </Link>
-                    </DropdownMenuItem>
-                   )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={signOutUser} className='cursor-pointer'>
-                    <LogOut className="mr-2 h-4 w-4"/>
-                    Sign Out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button asChild>
-                <Link href="/auth/login">Sign In</Link>
+             <Button asChild>
+                <Link href="/premium">Go Premium</Link>
               </Button>
-            )}
           </div>
         </div>
       </div>

@@ -4,20 +4,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, Star } from "lucide-react";
-import { useAuth } from "@/context/auth-context";
 import { useRouter } from "next/navigation";
 
 export default function PremiumPage() {
-  const { user } = useAuth();
   const router = useRouter();
 
   const handleSubscribe = () => {
-    if (!user) {
-      router.push('/auth/login?redirect=/premium');
-    } else {
-      // In a real app, this would redirect to a payment gateway like Stripe or LemonSqueezy
-      alert("Redirecting to payment gateway...");
-    }
+    // In a real app, this would redirect to a payment gateway like Stripe or LemonSqueezy
+    alert("Redirecting to payment gateway...");
   };
 
   const plans = [

@@ -10,21 +10,9 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Share2, Loader2, Bookmark, Languages, Globe, Download } from 'lucide-react';
+import { Share2, Loader2, Languages, Globe, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/context/auth-context';
-import { getSavesForPost, toggleSave } from '@/services/saves-service';
 import type { Post } from '@/lib/types';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { translateText } from '@/ai/flows/translate-text';
 
@@ -39,61 +27,10 @@ const getPostContentAsText = () => {
 // This is the Client Component that handles all interactivity.
 function BlogPostContent({ post }: { post: Post }) {
   const { toast } = useToast();
-  const { user, loading: authLoading } = useAuth();
-  const router = useRouter();
-
-  const [saves, setSaves] = useState(0);
-  const [isSaved, setIsSaved] = useState(false);
-  const [isLoadingSaves, setIsLoadingSaves] = useState(true);
-  const [isTogglingSave, setIsTogglingSave] = useState(false);
-  const [showAuthDialog, setShowAuthDialog] = useState(false);
   
   const [isTranslating, setIsTranslating] = useState(false);
   const [translatedContent, setTranslatedContent] = useState<string | null>(null);
   const originalContentRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    if (!authLoading && post) {
-      const fetchSaves = async () => {
-        setIsLoadingSaves(true);
-        try {
-          const { count, isSaved } = await getSavesForPost(post.slug, user?.uid);
-          setSaves(count);
-          setIsSaved(isSaved);
-        } catch (error) {
-          console.error("Failed to fetch saves:", error);
-        } finally {
-          setIsLoadingSaves(false);
-        }
-      };
-      fetchSaves();
-    }
-  }, [post, user, authLoading]);
-
-  const handleSave = async () => {
-    if (!user) {
-        setShowAuthDialog(true);
-        return;
-    }
-    
-    if (isTogglingSave) return;
-
-    setIsTogglingSave(true);
-    try {
-        const { count, isSaved: newIsSaved } = await toggleSave(post.slug, user.uid);
-        setSaves(count);
-        setIsSaved(newIsSaved);
-    } catch (error) {
-        console.error("Failed to toggle save:", error);
-        toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Could not update your save. Please try again.",
-        });
-    } finally {
-        setIsTogglingSave(false);
-    }
-  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -204,22 +141,6 @@ function BlogPostContent({ post }: { post: Post }) {
 
   return (
     <>
-      <AlertDialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Sign in to save for later</AlertDialogTitle>
-            <AlertDialogDescription>
-              Create an account or sign in to save this article to your profile and read it anytime.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => router.push('/auth/register')}>Register</AlertDialogAction>
-            <AlertDialogAction onClick={() => router.push('/auth/login')}>Sign In</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       <article className="container max-w-4xl py-12 md:py-24">
         <header className="mb-8">
           <div className="text-center">
@@ -240,10 +161,6 @@ function BlogPostContent({ post }: { post: Post }) {
           <div className="mt-6 flex items-center justify-center flex-wrap gap-2 border-t border-b py-4">
               <Button variant="ghost" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
               <Button variant="ghost" size="sm" onClick={handleDownload}><Download className="mr-2"/> Download Image</Button>
-              <Button variant="ghost" size="sm" onClick={handleSave} disabled={isTogglingSave || isLoadingSaves}>
-                {isTogglingSave ? <Loader2 className="mr-2 animate-spin"/> : <Bookmark className={`mr-2 ${isSaved ? 'fill-current' : ''}`}/>}
-                {isSaved ? 'Saved' : 'Save'} ({saves})
-              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" disabled={isTranslating}>
