@@ -76,6 +76,7 @@ export default function RegisterPage() {
       await createUserProfile(userCredential.user, {
           firstName: values.firstName,
           lastName: values.lastName,
+          displayName,
       });
 
       handleSuccess(userCredential.user);

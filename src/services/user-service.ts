@@ -18,17 +18,18 @@ export async function createUserProfile(user: FirebaseUser, additionalData: { [k
   // Check if a document already exists to avoid overwriting on login vs. registration
   const docSnap = await getDoc(userRef);
   if (docSnap.exists()) {
+    console.log(`Profile for ${user.uid} already exists.`);
     return; // Profile already exists
   }
   
-  const { uid, email, displayName } = user;
-  const [firstName, lastName] = displayName?.split(' ') || [additionalData.firstName || '', additionalData.lastName || ''];
+  const { uid, email } = user;
+  const { firstName = '', lastName = '', displayName = '' } = additionalData;
   
   const profileData = {
     uid,
     email,
-    firstName: firstName || '',
-    lastName: lastName || '',
+    firstName,
+    lastName,
     displayName: displayName || `${firstName} ${lastName}`.trim(),
     createdAt: new Date(),
     isAdmin: false, // Default role
