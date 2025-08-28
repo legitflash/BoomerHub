@@ -42,15 +42,27 @@ export default function RegisterPage() {
   });
 
   const handleSuccess = (user: any) => {
-     toast({ title: "Success", description: "Account created successfully." });
+     toast({ variant: "success", title: "Success", description: "Account created successfully." });
      router.push("/blog");
   }
 
   const handleError = (error: any) => {
+      let description = "An unexpected error occurred. Please try again.";
+      switch (error.code) {
+          case 'auth/email-already-in-use':
+              description = "This email is already associated with an account.";
+              break;
+          case 'auth/invalid-email':
+              description = "Please enter a valid email address.";
+              break;
+          case 'auth/weak-password':
+              description = "The password is too weak. Please choose a stronger one.";
+              break;
+      }
       toast({
         variant: "destructive",
         title: "Registration failed",
-        description: error.message,
+        description: description,
       });
   }
 

@@ -40,15 +40,26 @@ export default function LoginPage() {
   });
 
   const handleSuccess = () => {
-    toast({ title: "Success", description: "Signed in successfully." });
+    toast({ variant: "success", title: "Success", description: "Signed in successfully." });
     router.push(redirect);
   }
 
   const handleError = (error: any) => {
+     let description = "An unexpected error occurred. Please try again.";
+     switch (error.code) {
+        case "auth/invalid-credential":
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+            description = "Invalid email or password. Please try again.";
+            break;
+        case "auth/too-many-requests":
+            description = "Access to this account has been temporarily disabled due to many failed login attempts. Please try again later.";
+            break;
+     }
      toast({
         variant: "destructive",
         title: "Sign in failed",
-        description: error.message,
+        description: description,
       });
   }
 
