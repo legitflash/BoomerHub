@@ -1,3 +1,4 @@
+
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -7,13 +8,13 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID"
+  "projectId": "boomer-academy",
+  "appId": "1:505117928434:web:56384349d9c03b33a4196b",
+  "storageBucket": "boomer-academy.firebasestorage.app",
+  "apiKey": "AIzaSyAOw7XczLuooO1ZUwWcZAub1R_v48zAOs4",
+  "authDomain": "boomer-academy.firebaseapp.com",
+  "measurementId": "",
+  "messagingSenderId": "505117928434"
 };
 
 // Initialize Firebase
