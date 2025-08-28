@@ -11,7 +11,9 @@ export default function PremiumPage() {
 
   const handleSubscribe = () => {
     // In a real app, this would redirect to a payment gateway like Stripe or LemonSqueezy
+    // For now, it can link to the contact page or show an alert.
     alert("Redirecting to payment gateway...");
+    // Or, for example: router.push('/contact');
   };
 
   const plans = [
@@ -21,11 +23,10 @@ export default function PremiumPage() {
       description: "Access public posts and use our AI tools with a daily limit.",
       features: [
         "Read all public articles",
-        "5 free AI tool requests as a guest",
-        "15 daily AI requests as a free user",
+        "15 daily AI requests",
         "Standard email support"
       ],
-      cta: "You're on this plan",
+      cta: "Current Plan",
       disabled: true
     },
     {
