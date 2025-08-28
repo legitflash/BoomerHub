@@ -19,6 +19,9 @@ const AuthContext = createContext<AuthContextType>({
   signOutUser: () => {},
 });
 
+// Helper function to delay execution
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,11 +30,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
-        // User is signed in, let's get their profile from Firestore
-        const profile = await getUserProfile(firebaseUser.uid);
+        // User is signed in, try to get their profile from Firestore.
+        // It might not exist immediately after registration, so we add a small retry mechanism.
+        let profile: User | null = null;
+        let attempts = 0;
+        while (!profile && attempts < 3) {
+            profile = await getUserProfile(firebaseUser.uid);
+            if (!profile) {
+                attempts++;
+                await delay(500); // Wait 500ms before retrying
+            }
+        }
+        
         setUser({
           ...firebaseUser,
-          ...(profile || {}), // Merge profile data
+          ...(profile || {}), // Merge profile data, even if it's empty on failure
         });
       } else {
         // User is signed out

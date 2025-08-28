@@ -41,12 +41,25 @@ export default function RegisterPage() {
     },
   });
 
-  const handleSuccess = (user: any) => {
-     toast({ variant: "success", title: "Success", description: "Account created successfully." });
-     router.push("/blog");
-  }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const displayName = `${values.firstName} ${values.lastName}`;
+      
+      // This updates the user profile in Firebase Auth system
+      await updateProfile(userCredential.user, { displayName });
+      
+      // This creates the user profile in the Firestore database
+      await createUserProfile(userCredential.user, {
+          firstName: values.firstName,
+          lastName: values.lastName,
+      });
 
-  const handleError = (error: any) => {
+      // On success, show toast and navigate
+      toast({ variant: "success", title: "Success", description: "Account created successfully." });
+      router.push("/blog");
+
+    } catch (error: any) {
       let description = "An unexpected error occurred. Please try again.";
       switch (error.code) {
           case 'auth/email-already-in-use':
@@ -64,24 +77,6 @@ export default function RegisterPage() {
         title: "Registration failed",
         description: description,
       });
-  }
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const displayName = `${values.firstName} ${values.lastName}`;
-      await updateProfile(userCredential.user, { displayName });
-      
-      // Create user profile in Firestore
-      await createUserProfile(userCredential.user, {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          displayName,
-      });
-
-      handleSuccess(userCredential.user);
-    } catch (error: any) {
-      handleError(error);
     }
   };
 
@@ -151,8 +146,8 @@ export default function RegisterPage() {
                     </FormItem>
                   )}
                 />
-              <Button type="submit" className="w-full">
-                Create an account
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Creating Account...' : 'Create an account'}
               </Button>
             </form>
           </Form>
