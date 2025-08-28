@@ -9,11 +9,9 @@ import { useRouter } from "next/navigation";
 export default function PremiumPage() {
   const router = useRouter();
 
-  const handleSubscribe = () => {
-    // In a real app, this would redirect to a payment gateway like Stripe or LemonSqueezy
-    // For now, it can link to the contact page or show an alert.
-    alert("Redirecting to payment gateway...");
-    // Or, for example: router.push('/contact');
+  const handleSubscribe = (checkoutUrl: string) => {
+    // In a real app, these URLs would be your actual Stripe/LemonSqueezy checkout links
+    router.push(checkoutUrl);
   };
 
   const plans = [
@@ -27,6 +25,7 @@ export default function PremiumPage() {
         "Standard email support"
       ],
       cta: "Current Plan",
+      checkoutUrl: '#',
       disabled: true
     },
     {
@@ -36,11 +35,11 @@ export default function PremiumPage() {
       features: [
         "Access to exclusive articles & tips",
         "50 daily AI requests",
-        "Save unlimited articles",
         "Ad-free experience",
         "Priority customer support",
       ],
       cta: "Upgrade to Premium",
+      checkoutUrl: 'https://buy.stripe.com/test_bIYg06d3e2aBceA000', // Example placeholder
       disabled: false,
       isPrimary: true,
     },
@@ -56,6 +55,7 @@ export default function PremiumPage() {
         "Early access to all predictions"
       ],
       cta: "Get VIP Access",
+      checkoutUrl: 'https://buy.stripe.com/test_7sI5kS9Z6eMX920eUU', // Example placeholder
       disabled: false,
       isPrimary: false,
     }
@@ -95,12 +95,22 @@ export default function PremiumPage() {
                 </ul>
              </CardContent>
              <CardFooter>
-               <Button className="w-full" onClick={handleSubscribe} disabled={plan.disabled} variant={plan.isPrimary ? 'default' : 'secondary'}>
+               <Button 
+                className="w-full" 
+                onClick={() => handleSubscribe(plan.checkoutUrl)} 
+                disabled={plan.disabled} 
+                variant={plan.isPrimary ? 'default' : 'secondary'}
+               >
                  {plan.cta}
                </Button>
              </CardFooter>
            </Card>
         ))}
+      </div>
+       <div className="text-center mt-12 max-w-2xl mx-auto">
+        <p className="text-sm text-muted-foreground">
+            Payments are processed securely by our third-party payment partner. After subscribing, you will receive an email with instructions on how to access your premium benefits.
+        </p>
       </div>
     </div>
   );
