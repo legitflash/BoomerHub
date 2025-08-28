@@ -15,13 +15,6 @@ import type { User } from '@/lib/types';
 export async function createUserProfile(user: FirebaseUser, additionalData: { [key: string]: any } = {}) {
   const userRef = doc(db, 'users', user.uid);
   
-  // Check if a document already exists to avoid overwriting on login vs. registration
-  const docSnap = await getDoc(userRef);
-  if (docSnap.exists()) {
-    console.log(`Profile for ${user.uid} already exists.`);
-    return; // Profile already exists
-  }
-  
   const { uid, email } = user;
   const { firstName = '', lastName = '', displayName = '' } = additionalData;
   
@@ -37,7 +30,8 @@ export async function createUserProfile(user: FirebaseUser, additionalData: { [k
   };
 
   try {
-    await setDoc(userRef, profileData);
+    // Directly set the document. Firestore's setDoc is idempotent.
+    await setDoc(userRef, profileData, { merge: true });
   } catch (error) {
     console.error("Error creating user profile:", error);
     throw new Error("Could not create user profile.");
