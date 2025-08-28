@@ -84,9 +84,6 @@ export default function BettingPredictionsPage() {
       
        <div className="text-center mt-16">
             <p className="text-muted-foreground mb-4">Disclaimer: These predictions are for informational purposes only. We are not responsible for any losses incurred.</p>
-            <Button asChild>
-                <Link href="/contact">Contact us for Premium Tips</Link>
-            </Button>
         </div>
     </div>
   );

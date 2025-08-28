@@ -126,17 +126,11 @@ export function Header() {
           </div>
           
           {/* Centered App Logo/Name */}
-          <div className="flex-1 flex justify-center">
+          <div className="flex-1 flex justify-center md:justify-end">
             <Link href="/" className="flex items-center space-x-2">
               <GraduationCap className="h-6 w-6 text-primary" />
               <span className="font-bold">BoomerHub</span>
-            </Link>          </div>
-
-          {/* Sign In Button / User Menu */}
-          <div className="flex items-center gap-2">
-             <Button asChild>
-                <Link href="/premium">Go Premium</Link>
-              </Button>
+            </Link>          
           </div>
         </div>
       </div>
