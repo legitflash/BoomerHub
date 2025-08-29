@@ -8,25 +8,72 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Share2, Loader2, Globe, Download } from 'lucide-react';
+import { Share2, Loader2, Globe, Download, Bookmark } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/lib/types';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { translateText } from '@/ai/flows/translate-text';
+import { useAuth } from '@/hooks/use-auth';
+import { getSavesForPost } from '@/services/saves-service';
+import { handleToggleSavePost } from '@/app/actions';
 
 const getPostContentAsText = (element: HTMLElement | null) => {
     return element?.textContent || '';
 }
 
-// This is the Client Component that handles all interactivity.
 export default function BlogPostContent({ post, relatedPosts }: { post: Post, relatedPosts: Post[] }) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const articleRef = useRef<HTMLDivElement>(null);
   
   const [isTranslating, setIsTranslating] = useState(false);
   const [translatedContent, setTranslatedContent] = useState<string | null>(null);
   const originalContentRef = useRef<string | null>(null);
 
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveCount, setSaveCount] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const fetchSaveStatus = async () => {
+      const { count, isSaved: userHasSaved } = await getSavesForPost(post.slug, user?.uid);
+      setSaveCount(count);
+      setIsSaved(userHasSaved);
+    };
+
+    fetchSaveStatus();
+  }, [post.slug, user]);
+
+  const toggleSave = async () => {
+    if (!user) {
+        toast({
+            title: "Login Required",
+            description: "You must be logged in to save posts.",
+            variant: "destructive",
+        });
+        return;
+    }
+    setIsSaving(true);
+    try {
+        const result = await handleToggleSavePost(post.slug, user.uid);
+        setIsSaved(result.isSaved);
+        setSaveCount(prev => result.isSaved ? prev + 1 : prev - 1);
+        toast({
+            title: result.isSaved ? "Post Saved!" : "Post Unsaved",
+            description: result.isSaved ? "This article has been added to your profile." : "This article has been removed from your profile.",
+            variant: "success",
+        });
+    } catch (error) {
+        toast({
+            title: "Error",
+            description: "Could not update save status. Please try again.",
+            variant: "destructive",
+        });
+    } finally {
+        setIsSaving(false);
+    }
+  };
+  
   const fallbackCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     toast({
@@ -44,12 +91,11 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
           url: window.location.href,
         });
       } catch (error: any) {
-        // Fallback to copying the link if sharing is denied or fails
         if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
           fallbackCopyLink();
         } else {
           console.error('Error sharing:', error);
-          fallbackCopyLink(); // Also fallback on other unexpected errors
+          fallbackCopyLink();
         }
       }
     } else {
@@ -79,12 +125,10 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
     }
   };
 
-
   const handleTranslate = async (language: string) => {
     if (isTranslating) return;
 
     setIsTranslating(true);
-    // Store original content if it's not already stored
     if (originalContentRef.current === null && articleRef.current) {
         originalContentRef.current = getPostContentAsText(articleRef.current);
     }
@@ -142,6 +186,10 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
               </div>
           </div>
           <div className="mt-6 flex items-center justify-center flex-wrap gap-2 border-t border-b py-4">
+              <Button variant="ghost" size="sm" onClick={toggleSave} disabled={isSaving}>
+                {isSaving ? <Loader2 className="mr-2 animate-spin"/> : <Bookmark className={`mr-2 ${isSaved ? 'fill-primary' : ''}`} />}
+                {isSaved ? 'Saved' : 'Save'} ({saveCount})
+              </Button>
               <Button variant="ghost" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
               <Button variant="ghost" size="sm" onClick={handleDownload}><Download className="mr-2"/> Download Image</Button>
               <DropdownMenu>

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, Bot, Shield, User, LogOut } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, Bot, Shield, User, LogOut, Bookmark } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
@@ -173,6 +173,9 @@ export function Header() {
                         </div>
                      </DropdownMenuItem>
                      <DropdownMenuSeparator />
+                     <DropdownMenuItem asChild>
+                        <Link href="/profile" className="flex items-center"><Bookmark className="mr-2"/> My Saved Posts</Link>
+                     </DropdownMenuItem>
                      {isAdmin && (
                         <DropdownMenuItem asChild>
                             <Link href="/admin" className="flex items-center"><Shield className="mr-2"/> Admin Panel</Link>

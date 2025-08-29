@@ -9,6 +9,7 @@ import { deletePage, getPageBySlug } from '@/services/page-service';
 import type { TeamMember, Post, BlogCategory } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { deletePrediction } from '@/services/prediction-service';
+import { getSavesForPost, toggleSavePost, getSavedPostsForUser } from '@/services/saves-service';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
   try {
@@ -158,4 +159,35 @@ export async function handleDeletePage(formData: FormData) {
         console.error('Error deleting page:', error);
         throw new Error('Failed to delete page.');
     }
+}
+
+// New action for handling saved posts
+export async function handleToggleSavePost(postId: string, userId: string): Promise<{ isSaved: boolean }> {
+  if (!userId) {
+    throw new Error('User must be logged in to save posts.');
+  }
+  try {
+    const result = await toggleSavePost(postId, userId);
+    revalidatePath(`/blog/${postId}`); // Revalidate the post page to update save count/status
+    revalidatePath('/profile'); // Revalidate profile page
+    return result;
+  } catch (error) {
+    console.error('Error toggling save post:', error);
+    throw new Error('Failed to update save status.');
+  }
+}
+
+// New action to get saved posts for a user
+export async function handleGetSavedPosts(userId: string): Promise<Post[]> {
+  if (!userId) {
+    console.log("No user ID provided, returning empty array.");
+    return [];
+  }
+  try {
+    const savedPosts = await getSavedPostsForUser(userId);
+    return savedPosts;
+  } catch (error) {
+    console.error('Error getting saved posts:', error);
+    return [];
+  }
 }
