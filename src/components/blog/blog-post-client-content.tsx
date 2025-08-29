@@ -27,6 +27,14 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
   const [translatedContent, setTranslatedContent] = useState<string | null>(null);
   const originalContentRef = useRef<string | null>(null);
 
+  const fallbackCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast({
+      title: "Link Copied",
+      description: "The article URL has been copied to your clipboard.",
+    });
+  };
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -35,15 +43,17 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
           text: `${post.description} via BoomerHub`,
           url: window.location.href,
         });
-      } catch (error) {
-        console.error('Error sharing:', error);
+      } catch (error: any) {
+        // Fallback to copying the link if sharing is denied or fails
+        if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
+          fallbackCopyLink();
+        } else {
+          console.error('Error sharing:', error);
+          fallbackCopyLink(); // Also fallback on other unexpected errors
+        }
       }
     } else {
-        navigator.clipboard.writeText(window.location.href);
-        toast({
-          title: "Link Copied",
-          description: "The article URL has been copied to your clipboard.",
-        });
+      fallbackCopyLink();
     }
   };
   
