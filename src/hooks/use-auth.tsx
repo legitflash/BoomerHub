@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         const enrichedUser: User = {
           ...firebaseUser,
-          // Since we can't add properties directly, we manage isAdmin separately
+          isAdmin: isAdminUser,
         };
 
         setUser(enrichedUser);
