@@ -28,6 +28,7 @@ export type Category = {
 };
 
 export type BlogCategory = {
+  id?: string;
   name: string;
   slug: string;
   iconName: string;

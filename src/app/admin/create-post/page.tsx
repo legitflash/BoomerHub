@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -5,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,9 +15,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { blogCategories } from '@/lib/data';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { createPost } from '@/services/post-service';
+import { getAllCategories } from '@/services/category-service';
+import type { BlogCategory } from '@/lib/types';
 
 const formSchema = z.object({
   title: z.string().min(10, { message: "Title must be at least 10 characters long." }),
@@ -31,6 +34,15 @@ type FormValues = z.infer<typeof formSchema>;
 export default function CreatePostPage() {
     const router = useRouter();
     const { toast } = useToast();
+    const [categories, setCategories] = useState<BlogCategory[]>([]);
+
+    useEffect(() => {
+        async function fetchCategories() {
+            const fetchedCategories = await getAllCategories();
+            setCategories(fetchedCategories);
+        }
+        fetchCategories();
+    }, []);
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -113,7 +125,7 @@ export default function CreatePostPage() {
                                                         </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
-                                                        {blogCategories.filter(c => c.slug !== 'betting-predictions').map(category => (
+                                                        {categories.filter(c => c.slug !== 'betting-predictions').map(category => (
                                                             <SelectItem key={category.slug} value={category.name}>{category.name}</SelectItem>
                                                         ))}
                                                         </SelectContent>

@@ -17,7 +17,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { blogCategories, aiToolsCategories } from '@/lib/data';
+import { aiToolsCategories } from '@/lib/data';
+import { useState, useEffect } from 'react';
+import { getAllCategories } from '@/services/category-service';
+import type { BlogCategory } from '@/lib/types';
 
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <Link href={href} className="text-foreground/60 transition-colors hover:text-foreground/80">
@@ -26,6 +29,15 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 );
 
 export function Header() {
+  const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const categories = await getAllCategories();
+      setBlogCategories(categories);
+    }
+    fetchCategories();
+  }, []);
   
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

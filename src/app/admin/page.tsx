@@ -2,13 +2,14 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Shield, UserPlus, Trophy } from "lucide-react";
+import { PlusCircle, Shield, UserPlus, Trophy, Folder } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAllPosts } from "@/services/post-service";
 import { getAllTeamMembers } from "@/services/team-service";
 import { getAllPredictions } from "@/services/prediction-service";
+import { getAllCategories } from "@/services/category-service";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +27,7 @@ export default async function AdminPage() {
   const posts = await getAllPosts();
   const teamMembers = await getAllTeamMembers();
   const predictions = await getAllPredictions();
+  const categories = await getAllCategories();
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -173,6 +175,58 @@ export default async function AdminPage() {
                                     <AlertDialogAction type="submit">Delete</AlertDialogAction>
                                 </AlertDialogFooter>
                             {/*</form>*/}
+                          </AlertDialogContent>
+                      </AlertDialog>
+                  </div>
+                </Card>
+              ))}
+            </CardContent>
+        </Card>
+
+        <Card>
+            <CardHeader className="flex flex-row justify-between items-center">
+                <div>
+                    <CardTitle>Manage Categories</CardTitle>
+                    <CardDescription>
+                        Create, edit, or delete blog post categories.
+                    </CardDescription>
+                </div>
+                 <Button asChild>
+                    <Link href="/admin/create-category">
+                        <Folder className="mr-2"/>
+                        Create Category
+                    </Link>
+                </Button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {categories.map((category) => (
+                <Card key={category.id} className="flex items-center gap-4 p-4">
+                  <div className="flex-grow">
+                    <h3 className="font-semibold text-lg">{category.name}</h3>
+                    <p className="text-sm text-muted-foreground">Slug: {category.slug}</p>
+                  </div>
+                  <div className="flex gap-2">
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/admin/edit-category/${category.id}`}>Edit</Link>
+                      </Button>
+                      <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm">Delete</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            {/* <form action={handleDeleteCategory}> */}
+                                <input type="hidden" name="id" value={category.id} />
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete this category.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter className="mt-4">
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                            {/* </form> */}
                           </AlertDialogContent>
                       </AlertDialog>
                   </div>

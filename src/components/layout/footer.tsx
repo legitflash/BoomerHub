@@ -1,10 +1,25 @@
 
+'use client';
 import Link from 'next/link';
 import { GraduationCap, Mail, MessageCircle, Twitter, Facebook, Instagram, Send } from 'lucide-react';
-import { blogCategories, aiToolsCategories } from '@/lib/data';
+import { aiToolsCategories } from '@/lib/data';
 import { Button } from '../ui/button';
+import { useState, useEffect } from 'react';
+import { getAllCategories } from '@/services/category-service';
+import type { BlogCategory } from '@/lib/types';
+
 
 export function Footer() {
+  const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      const categories = await getAllCategories();
+      setBlogCategories(categories);
+    }
+    fetchCategories();
+  }, []);
+
   return (
     <footer className="border-t bg-secondary/50">
       <div className="container py-12 text-sm">

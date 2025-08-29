@@ -16,11 +16,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { blogCategories } from '@/lib/data';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { getPostById } from '@/services/post-service';
-import type { Post } from '@/lib/types';
+import type { Post, BlogCategory } from '@/lib/types';
 import { handleUpdatePost } from '@/app/actions';
+import { getAllCategories } from '@/services/category-service';
 
 const formSchema = z.object({
   title: z.string().min(10, { message: "Title must be at least 10 characters long." }),
@@ -39,6 +39,7 @@ export default function EditPostPage() {
     const { toast } = useToast();
     const [post, setPost] = useState<Post | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [categories, setCategories] = useState<BlogCategory[]>([]);
 
     const id = params.id as string;
 
@@ -53,6 +54,14 @@ export default function EditPostPage() {
             author: '',
         }
     });
+
+    useEffect(() => {
+        async function fetchCategories() {
+            const fetchedCategories = await getAllCategories();
+            setCategories(fetchedCategories);
+        }
+        fetchCategories();
+    }, []);
 
     useEffect(() => {
         if (id) {
@@ -183,7 +192,7 @@ export default function EditPostPage() {
                                                         </SelectTrigger>
                                                         </FormControl>
                                                         <SelectContent>
-                                                        {blogCategories.filter(c => c.slug !== 'betting-predictions').map(category => (
+                                                        {categories.filter(c => c.slug !== 'betting-predictions').map(category => (
                                                             <SelectItem key={category.slug} value={category.name}>{category.name}</SelectItem>
                                                         ))}
                                                         </SelectContent>
