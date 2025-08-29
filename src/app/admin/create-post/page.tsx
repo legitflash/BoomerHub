@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -16,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { blogCategories } from '@/lib/data';
 import { ArrowLeft, BookOpen } from 'lucide-react';
+import { createPost } from '@/services/post-service';
 
 const formSchema = z.object({
   title: z.string().min(10, { message: "Title must be at least 10 characters long." }),
@@ -42,21 +42,23 @@ export default function CreatePostPage() {
         }
     });
 
-    // In a real application, this would send the data to your backend/database.
     async function onSubmit(values: FormValues) {
-        console.log("New post data:", values);
-        
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        toast({
-            title: "Post Published!",
-            description: "Your new blog post has been successfully published.",
-            variant: "success",
-        });
-
-        // In a real app, you might redirect to the new post or the admin dashboard
-        router.push('/admin');
+        try {
+            await createPost(values);
+            toast({
+                title: "Post Published!",
+                description: "Your new blog post has been successfully published.",
+                variant: "success",
+            });
+            router.push('/admin');
+        } catch (error) {
+             toast({
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem creating your post. Please try again.",
+                variant: "destructive",
+            });
+            console.error("Failed to create post:", error);
+        }
     }
 
     return (
