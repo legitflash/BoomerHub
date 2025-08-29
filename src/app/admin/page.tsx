@@ -30,6 +30,9 @@ import { useAuth } from "@/hooks/use-auth";
 
 
 async function getUserRole() {
+    // This function runs on the server, but auth state is best managed on the client.
+    // The useAuth hook is the primary driver for role-based access in the layout.
+    // This server-side check is a fallback/SSR enhancement.
     const user = auth.currentUser;
     if (!user) return null;
 
@@ -60,6 +63,8 @@ export default async function AdminPage() {
         return 'secondary';
     }
   };
+
+  const isAdmin = role === 'admin';
   
   return (
     <div className="container py-12 md:py-16">
@@ -67,17 +72,17 @@ export default async function AdminPage() {
          <div className="text-center sm:text-left">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline flex items-center gap-2">
                 <Shield className="h-10 w-10 text-primary" />
-                {role === 'admin' ? 'Admin Panel' : 'Editor Dashboard'}
+                {isAdmin ? 'Admin Panel' : 'Editor Dashboard'}
             </h1>
             <p className="max-w-2xl mt-2 text-muted-foreground md:text-xl">
-            {role === 'admin' ? 'Manage your blog posts and site content.' : 'Manage your assigned blog posts.'}
+            {isAdmin ? 'Manage your blog posts and site content.' : 'Manage your assigned blog posts.'}
             </p>
          </div>
       </header>
 
       <div className="max-w-5xl mx-auto space-y-8">
         
-        {role === 'admin' && (
+        {isAdmin && (
         <>
             <Card>
                 <CardHeader className="flex flex-row justify-between items-center">
@@ -166,7 +171,7 @@ export default async function AdminPage() {
             </CardContent>
         </Card>
         
-        {role === 'admin' && (
+        {isAdmin && (
         <>
             <Card>
                 <CardHeader className="flex flex-row justify-between items-center">
