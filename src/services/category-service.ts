@@ -109,11 +109,12 @@ export async function updateCategory(id: string, categoryData: UpdateCategoryDat
     const categoryDocRef = doc(db, 'categories', id);
     const slug = categoryData.name ? slugify(categoryData.name) : undefined;
     
-    await updateDoc(categoryDocRef, {
-      ...categoryData,
-      ...(slug && { slug }), // only include slug if name is changing
-      updatedAt: serverTimestamp(),
-    });
+    const dataToUpdate: any = { ...categoryData, updatedAt: serverTimestamp() };
+    if (slug) {
+      dataToUpdate.slug = slug;
+    }
+    
+    await updateDoc(categoryDocRef, dataToUpdate);
   } catch (error) {
     console.error("Error updating category: ", error);
     throw new Error('Could not update category in database.');
