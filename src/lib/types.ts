@@ -22,6 +22,15 @@ export type Post = {
   date: string;
 };
 
+export type Page = {
+  id?: string;
+  slug: string;
+  title: string;
+  content: string;
+  createdAt: any;
+  updatedAt: any;
+}
+
 export type Category = {
   name: string;
   icon: React.ComponentType<{ className?: string }>;
