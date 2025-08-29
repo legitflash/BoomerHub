@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, where } from 'firebase/firestore';
 import type { Post } from '@/lib/types';
 
 // This is a simplified version of what a Post object might look like for creation.
