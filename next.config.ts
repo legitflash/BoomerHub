@@ -40,7 +40,19 @@ const nextConfig: NextConfig = {
         hostname: 'scontent.*.fbcdn.net',
         port: '',
         pathname: '/**',
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: '**.cdninstagram.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.tiktokcdn.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
