@@ -6,9 +6,9 @@ import { deleteTeamMember, updateTeamMember } from '@/services/team-service';
 import { deletePost, updatePost } from '@/services/post-service';
 import { deleteCategory, updateCategory } from '@/services/category-service';
 import { deletePage, getPageBySlug } from '@/services/page-service';
-import type { TeamMember, Post, BlogCategory, Submission } from '@/lib/types';
+import type { TeamMember, Post, BlogCategory, Submission, Prediction } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
-import { deletePrediction } from '@/services/prediction-service';
+import { deletePrediction, updatePrediction } from '@/services/prediction-service';
 import { getSavesForPost, toggleSavePost, getSavedPostsForUser } from '@/services/saves-service';
 import { createSubmission } from '@/services/submission-service';
 
@@ -155,6 +155,33 @@ export async function handleDeletePrediction(formData: FormData) {
     } catch (error) {
         console.error('Error deleting prediction:', error);
         throw new Error('Failed to delete prediction.');
+    }
+}
+
+export async function handleUpdatePrediction(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) {
+        throw new Error('Prediction ID is required for update');
+    }
+    
+    const predictionData = {
+        match: formData.get('match') as string,
+        league: formData.get('league') as string,
+        prediction: formData.get('prediction') as string,
+        correctScore: formData.get('correctScore') as string,
+        odds: formData.get('odds') as string,
+        confidence: formData.get('confidence') as string,
+        status: formData.get('status') as string,
+        isHot: formData.get('isHot') === 'on',
+        analysis: formData.get('analysis') as string,
+    };
+
+    try {
+        await updatePrediction(id, predictionData);
+        revalidatePath('/admin');
+    } catch (error) {
+        console.error('Error updating prediction:', error);
+        throw new Error('Failed to update prediction.');
     }
 }
 

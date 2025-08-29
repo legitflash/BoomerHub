@@ -281,6 +281,9 @@ export default function AdminPage() {
                         </div>
                     </div>
                     <div className="flex gap-2 shrink-0">
+                         <Button variant="outline" size="sm" asChild>
+                            <Link href={`/admin/edit-prediction/${p.id}`}>Edit</Link>
+                        </Button>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button variant="destructive" size="sm">Delete</Button>

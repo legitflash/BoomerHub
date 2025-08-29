@@ -1,11 +1,12 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,12 +14,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Trophy } from 'lucide-react';
-import { createPrediction } from '@/services/prediction-service';
+import { getPredictionById } from '@/services/prediction-service';
 import type { Prediction } from '@/lib/types';
-import { Textarea } from '@/components/ui/textarea';
-
+import { handleUpdatePrediction } from '@/app/actions';
 
 const formSchema = z.object({
   match: z.string().min(5, { message: "Match name must be at least 5 characters." }),
@@ -34,61 +36,96 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Dummy data for teams as it's complex to create on the fly.
-// In a real advanced app, you might fetch team data from an API.
-const getDummyTeamData = (matchName: string) => {
-    const teams = matchName.split(' vs ');
-    const homeTeam = teams[0] || 'Home Team';
-    const awayTeam = teams[1] || 'Away Team';
-    return {
-        home: { name: homeTeam, logo: "/placeholder.svg", form: ["W", "D", "L", "W", "W"] },
-        away: { name: awayTeam, logo: "/placeholder.svg", form: ["L", "D", "W", "L", "D"] }
-    }
-}
-
-
-export default function CreatePredictionPage() {
+export default function EditPredictionPage() {
     const router = useRouter();
+    const params = useParams();
     const { toast } = useToast();
+    const [prediction, setPrediction] = useState<Prediction | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const id = params.id as string;
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            match: '',
-            league: '',
-            prediction: '',
-            correctScore: '1-0',
-            odds: '1.5',
-            confidence: 'medium',
-            status: 'Pending',
-            isHot: false,
-            analysis: '',
-        }
     });
 
-    async function onSubmit(values: FormValues) {
-        try {
-            const predictionData: Omit<Prediction, 'id'> = {
-                ...values,
-                teams: getDummyTeamData(values.match)
+    useEffect(() => {
+        if (id) {
+            const fetchPrediction = async () => {
+                setIsLoading(true);
+                try {
+                    const fetchedPrediction = await getPredictionById(id);
+                    if (fetchedPrediction) {
+                        setPrediction(fetchedPrediction);
+                        form.reset({
+                            ...fetchedPrediction,
+                            analysis: fetchedPrediction.analysis || '',
+                        });
+                    } else {
+                        toast({ title: "Prediction not found", variant: "destructive" });
+                        router.push('/admin');
+                    }
+                } catch (error) {
+                    toast({ title: "Failed to fetch prediction", variant: "destructive" });
+                    console.error(error);
+                } finally {
+                    setIsLoading(false);
+                }
             };
+            fetchPrediction();
+        }
+    }, [id, form, router, toast]);
 
-            await createPrediction(predictionData);
+    async function onSubmit(values: FormValues) {
+        if (!prediction) return;
+        try {
+            const formData = new FormData();
+            formData.append('id', id);
+            Object.entries(values).forEach(([key, value]) => {
+                if (typeof value === 'boolean') {
+                    formData.append(key, value ? 'on' : 'off');
+                } else if(value !== undefined && value !== null) {
+                    formData.append(key, value);
+                }
+            });
 
+            await handleUpdatePrediction(formData);
+            
             toast({
-                title: "Prediction Added!",
-                description: "The new prediction has been successfully created.",
+                title: "Prediction Updated!",
+                description: "The prediction has been successfully updated.",
                 variant: "success",
             });
             router.push('/admin');
         } catch (error) {
              toast({
                 title: "Uh oh! Something went wrong.",
-                description: "There was a problem creating the prediction. Please try again.",
+                description: "There was a problem updating the prediction. Please try again.",
                 variant: "destructive",
             });
-            console.error("Failed to create prediction:", error);
+            console.error("Failed to update prediction:", error);
         }
+    }
+    
+    if (isLoading) {
+        return (
+            <div className="container py-12 md:py-16">
+                 <div className="max-w-xl mx-auto">
+                    <Skeleton className="h-10 w-48 mb-8" />
+                    <Card>
+                        <CardHeader>
+                           <Skeleton className="h-8 w-1/2" />
+                           <Skeleton className="h-4 w-3/4" />
+                        </CardHeader>
+                        <CardContent className="space-y-6 pt-6">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -105,10 +142,10 @@ export default function CreatePredictionPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
-                           <Trophy/> Add New Prediction
+                           <Trophy/> Edit Prediction
                         </CardTitle>
                         <CardDescription>
-                            Fill in the details below to add a new sports prediction.
+                           Update the details for "{prediction?.match}".
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -127,7 +164,7 @@ export default function CreatePredictionPage() {
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
+                                 <FormField
                                     control={form.control}
                                     name="league"
                                     render={({ field }) => (
@@ -227,7 +264,7 @@ export default function CreatePredictionPage() {
                                         )}
                                     />
                                 </div>
-                                 <FormField
+                                <FormField
                                     control={form.control}
                                     name="analysis"
                                     render={({ field }) => (
@@ -264,9 +301,8 @@ export default function CreatePredictionPage() {
                                         </FormItem>
                                     )}
                                 />
-
                                 <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                                    {form.formState.isSubmitting ? 'Adding...' : 'Add Prediction'}
+                                    {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
                                 </Button>
                             </form>
                         </Form>
@@ -276,7 +312,3 @@ export default function CreatePredictionPage() {
         </div>
     );
 }
-
-    
-
-    

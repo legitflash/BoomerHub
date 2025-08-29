@@ -52,6 +52,7 @@ export type Prediction = {
   confidence: 'high' | 'medium' | 'low' | string;
   status: 'Won' | 'Lost' | 'Pending';
   isHot: boolean;
+  analysis?: string;
   teams: {
     home: {
       name:string;
