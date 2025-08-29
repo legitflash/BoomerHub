@@ -1,14 +1,14 @@
-'use client';
-
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Shield } from "lucide-react";
-import { blogPosts } from "@/lib/data";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { getAllPosts } from "@/services/post-service";
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  const posts = await getAllPosts();
+
   return (
     <div className="container py-12 md:py-16">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
@@ -38,7 +38,7 @@ export default function AdminPage() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {blogPosts.map((post) => (
+              {posts.map((post) => (
                 <Card key={post.slug} className="flex flex-col sm:flex-row items-center gap-4 p-4">
                   <Image 
                     src={post.image} 
