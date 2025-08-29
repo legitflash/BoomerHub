@@ -64,24 +64,13 @@ export function Footer() {
               ))}
             </ul>
           </div>
-
+          
           <div>
-            <h4 className="font-semibold mb-4">Follow Us</h4>
-            <div className="space-y-4">
-                <div className="flex space-x-4">
-                    <Link href="#" className="text-muted-foreground hover:text-primary"><Facebook className="h-6 w-6" /></Link>
-                    <Link href="#" className="text-muted-foreground hover:text-primary"><Instagram className="h-6 w-6" /></Link>
-                    <Link href="#" className="text-muted-foreground hover:text-primary"><Twitter className="h-6 w-6" /></Link>
-                </div>
-                <div>
-                    <h5 className="font-semibold">Join our exclusive Telegram channel for premium updates</h5>
-                    <Button asChild className="mt-2" size="sm">
-                        <Link href="#">
-                            Subscribe <Send className="ml-2 h-4 w-4"/>
-                        </Link>
-                    </Button>
-                </div>
-            </div>
+            <h4 className="font-semibold mb-4">Legal</h4>
+            <ul className="space-y-2">
+              <li><Link href="/terms-of-use" className="text-muted-foreground hover:text-primary">Terms of Use</Link></li>
+              <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
+            </ul>
           </div>
 
           <div>
@@ -91,8 +80,6 @@ export function Footer() {
               <li><Link href="/blog" className="text-muted-foreground hover:text-primary">Blog</Link></li>
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary">Contact</Link></li>
               <li><Link href="/admin" className="text-muted-foreground hover:text-primary">Admin</Link></li>
-              <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
-              <li><Link href="/terms-of-use" className="text-muted-foreground hover:text-primary">Terms of Use</Link></li>
             </ul>
           </div>
         </div>
