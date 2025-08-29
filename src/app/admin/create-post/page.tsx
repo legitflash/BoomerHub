@@ -22,7 +22,7 @@ const formSchema = z.object({
   description: z.string().min(20, { message: "Description must be at least 20 characters long." }),
   category: z.string().min(1, { message: "Please select a category." }),
   image: z.string().url({ message: "Please enter a valid image URL." }),
-  content: z.string().min(100, { message: "Content must be at least 100 characters long." }),
+  content: z.string().min(100, { message: "Content must be at least 100 characters long. Use HTML for formatting." }),
   author: z.string().min(2, { message: "Author name must be at least 2 characters long." }),
 });
 
@@ -169,7 +169,11 @@ export default function CreatePostPage() {
                                         <FormItem>
                                             <FormLabel>Main Content</FormLabel>
                                             <FormControl>
-                                                <Textarea placeholder="Write your full article here. You can use Markdown for formatting." className="min-h-[300px]" {...field} />
+                                                <Textarea 
+                                                  placeholder="Write your full article here. You can use HTML for formatting (e.g., <p>paragraph</p>, <b>bold</b>, <a href='...'>link</a>)." 
+                                                  className="min-h-[300px]" 
+                                                  {...field} 
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

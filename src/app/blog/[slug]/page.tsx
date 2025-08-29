@@ -1,15 +1,12 @@
 
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import type { Post } from '@/lib/types';
 import BlogPostContent from '@/components/blog/blog-post-client-content';
-import { getAllPosts } from '@/services/post-service';
+import { getAllPosts, getPostBySlug } from '@/services/post-service';
 
 // This is the main page component, which is a Server Component.
 // It fetches the data and passes it to the Client Component.
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const allPosts = await getAllPosts();
-  const post = allPosts.find((p) => p.slug === params.slug);
+  const post = await getPostBySlug(params.slug);
 
   if (!post) {
     notFound();
@@ -17,9 +14,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   // We need to fetch all posts again for related posts, or pass them down.
   // Passing them down is more efficient.
+  const allPosts = await getAllPosts();
   const relatedPosts = allPosts
     .filter((p) => p.category === post.category && p.slug !== post.slug)
-    .slice(0, 5);
+    .slice(0, 3);
 
   return <BlogPostContent post={post} relatedPosts={relatedPosts} />;
 }

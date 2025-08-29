@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc } from 'firebase/firestore';
 import type { Post } from '@/lib/types';
 
 // This is a simplified version of what a Post object might look like for creation.
@@ -57,6 +57,7 @@ export async function getAllPosts(): Promise<Post[]> {
         title: data.title,
         category: data.category,
         description: data.description,
+        content: data.content,
         image: data.image,
         dataAiHint: data.dataAiHint,
         author: data.author,
@@ -71,5 +72,37 @@ export async function getAllPosts(): Promise<Post[]> {
     console.error("Error getting documents: ", error);
     // Return an empty array in case of an error to prevent the app from crashing.
     return [];
+  }
+}
+
+// Function to fetch a single post by its slug
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  try {
+    const postsCollection = collection(db, 'posts');
+    const q = query(postsCollection, where('slug', '==', slug));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      return null;
+    }
+
+    const doc = querySnapshot.docs[0];
+    const data = doc.data();
+    return {
+      id: doc.id,
+      slug: data.slug,
+      title: data.title,
+      category: data.category,
+      description: data.description,
+      content: data.content,
+      image: data.image,
+      dataAiHint: data.dataAiHint,
+      author: data.author,
+      authorImage: data.authorImage,
+      date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
+    };
+  } catch (error) {
+    console.error("Error getting document by slug: ", error);
+    return null;
   }
 }
