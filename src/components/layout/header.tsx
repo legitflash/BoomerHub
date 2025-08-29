@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, Bot, Shield, User, LogOut, Bookmark } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, Bot, Shield, User, LogOut, Bookmark, LogIn, UserPlus } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
@@ -153,19 +153,28 @@ export function Header() {
               </Sheet>
             </div>
           
-            {user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                      <Avatar className="h-10 w-10">
-                         <AvatarImage src={user.photoURL || undefined} alt={user.email || 'User'} />
-                         <AvatarFallback>
-                           {user.email ? user.email.charAt(0).toUpperCase() : <User />}
-                         </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                  <Avatar className="h-10 w-10">
+                    {user ? (
+                        <>
+                           <AvatarImage src={user.photoURL || undefined} alt={user.email || 'User'} />
+                           <AvatarFallback>
+                             {user.email ? user.email.charAt(0).toUpperCase() : <User />}
+                           </AvatarFallback>
+                        </>
+                    ) : (
+                        <AvatarFallback>
+                           <User/>
+                        </AvatarFallback>
+                    )}
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                {user ? (
+                  <>
                      <DropdownMenuItem disabled>
                         <div className="flex flex-col space-y-1">
                           <p className="text-sm font-medium leading-none">{user.displayName || 'User'}</p>
@@ -185,18 +194,19 @@ export function Header() {
                        <LogOut className="mr-2" />
                        Sign Out
                      </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-            ) : (
-                <div className="flex items-center gap-2">
-                    <Button asChild variant="ghost">
-                        <Link href="/login">Sign In</Link>
-                    </Button>
-                    <Button asChild>
-                        <Link href="/signup">Sign Up</Link>
-                    </Button>
-                </div>
-            )}
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem asChild>
+                        <Link href="/login" className="flex items-center"><LogIn className="mr-2"/> Sign In</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                        <Link href="/signup" className="flex items-center"><UserPlus className="mr-2"/> Sign Up</Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
         </div>
       </div>
     </header>
