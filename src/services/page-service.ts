@@ -48,9 +48,11 @@ export async function getAllPages(): Promise<Page[]> {
 
     const pages: Page[] = querySnapshot.docs.map(doc => {
       const data = doc.data();
+      const createdAt = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString() : 'N/A';
       return {
         id: doc.id,
         ...data,
+        createdAt,
       } as Page;
     });
 
@@ -63,6 +65,12 @@ export async function getAllPages(): Promise<Page[]> {
 
 export async function getPageBySlug(slug: string): Promise<Page | null> {
   try {
+    // Exclude known routes that have their own dedicated pages
+    const excludedSlugs = ['about', 'contact', 'admin', 'blog'];
+    if (excludedSlugs.includes(slug) || slug.startsWith('ai/') || slug.startsWith('admin/')) {
+        return null;
+    }
+
     const pagesCollection = collection(db, 'pages');
     const q = query(pagesCollection, where('slug', '==', slug));
     const querySnapshot = await getDocs(q);
