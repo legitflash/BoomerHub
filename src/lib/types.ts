@@ -1,12 +1,5 @@
 
 import type React from 'react';
-import type { User as FirebaseUser } from 'firebase/auth';
-
-export type User = FirebaseUser & {
-    firstName?: string;
-    lastName?: string;
-    isAdmin?: boolean;
-}
 
 export type Post = {
   id?: string;

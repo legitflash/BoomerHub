@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, Bot, LogOut, Shield } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, Bot, Shield } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
@@ -21,11 +21,7 @@ import { aiToolsCategories } from '@/lib/data';
 import { useState, useEffect } from 'react';
 import { getAllCategories } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
-import { useAuth } from '@/hooks/use-auth';
-import { auth } from '@/lib/firebase';
-import { signOut } from 'firebase/auth';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
+
 
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <Link href={href} className="text-foreground/60 transition-colors hover:text-foreground/80">
@@ -35,9 +31,6 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 
 export function Header() {
   const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
-  const { user, isAdmin } = useAuth();
-  const { toast } = useToast();
-  const router = useRouter();
 
   useEffect(() => {
     async function fetchCategories() {
@@ -47,23 +40,6 @@ export function Header() {
     fetchCategories();
   }, []);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      toast({
-        title: "Signed Out",
-        description: "You have been successfully signed out.",
-        variant: "success"
-      })
-      router.push('/');
-    } catch (error) {
-      toast({
-        title: "Sign Out Failed",
-        description: "There was an error signing out. Please try again.",
-        variant: "destructive"
-      })
-    }
-  }
   
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -157,17 +133,8 @@ export function Header() {
                   <div className="flex flex-col space-y-3 mt-4 border-t pt-4">
                     <Link href="/about" className="text-foreground">About</Link>
                     <Link href="/contact" className="text-foreground">Contact</Link>
-                    {isAdmin && (
-                        <Link href="/admin" className="font-semibold text-primary flex items-center gap-2"><Shield/> Admin Panel</Link>
-                    )}
+                    <Link href="/admin" className="font-semibold text-primary flex items-center gap-2"><Shield/> Admin Panel</Link>
                   </div>
-                   {user && (
-                      <div className="mt-6 border-t pt-6">
-                          <Button variant="outline" onClick={handleSignOut} className="w-full">
-                              <LogOut className="mr-2"/> Sign Out
-                          </Button>
-                      </div>
-                  )}
                 </div>
               </SheetContent>
             </Sheet>
@@ -175,16 +142,9 @@ export function Header() {
           
           {/* Centered App Logo/Name */}
           <div className="flex-1 flex justify-center md:justify-end items-center gap-4">
-            {isAdmin && (
-              <Button variant="ghost" size="sm" asChild className='hidden md:flex'>
-                <Link href="/admin"><Shield/>Admin Panel</Link>
-              </Button>
-            )}
-             {user && (
-               <Button variant="outline" size="sm" onClick={handleSignOut} className='hidden md:flex'>
-                 <LogOut className="mr-2"/> Sign Out
-               </Button>
-            )}
+            <Button variant="ghost" size="sm" asChild className='hidden md:flex'>
+              <Link href="/admin"><Shield/>Admin Panel</Link>
+            </Button>
             <Link href="/" className="flex items-center space-x-2">
               <GraduationCap className="h-6 w-6 text-primary" />
               <span className="font-bold">BoomerHub</span>
