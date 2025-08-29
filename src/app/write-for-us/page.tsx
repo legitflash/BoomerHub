@@ -4,7 +4,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Newspaper, User, Mail, Link as LinkIcon, Send, Lightbulb } from "lucide-react";
+import { Newspaper, User, Mail, Link as LinkIcon, Send, Lightbulb, Share2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +23,8 @@ import { useToast } from '@/hooks/use-toast';
 const formSchema = z.object({
   fullName: z.string().min(2, { message: "Your name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email." }),
-  portfolioLink: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  portfolioLink: z.string().url({ message: "Please enter a valid URL for your portfolio/website." }).optional().or(z.literal('')),
+  socialProfileLink: z.string().url({ message: "Please enter a valid URL for your social profile." }).optional().or(z.literal('')),
   pitch: z.string().min(50, { message: "Your pitch must be at least 50 characters." }),
 });
 
@@ -37,6 +38,7 @@ export default function WriteForUsPage() {
       fullName: "",
       email: "",
       portfolioLink: "",
+      socialProfileLink: "",
       pitch: "",
     },
   });
@@ -45,7 +47,7 @@ export default function WriteForUsPage() {
     console.log("Writer Application:", values);
     toast({
       title: "Submission Received!",
-      description: "Thanks for your interest in writing for us. We'll review your pitch and get in touch if it's a good fit.",
+      description: "Thanks for your interest! Our recruitment team will review your pitch and get in touch if it's a good fit.",
       variant: "success",
     });
     form.reset();
@@ -123,6 +125,19 @@ export default function WriteForUsPage() {
                                 <FormLabel>Portfolio/Website (Optional)</FormLabel>
                                 <FormControl>
                                   <Input placeholder="https://your-blog.com" icon={LinkIcon} {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name="socialProfileLink"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Social Profile (Optional)</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="https://facebook.com/yourprofile" icon={Share2} {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>

@@ -4,7 +4,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Megaphone, Building, User, Mail, Send } from "lucide-react";
+import { Megaphone, Building, User, Mail, Send, MessageCircle } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -46,7 +47,7 @@ export default function AdvertisePage() {
     console.log("Advertising Inquiry:", values);
     toast({
       title: "Inquiry Sent!",
-      description: "Thank you for your interest in advertising with us. We'll be in touch shortly.",
+      description: "Thank you for your interest. Our sales manager will be in touch shortly.",
       variant: "success",
     });
     form.reset();
@@ -72,7 +73,16 @@ export default function AdvertisePage() {
                 <li><strong>High Engagement:</strong> Our readers are not just passive scrollers; they are active learners and doers.</li>
                 <li><strong>Flexible Options:</strong> We offer sponsored posts, banner advertising, and custom partnership packages to fit your goals.</li>
             </ul>
-            <p>Partner with us to place your brand in front of a dedicated and motivated audience. Fill out the form to get in touch with our partnership team and receive our media kit.</p>
+            <p>Partner with us to place your brand in front of a dedicated and motivated audience. Fill out the form or contact us on WhatsApp to get in touch with our partnership team and receive our media kit.</p>
+            <Button asChild className="w-full" size="lg" variant="secondary">
+                <Link 
+                    href="https://wa.me/2348060583504?text=Hello! I have a question about advertising with BoomerHub." 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                >
+                    <MessageCircle className="mr-2 h-5 w-5" /> Chat on WhatsApp
+                </Link>
+            </Button>
         </div>
         <div className="space-y-8">
             <Card>
