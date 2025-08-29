@@ -97,7 +97,9 @@ export default async function AdminPage() {
                   </div>
                   <div className="flex gap-2">
                       <Button variant="outline" size="sm">Edit</Button>
-                      <Button variant="destructive" size="sm">Delete</Button>
+                      {member.name !== 'Favour Uduafemhe' && (
+                        <Button variant="destructive" size="sm">Delete</Button>
+                      )}
                   </div>
                 </Card>
               ))}
