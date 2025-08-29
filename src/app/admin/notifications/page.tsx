@@ -87,7 +87,7 @@ export default async function AdminNotificationsPage() {
       </header>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="h-auto flex-wrap">
           <TabsTrigger value="all">All ({allSubmissions.length})</TabsTrigger>
           <TabsTrigger value="advertising">Advertising ({advertisingSubmissions.length})</TabsTrigger>
           <TabsTrigger value="writer">Writer Pitches ({writerSubmissions.length})</TabsTrigger>
