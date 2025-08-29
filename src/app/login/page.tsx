@@ -41,10 +41,10 @@ export default function LoginPage() {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       toast({
         title: "Login Successful!",
-        description: "Redirecting you to the admin panel...",
+        description: "Redirecting you to the home page...",
         variant: "success",
       });
-      router.push('/admin');
+      router.replace('/');
     } catch (error: any) {
       toast({
         title: "Login Failed",
