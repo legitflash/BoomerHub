@@ -7,7 +7,6 @@ import type { Prediction } from '@/lib/types';
 import { predictions as staticPredictions } from '@/lib/data'; // For one-time seeding
 
 type CreatePredictionData = Omit<Prediction, 'id'>;
-type UpdatePredictionData = Partial<CreatePredictionData>;
 
 
 // Function to seed initial data from static file to Firestore.
@@ -85,42 +84,6 @@ export async function getAllPredictions(): Promise<Prediction[]> {
   } catch (error) {
     console.error("Error getting predictions: ", error);
     return [];
-  }
-}
-
-// Function to fetch a single prediction by its ID
-export async function getPredictionById(id: string): Promise<Prediction | null> {
-  try {
-    const predictionDocRef = doc(db, 'predictions', id);
-    const docSnap = await getDoc(predictionDocRef);
-
-    if (!docSnap.exists()) {
-      return null;
-    }
-
-    const data = docSnap.data();
-    return {
-        id: docSnap.id,
-        ...data
-    } as Prediction;
-  } catch (error) {
-    console.error("Error getting prediction by ID:", error);
-    throw new Error('Could not retrieve prediction from database.');
-  }
-}
-
-
-// Function to update a prediction in Firestore
-export async function updatePrediction(id: string, predictionData: UpdatePredictionData): Promise<void> {
-  try {
-    const predictionDocRef = doc(db, 'predictions', id);
-    await updateDoc(predictionDocRef, {
-      ...predictionData,
-      updatedAt: serverTimestamp(),
-    });
-  } catch (error) {
-    console.error("Error updating prediction: ", error);
-    throw new Error('Could not update prediction in database.');
   }
 }
 
