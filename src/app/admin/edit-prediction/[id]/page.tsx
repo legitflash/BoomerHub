@@ -10,7 +10,7 @@ import { useRouter, useParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -96,7 +96,7 @@ export default function EditPredictionPage() {
         } catch (error) {
              toast({
                 title: "Uh oh! Something went wrong.",
-                description: "There was a problem updating the prediction.",
+                description: "There was a problem updating the prediction. Please try again.",
                 variant: "destructive",
             });
             console.error("Failed to update prediction:", error);
