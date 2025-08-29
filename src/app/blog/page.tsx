@@ -1,9 +1,27 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { blogPosts, blogCategories } from '@/lib/data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import IntelligentSearchForm from '@/components/search/intelligent-search-form';
+import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp } from 'lucide-react';
+
+const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
+  DollarSign,
+  Tv,
+  Code,
+  Briefcase,
+  Clock,
+  Rocket,
+  BarChart,
+  Newspaper,
+  Droplets,
+  Gamepad,
+  Trophy,
+  TrendingUp,
+};
+
 
 export default function BlogPage() {
   return (
@@ -19,16 +37,19 @@ export default function BlogPage() {
       </header>
 
       <div className="mb-12 flex flex-wrap items-center justify-center gap-4">
-        {blogCategories.map(category => (
-          <Link 
-            key={category.slug}
-            href={`/blog/category/${category.slug}`}
-            className="flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary"
-          >
-            <category.icon className="h-4 w-4" />
-            {category.name}
-          </Link>
-        ))}
+        {blogCategories.map(category => {
+          const Icon = iconMap[category.iconName];
+          return (
+            <Link 
+              key={category.slug}
+              href={`/blog/category/${category.slug}`}
+              className="flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary"
+            >
+              {Icon && <Icon className="h-4 w-4" />}
+              {category.name}
+            </Link>
+          )
+        })}
       </div>
 
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

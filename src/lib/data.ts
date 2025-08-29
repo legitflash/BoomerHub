@@ -1,5 +1,5 @@
 
-import type { Post, Prediction, TopCategory } from './types';
+import type { Post, Prediction, TopCategory, BlogCategory } from './types';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Bot, AudioLines, PiggyBank, Search } from 'lucide-react';
 
 export const blogPosts: Post[] = [
@@ -237,19 +237,19 @@ export const topCategories: TopCategory[] = [
   { name: 'Online Hustles', icon: Briefcase, slug: 'freelancing'},
 ];
 
-export const blogCategories = [
-    { name: 'Finance', icon: DollarSign, slug: 'finance' },
-    { name: 'Social Media', icon: Tv, slug: 'social-media' },
-    { name: 'AI/Tech', icon: Code, slug: 'ai-tech' },
-    { name: 'Freelancing', icon: Briefcase, slug: 'freelancing' },
-    { name: 'Productivity', icon: Clock, slug: 'productivity' },
-    { name: 'GetPaidTo', icon: Rocket, slug: 'getpaidto' },
-    { name: 'App/Web Reviews', icon: BarChart, slug: 'app-web-reviews' },
-    { name: 'Crypto News', icon: Newspaper, slug: 'crypto-news' },
-    { name: 'Airdrop', icon: Droplets, slug: 'airdrop' },
-    { name: 'Sports', icon: Gamepad, slug: 'sports' },
-    { name: 'Top 10s', icon: Trophy, slug: 'top-10s' },
-    { name: 'Betting Predictions', icon: TrendingUp, slug: 'betting-predictions' },
+export const blogCategories: BlogCategory[] = [
+    { name: 'Finance', iconName: 'DollarSign', slug: 'finance' },
+    { name: 'Social Media', iconName: 'Tv', slug: 'social-media' },
+    { name: 'AI/Tech', iconName: 'Code', slug: 'ai-tech' },
+    { name: 'Freelancing', iconName: 'Briefcase', slug: 'freelancing' },
+    { name: 'Productivity', iconName: 'Clock', slug: 'productivity' },
+    { name: 'GetPaidTo', iconName: 'Rocket', slug: 'getpaidto' },
+    { name: 'App/Web Reviews', iconName: 'BarChart', slug: 'app-web-reviews' },
+    { name: 'Crypto News', iconName: 'Newspaper', slug: 'crypto-news' },
+    { name: 'Airdrop', iconName: 'Droplets', slug: 'airdrop' },
+    { name: 'Sports', iconName: 'Gamepad', slug: 'sports' },
+    { name: 'Top 10s', iconName: 'Trophy', slug: 'top-10s' },
+    { name: 'Betting Predictions', iconName: 'TrendingUp', slug: 'betting-predictions' },
 ];
 
 

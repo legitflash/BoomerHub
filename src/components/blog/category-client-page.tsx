@@ -8,13 +8,28 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search } from 'lucide-react';
-import type { Post, TopCategory } from '@/lib/types';
+import { ArrowLeft, Search, Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp } from 'lucide-react';
+import type { Post, BlogCategory } from '@/lib/types';
 
 interface BlogCategoryClientPageProps {
-  category: TopCategory;
+  category: BlogCategory;
   initialPosts: Post[];
 }
+
+const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
+  DollarSign,
+  Tv,
+  Code,
+  Briefcase,
+  Clock,
+  Rocket,
+  BarChart,
+  Newspaper,
+  Droplets,
+  Gamepad,
+  Trophy,
+  TrendingUp,
+};
 
 export default function BlogCategoryClientPage({ category, initialPosts }: BlogCategoryClientPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,6 +42,8 @@ export default function BlogCategoryClientPage({ category, initialPosts }: BlogC
     );
     setFilteredPosts(results);
   }, [searchTerm, initialPosts]);
+
+  const Icon = iconMap[category.iconName] || DollarSign;
   
   return (
     <div className="container py-12 md:py-16">
@@ -39,7 +56,7 @@ export default function BlogCategoryClientPage({ category, initialPosts }: BlogC
         </Button>
       </div>
       <header className="text-center mb-12">
-        <category.icon className="h-12 w-12 mx-auto mb-4 text-primary" />
+        <Icon className="h-12 w-12 mx-auto mb-4 text-primary" />
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">{category.name}</h1>
         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
           Browse all articles in the "{category.name}" category.

@@ -26,6 +26,12 @@ export type Category = {
   icon: React.ComponentType<{ className?: string }>;
 };
 
+export type BlogCategory = {
+  name: string;
+  slug: string;
+  iconName: string;
+}
+
 export type TopCategory = {
   name: string;
   icon: React.ComponentType<{ className?: string }>;
