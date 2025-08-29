@@ -4,7 +4,9 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Newspaper, User, Mail, Link as LinkIcon, Send, Lightbulb, Share2 } from "lucide-react";
+import { Newspaper, User, Mail, Link as LinkIcon, Send, Share2 } from "lucide-react";
+import Link from 'next/link';
+import { MessageCircle } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { handleCreateSubmission } from '../actions';
 
 
 const formSchema = z.object({
@@ -44,13 +47,32 @@ export default function WriteForUsPage() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Writer Application:", values);
-    toast({
-      title: "Submission Received!",
-      description: "Thanks for your interest! Our recruitment team will review your pitch and get in touch if it's a good fit.",
-      variant: "success",
-    });
-    form.reset();
+    const submissionData = {
+        name: values.fullName,
+        email: values.email,
+        message: values.pitch,
+        subject: `Writer Pitch: ${values.pitch.substring(0, 30)}...`,
+        portfolioLink: values.portfolioLink,
+        socialProfileLink: values.socialProfileLink,
+        type: 'Writer Pitch',
+    };
+
+    const result = await handleCreateSubmission(submissionData);
+    
+    if(result.success){
+        toast({
+            title: "Submission Received!",
+            description: "Thanks for your interest! Our recruitment team will review your pitch and get in touch if it's a good fit.",
+            variant: "success",
+        });
+        form.reset();
+    } else {
+        toast({
+            title: "Submission Failed",
+            description: "There was a problem submitting your pitch. Please try again later.",
+            variant: "destructive",
+        });
+    }
   }
 
 
@@ -79,6 +101,15 @@ export default function WriteForUsPage() {
              <h3>What You Get:</h3>
             <p>You'll receive a byline, an author bio to promote your own work, and the opportunity to establish yourself as an authority in your field. We value our contributors and offer competitive rates for accepted articles.</p>
             <p>Use the form to submit your pitch. Please be concise and clearly explain your article idea and why it's a perfect fit for our audience.</p>
+             <Button asChild className="w-full" size="lg" variant="secondary">
+                <Link 
+                    href="https://wa.me/2348060583504?text=Hello! I'm interested in writing for BoomerHub." 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                >
+                    <MessageCircle className="mr-2 h-5 w-5" /> Chat with our Editor
+                </Link>
+            </Button>
         </div>
         <div className="space-y-8">
             <Card>

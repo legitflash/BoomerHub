@@ -6,10 +6,11 @@ import { deleteTeamMember, updateTeamMember } from '@/services/team-service';
 import { deletePost, updatePost } from '@/services/post-service';
 import { deleteCategory, updateCategory } from '@/services/category-service';
 import { deletePage, getPageBySlug } from '@/services/page-service';
-import type { TeamMember, Post, BlogCategory } from '@/lib/types';
+import type { TeamMember, Post, BlogCategory, Submission } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { deletePrediction } from '@/services/prediction-service';
 import { getSavesForPost, toggleSavePost, getSavedPostsForUser } from '@/services/saves-service';
+import { createSubmission } from '@/services/submission-service';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
   try {
@@ -21,6 +22,16 @@ export async function handleIntelligentSearch(input: IntelligentSearchInput): Pr
     // or return a structured error response.
     throw new Error('Failed to perform intelligent search.');
   }
+}
+
+export async function handleCreateSubmission(submissionData: Omit<Submission, 'id' | 'createdAt'>): Promise<{ success: boolean; message: string }> {
+    try {
+        await createSubmission(submissionData);
+        return { success: true, message: 'Submission received!' };
+    } catch (error) {
+        console.error('Error creating submission:', error);
+        return { success: false, message: 'Failed to create submission.' };
+    }
 }
 
 export async function handleDeleteTeamMember(formData: FormData) {

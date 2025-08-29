@@ -1,12 +1,11 @@
 
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from "next/link";
-import { Mail, MessageCircle, Twitter, Facebook, Instagram, Send, CheckCircle } from "lucide-react";
+import { Mail, MessageCircle, Twitter, Facebook, Instagram, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,10 +16,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { handleCreateSubmission } from '../actions';
 
 
 const formSchema = z.object({
@@ -44,18 +43,28 @@ export default function ContactPage() {
     },
   });
 
-  // You can replace this with a call to your form handling service (e.g., Formspree, a server action, etc.)
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // For demonstration, we'll just show a success toast and reset the form.
-    // In a real app, you would POST this data to your backend or a service.
-    // Example: await fetch('https://formspree.io/your-form-id', { method: 'POST', body: JSON.stringify(values) });
-    console.log(values);
-    toast({
-      title: "Message Sent!",
-      description: "Thanks for reaching out. We'll get back to you soon.",
-      variant: "success"
-    });
-    form.reset();
+    const submissionData = {
+        ...values,
+        type: 'Contact',
+    };
+    
+    const result = await handleCreateSubmission(submissionData);
+
+    if(result.success){
+        toast({
+            title: "Message Sent!",
+            description: "Thanks for reaching out. We'll get back to you soon.",
+            variant: "success"
+        });
+        form.reset();
+    } else {
+        toast({
+            title: "Submission Failed",
+            description: "There was a problem sending your message. Please try again later.",
+            variant: "destructive",
+        });
+    }
   }
 
 

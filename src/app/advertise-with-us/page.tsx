@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { handleCreateSubmission } from '../actions';
 
 
 const formSchema = z.object({
@@ -42,15 +43,30 @@ export default function AdvertisePage() {
     },
   });
 
-  // A real app would have a server action here to handle the form submission
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Advertising Inquiry:", values);
-    toast({
-      title: "Inquiry Sent!",
-      description: "Thank you for your interest. Our sales manager will be in touch shortly.",
-      variant: "success",
-    });
-    form.reset();
+    const submissionData = {
+        ...values,
+        name: values.contactName,
+        subject: `Advertising Inquiry from ${values.companyName}`,
+        type: 'Advertising',
+    };
+    
+    const result = await handleCreateSubmission(submissionData);
+
+    if(result.success){
+        toast({
+            title: "Inquiry Sent!",
+            description: "Thank you for your interest. Our sales manager will be in touch shortly.",
+            variant: "success",
+        });
+        form.reset();
+    } else {
+        toast({
+            title: "Submission Failed",
+            description: "There was a problem sending your inquiry. Please try again later.",
+            variant: "destructive",
+        });
+    }
   }
 
 
