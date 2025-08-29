@@ -10,7 +10,7 @@ import { useRouter, useParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -244,7 +244,7 @@ export default function EditPredictionPage() {
                                                     <FormControl>
                                                     <SelectTrigger>
                                                         <SelectValue placeholder="Select confidence level" />
-                                                    </SelectTrigger>
+                                                    </Trigger>
                                                     </FormControl>
                                                     <SelectContent>
                                                         <SelectItem value="high">High</SelectItem>
@@ -290,3 +290,4 @@ export default function EditPredictionPage() {
         </div>
     );
 }
+
