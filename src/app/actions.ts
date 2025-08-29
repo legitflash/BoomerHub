@@ -4,7 +4,8 @@
 import { intelligentSearch, type IntelligentSearchInput, type IntelligentSearchOutput } from '@/ai/flows/intelligent-search';
 import { deleteTeamMember, updateTeamMember } from '@/services/team-service';
 import { deletePost, updatePost } from '@/services/post-service';
-import type { TeamMember, Post } from '@/lib/types';
+import { deleteCategory, updateCategory } from '@/services/category-service';
+import type { TeamMember, Post, BlogCategory } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
@@ -93,3 +94,38 @@ export async function handleUpdatePost(formData: FormData) {
         throw new Error('Failed to update post.');
     }
 }
+
+export async function handleDeleteCategory(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) {
+        throw new Error('Category ID is required');
+    }
+    try {
+        await deleteCategory(id);
+        revalidatePath('/admin');
+    } catch (error) {
+        console.error('Error deleting category:', error);
+        throw new Error('Failed to delete category.');
+    }
+}
+
+export async function handleUpdateCategory(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) {
+        throw new Error('Category ID is required for update');
+    }
+    
+    const categoryData = {
+        name: formData.get('name') as string,
+        iconName: formData.get('iconName') as string,
+    };
+
+    try {
+        await updateCategory(id, categoryData);
+        revalidatePath('/admin');
+    } catch (error) {
+        console.error('Error updating category:', error);
+        throw new Error('Failed to update category.');
+    }
+}
+

@@ -21,7 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { handleDeleteTeamMember, handleDeletePost } from "../actions";
+import { handleDeleteTeamMember, handleDeletePost, handleDeleteCategory } from "../actions";
 
 export default async function AdminPage() {
   const posts = await getAllPosts();
@@ -214,7 +214,7 @@ export default async function AdminPage() {
                               <Button variant="destructive" size="sm">Delete</Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
-                            {/* <form action={handleDeleteCategory}> */}
+                            <form action={handleDeleteCategory}>
                                 <input type="hidden" name="id" value={category.id} />
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -226,7 +226,7 @@ export default async function AdminPage() {
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                                     <AlertDialogAction type="submit">Delete</AlertDialogAction>
                                 </AlertDialogFooter>
-                            {/* </form> */}
+                            </form>
                           </AlertDialogContent>
                       </AlertDialog>
                   </div>

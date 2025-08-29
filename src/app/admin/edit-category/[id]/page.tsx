@@ -15,9 +15,9 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, FolderCog } from 'lucide-react';
-import { getCategoryById, updateCategory } from '@/services/category-service';
+import { getCategoryById } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
-// import { handleUpdateCategory } from '@/app/actions';
+import { handleUpdateCategory } from '@/app/actions';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -70,8 +70,12 @@ export default function EditCategoryPage() {
     async function onSubmit(values: FormValues) {
         if (!category) return;
         try {
-            // This will be replaced by a server action later
-            await updateCategory(id, values);
+            const formData = new FormData();
+            formData.append('id', id);
+            formData.append('name', values.name);
+            formData.append('iconName', values.iconName);
+
+            await handleUpdateCategory(formData);
             
             toast({
                 title: "Category Updated!",
