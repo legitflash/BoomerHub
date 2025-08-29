@@ -66,14 +66,6 @@ export function Footer() {
           </div>
           
           <div>
-            <h4 className="font-semibold mb-4">Legal</h4>
-            <ul className="space-y-2">
-              <li><Link href="/terms-of-use" className="text-muted-foreground hover:text-primary">Terms of Use</Link></li>
-              <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
-            </ul>
-          </div>
-
-          <div>
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2">
               <li><Link href="/about" className="text-muted-foreground hover:text-primary">About Us</Link></li>
@@ -82,6 +74,15 @@ export function Footer() {
               <li><Link href="/admin" className="text-muted-foreground hover:text-primary">Admin</Link></li>
             </ul>
           </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">Legal</h4>
+            <ul className="space-y-2">
+              <li><Link href="/terms-of-use" className="text-muted-foreground hover:text-primary">Terms of Use</Link></li>
+              <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
+            </ul>
+          </div>
+
         </div>
         <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} BoomerHub. All Rights Reserved.</p>
