@@ -11,7 +11,6 @@ import { getAllTeamMembers } from "@/services/team-service";
 import { getAllPredictions } from "@/services/prediction-service";
 import { getAllCategories } from "@/services/category-service";
 import { getAllPages } from "@/services/page-service";
-import { getAllSubmissions } from "@/services/submission-service";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +23,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { handleDeleteTeamMember, handleDeletePost, handleDeleteCategory, handleDeletePrediction } from "../actions";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default async function AdminPage() {
   const posts = await getAllPosts();
@@ -32,7 +30,6 @@ export default async function AdminPage() {
   const predictions = await getAllPredictions();
   const categories = await getAllCategories();
   const pages = await getAllPages();
-  const submissions = await getAllSubmissions();
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -45,18 +42,6 @@ export default async function AdminPage() {
     }
   };
   
-  const getSubmissionTypeBadge = (type: string) => {
-    switch (type) {
-      case 'Advertising':
-        return 'default';
-      case 'Writer Pitch':
-        return 'secondary';
-      default:
-        return 'outline';
-    }
-  };
-
-
   return (
     <div className="container py-12 md:py-16">
       <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
@@ -81,40 +66,14 @@ export default async function AdminPage() {
                         Review messages from your contact forms.
                     </CardDescription>
                 </div>
+                 <Button asChild>
+                    <Link href="/admin/notifications">
+                        View Submissions
+                    </Link>
+                </Button>
             </CardHeader>
             <CardContent>
-              {submissions.length > 0 ? (
-                <Accordion type="multiple" className="w-full space-y-4">
-                  {submissions.map((submission) => (
-                    <AccordionItem key={submission.id} value={submission.id}>
-                        <Card className="p-0">
-                            <AccordionTrigger className="p-4 text-left hover:no-underline">
-                                <div className="flex-1">
-                                    <div className="flex justify-between items-center w-full">
-                                      <div className="flex items-center gap-4">
-                                        <Badge variant={getSubmissionTypeBadge(submission.type) as any}>{submission.type}</Badge>
-                                        <p className="font-semibold">{submission.subject || submission.name}</p>
-                                      </div>
-                                      <p className="text-sm text-muted-foreground">{submission.createdAt}</p>
-                                    </div>
-                                    <p className="text-sm text-muted-foreground mt-1">From: {submission.name} ({submission.email})</p>
-                                </div>
-                            </AccordionTrigger>
-                             <AccordionContent className="p-4 pt-0 border-t">
-                                <div className="prose prose-sm dark:prose-invert max-w-none">
-                                    {submission.companyName && <p><strong>Company:</strong> {submission.companyName}</p>}
-                                    {submission.portfolioLink && <p><strong>Portfolio:</strong> <a href={submission.portfolioLink} target="_blank" rel="noopener noreferrer">{submission.portfolioLink}</a></p>}
-                                    {submission.socialProfileLink && <p><strong>Social Media:</strong> <a href={submission.socialProfileLink} target="_blank" rel="noopener noreferrer">{submission.socialProfileLink}</a></p>}
-                                    <blockquote>{submission.message}</blockquote>
-                                </div>
-                            </AccordionContent>
-                        </Card>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              ) : (
-                <p className="text-muted-foreground text-center py-4">No submissions yet.</p>
-              )}
+               <p className="text-muted-foreground text-center py-4">All form submissions are now available on the notifications page.</p>
             </CardContent>
         </Card>
 
