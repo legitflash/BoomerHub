@@ -32,7 +32,7 @@ export const aiToolsCategories = [
 ];
 
 export const teamMembers: TeamMember[] = [
-  { name: 'Favour Uduafemhe', role: 'Founder & Editor-in-Chief', image: 'https://picsum.photos/100/100' },
+  { id: '1', name: 'Favour Uduafemhe', role: 'Founder & Editor-in-Chief', image: 'https://picsum.photos/100/100' },
 ];
 
 export const predictions: Prediction[] = [

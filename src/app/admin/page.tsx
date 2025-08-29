@@ -7,10 +7,11 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAllPosts } from "@/services/post-service";
-import { teamMembers } from "@/lib/data";
+import { getAllTeamMembers } from "@/services/team-service";
 
 export default async function AdminPage() {
   const posts = await getAllPosts();
+  const teamMembers = await getAllTeamMembers();
 
   return (
     <div className="container py-12 md:py-16">
@@ -79,14 +80,16 @@ export default async function AdminPage() {
                         Add, edit, or remove team members from your About page.
                     </CardDescription>
                 </div>
-                 <Button>
-                    <UserPlus className="mr-2"/>
-                    Add Member
+                 <Button asChild>
+                    <Link href="/admin/add-member">
+                        <UserPlus className="mr-2"/>
+                        Add Member
+                    </Link>
                 </Button>
             </CardHeader>
             <CardContent className="space-y-4">
               {teamMembers.map((member) => (
-                <Card key={member.name} className="flex items-center gap-4 p-4">
+                <Card key={member.id} className="flex items-center gap-4 p-4">
                   <Avatar className="h-16 w-16">
                     <AvatarImage src={member.image} alt={member.name} />
                     <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
