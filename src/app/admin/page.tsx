@@ -1,10 +1,13 @@
+
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Shield } from "lucide-react";
+import { PlusCircle, Shield, UserPlus } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAllPosts } from "@/services/post-service";
+import { teamMembers } from "@/lib/data";
 
 export default async function AdminPage() {
   const posts = await getAllPosts();
@@ -21,21 +24,23 @@ export default async function AdminPage() {
             Manage your blog posts and site content.
             </p>
          </div>
-        <Button asChild>
-            <Link href="/admin/create-post">
-                <PlusCircle className="mr-2"/>
-                Create New Post
-            </Link>
-        </Button>
       </header>
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto space-y-8">
         <Card>
-            <CardHeader>
-                <CardTitle>Manage Posts</CardTitle>
-                <CardDescription>
-                    Here you can view, edit, and delete your existing blog posts.
-                </CardDescription>
+            <CardHeader className="flex flex-row justify-between items-center">
+                <div>
+                    <CardTitle>Manage Posts</CardTitle>
+                    <CardDescription>
+                        Here you can view, edit, and delete your existing blog posts.
+                    </CardDescription>
+                </div>
+                 <Button asChild>
+                    <Link href="/admin/create-post">
+                        <PlusCircle className="mr-2"/>
+                        Create New Post
+                    </Link>
+                </Button>
             </CardHeader>
             <CardContent className="space-y-4">
               {posts.map((post) => (
@@ -65,6 +70,40 @@ export default async function AdminPage() {
               ))}
             </CardContent>
         </Card>
+        
+        <Card>
+            <CardHeader className="flex flex-row justify-between items-center">
+                <div>
+                    <CardTitle>Manage Team</CardTitle>
+                    <CardDescription>
+                        Add, edit, or remove team members from your About page.
+                    </CardDescription>
+                </div>
+                 <Button>
+                    <UserPlus className="mr-2"/>
+                    Add Member
+                </Button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {teamMembers.map((member) => (
+                <Card key={member.name} className="flex items-center gap-4 p-4">
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={member.image} alt={member.name} />
+                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-grow">
+                    <h3 className="font-semibold text-lg">{member.name}</h3>
+                    <p className="text-primary">{member.role}</p>
+                  </div>
+                  <div className="flex gap-2">
+                      <Button variant="outline" size="sm">Edit</Button>
+                      <Button variant="destructive" size="sm">Delete</Button>
+                  </div>
+                </Card>
+              ))}
+            </CardContent>
+        </Card>
+
       </div>
     </div>
   );
