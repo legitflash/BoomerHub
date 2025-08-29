@@ -120,7 +120,7 @@ export default function EditPredictionPage() {
                     </Card>
                 </div>
             </div>
-        )
+        );
     }
 
     return (
