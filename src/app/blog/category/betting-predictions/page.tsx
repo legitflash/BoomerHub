@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Check, Flame, TrendingUp, X } from "lucide-react";
+import { ArrowLeft, Check, Flame, Send, TrendingUp, X } from "lucide-react";
 import Link from "next/link";
 import { predictions } from "@/lib/data";
 
@@ -90,8 +90,18 @@ export default function BettingPredictionsPage() {
         ))}
       </div>
       
-       <div className="text-center mt-16">
-            <p className="text-muted-foreground mb-4">Disclaimer: These predictions are for informational purposes only. We are not responsible for any losses incurred.</p>
+       <div className="text-center mt-16 p-8 bg-secondary/50 rounded-lg">
+            <h2 className="text-2xl font-bold font-headline mb-2">Join Our Community</h2>
+            <p className="text-muted-foreground mb-4">Get more tips, live updates, and engage with other members on our Telegram channel.</p>
+            <Button asChild size="lg">
+                <Link href="#" target="_blank" rel="noopener noreferrer">
+                    <Send className="mr-2 h-5 w-5" /> Join Telegram for More Tips
+                </Link>
+            </Button>
+        </div>
+
+       <div className="text-center mt-8">
+            <p className="text-muted-foreground text-xs">Disclaimer: These predictions are for informational purposes only. We are not responsible for any losses incurred.</p>
         </div>
     </div>
   );
