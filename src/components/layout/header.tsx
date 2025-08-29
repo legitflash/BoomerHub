@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, Bot, Shield, User, LogOut, Bookmark, LogIn, UserPlus } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, Bot, Shield, User, LogOut, Bookmark, LogIn, UserPlus, Edit } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
@@ -35,7 +35,7 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 
 export function Header() {
   const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
-  const { user, isAdmin, signOutUser } = useAuth();
+  const { user, isAdmin, isEditor, signOutUser } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -101,7 +101,7 @@ export function Header() {
                   <div className="flex flex-col space-y-3 mt-4 border-t pt-4">
                     <Link href="/about" className="text-foreground">About</Link>
                     <Link href="/contact" className="text-foreground">Contact</Link>
-                    {isAdmin && <Link href="/admin" className="font-semibold text-primary flex items-center gap-2"><Shield/> Admin Panel</Link>}
+                    {(isAdmin || isEditor) && <Link href="/admin" className="font-semibold text-primary flex items-center gap-2"><Shield/> {isAdmin ? 'Admin Panel' : 'Editor Dashboard'}</Link>}
                   </div>
                 </div>
               </SheetContent>
@@ -150,9 +150,12 @@ export function Header() {
                        <DropdownMenuItem asChild>
                          <Link href="/profile" className="flex items-center"><User className="mr-2"/> My Profile</Link>
                       </DropdownMenuItem>
-                      {isAdmin && (
+                      {(isAdmin || isEditor) && (
                         <DropdownMenuItem asChild>
-                            <Link href="/admin" className="flex items-center"><Shield className="mr-2"/> Admin Panel</Link>
+                            <Link href="/admin" className="flex items-center">
+                               {isAdmin ? <Shield className="mr-2"/> : <Edit className="mr-2"/>} 
+                               {isAdmin ? 'Admin Panel' : 'Editor Dashboard'}
+                            </Link>
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">

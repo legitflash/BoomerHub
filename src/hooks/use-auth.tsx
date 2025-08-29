@@ -9,12 +9,14 @@ import { doc, getDoc } from 'firebase/firestore';
 // Define the shape of the user object, extending Firebase's User type
 export interface User extends FirebaseUser {
   isAdmin?: boolean;
+  isEditor?: boolean;
 }
 
 // Define the shape of the context state
 interface AuthContextType {
   user: User | null;
   isAdmin: boolean;
+  isEditor: boolean;
   isLoading: boolean;
   signUp: (email: string, pass: string) => Promise<any>;
   signIn: (email: string, pass: string) => Promise<any>;
@@ -25,6 +27,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isAdmin: false,
+  isEditor: false,
   isLoading: true,
   signUp: async () => {},
   signIn: async () => {},
@@ -44,29 +47,36 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isEditor, setIsEditor] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setIsLoading(true);
       if (firebaseUser) {
-        // Check for admin role in Firestore
+        // Check for role in Firestore
         const userDocRef = doc(db, 'users', firebaseUser.uid);
         const userDoc = await getDoc(userDocRef);
-        const userIsAdmin = userDoc.exists() && userDoc.data().role === 'admin';
+        const userData = userDoc.exists() ? userDoc.data() : null;
+        
+        const userIsAdmin = userData?.role === 'admin';
+        const userIsEditor = userData?.role === 'editor';
         
         // Create our custom user object
         const customUser: User = {
           ...firebaseUser,
           isAdmin: userIsAdmin,
+          isEditor: userIsEditor,
         };
         
         setUser(customUser);
         setIsAdmin(userIsAdmin);
+        setIsEditor(userIsEditor);
 
       } else {
         setUser(null);
         setIsAdmin(false);
+        setIsEditor(false);
       }
       setIsLoading(false);
     });
@@ -90,6 +100,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value = {
     user,
     isAdmin,
+    isEditor,
     isLoading,
     signUp,
     signIn,

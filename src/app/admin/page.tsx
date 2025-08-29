@@ -23,6 +23,23 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { handleDeleteTeamMember, handleDeletePost, handleDeleteCategory, handleDeletePrediction } from "../actions";
+import { auth } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+
+async function getUserRole() {
+    const user = auth.currentUser;
+    if (!user) return null;
+
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDoc = await getDoc(userDocRef);
+
+    if (userDoc.exists()) {
+        return userDoc.data().role; // 'admin' or 'editor'
+    }
+    return null;
+}
 
 export default async function AdminPage() {
   const posts = await getAllPosts();
@@ -30,6 +47,7 @@ export default async function AdminPage() {
   const predictions = await getAllPredictions();
   const categories = await getAllCategories();
   const pages = await getAllPages();
+  const role = await getUserRole();
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -48,34 +66,39 @@ export default async function AdminPage() {
          <div className="text-center sm:text-left">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline flex items-center gap-2">
                 <Shield className="h-10 w-10 text-primary" />
-                Admin Panel
+                {role === 'admin' ? 'Admin Panel' : 'Editor Dashboard'}
             </h1>
             <p className="max-w-2xl mt-2 text-muted-foreground md:text-xl">
-            Manage your blog posts and site content.
+            {role === 'admin' ? 'Manage your blog posts and site content.' : 'Manage your assigned blog posts.'}
             </p>
          </div>
       </header>
 
       <div className="max-w-5xl mx-auto space-y-8">
+        
+        {role === 'admin' && (
+        <>
+            <Card>
+                <CardHeader className="flex flex-row justify-between items-center">
+                    <div>
+                        <CardTitle className="flex items-center gap-2"><Inbox/> Submissions</CardTitle>
+                        <CardDescription>
+                            Review messages from your contact forms.
+                        </CardDescription>
+                    </div>
+                    <Button asChild>
+                        <Link href="/admin/notifications">
+                            View Submissions
+                        </Link>
+                    </Button>
+                </CardHeader>
+                <CardContent>
+                <p className="text-muted-foreground text-center py-4">All form submissions are now available on the notifications page.</p>
+                </CardContent>
+            </Card>
+        </>
+        )}
 
-        <Card>
-            <CardHeader className="flex flex-row justify-between items-center">
-                <div>
-                    <CardTitle className="flex items-center gap-2"><Inbox/> Submissions</CardTitle>
-                    <CardDescription>
-                        Review messages from your contact forms.
-                    </CardDescription>
-                </div>
-                 <Button asChild>
-                    <Link href="/admin/notifications">
-                        View Submissions
-                    </Link>
-                </Button>
-            </CardHeader>
-            <CardContent>
-               <p className="text-muted-foreground text-center py-4">All form submissions are now available on the notifications page.</p>
-            </CardContent>
-        </Card>
 
         <Card>
             <CardHeader className="flex flex-row justify-between items-center">
@@ -142,231 +165,235 @@ export default async function AdminPage() {
             </CardContent>
         </Card>
         
-        <Card>
-            <CardHeader className="flex flex-row justify-between items-center">
-                <div>
-                    <CardTitle>Manage Pages</CardTitle>
-                    <CardDescription>
-                        Create and manage standalone pages.
-                    </CardDescription>
-                </div>
-                 <Button asChild>
-                    <Link href="/admin/create-page">
-                        <FilePlus className="mr-2"/>
-                        Create Page
-                    </Link>
-                </Button>
-            </CardHeader>
-            <CardContent>
-              {pages.length > 0 ? (
-                <div className="space-y-4">
-                  {pages.map((page) => (
-                     <Card key={page.id} className="flex items-center gap-4 p-4">
-                      <div className="flex-grow">
-                        <h3 className="font-semibold text-lg">{page.title}</h3>
-                        <p className="text-sm text-muted-foreground">/{page.slug} &middot; Created on {String(page.createdAt)}</p>
-                      </div>
-                      <div className="flex gap-2">
-                          <Button variant="outline" size="sm" asChild>
-                            <Link href={`/${page.slug}`} target="_blank">View</Link>
-                          </Button>
-                          <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                  <Button variant="destructive" size="sm">Delete</Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                {/* <form action={handleDeletePage}>
-                                    <input type="hidden" name="id" value={page.id} />
+        {role === 'admin' && (
+        <>
+            <Card>
+                <CardHeader className="flex flex-row justify-between items-center">
+                    <div>
+                        <CardTitle>Manage Pages</CardTitle>
+                        <CardDescription>
+                            Create and manage standalone pages.
+                        </CardDescription>
+                    </div>
+                    <Button asChild>
+                        <Link href="/admin/create-page">
+                            <FilePlus className="mr-2"/>
+                            Create Page
+                        </Link>
+                    </Button>
+                </CardHeader>
+                <CardContent>
+                {pages.length > 0 ? (
+                    <div className="space-y-4">
+                    {pages.map((page) => (
+                        <Card key={page.id} className="flex items-center gap-4 p-4">
+                        <div className="flex-grow">
+                            <h3 className="font-semibold text-lg">{page.title}</h3>
+                            <p className="text-sm text-muted-foreground">/{page.slug} &middot; Created on {String(page.createdAt)}</p>
+                        </div>
+                        <div className="flex gap-2">
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/${page.slug}`} target="_blank">View</Link>
+                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive" size="sm">Delete</Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    {/* <form action={handleDeletePage}>
+                                        <input type="hidden" name="id" value={page.id} />
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete this page.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter className="mt-4">
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </form> */}
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
+                        </Card>
+                    ))}
+                    </div>
+                ) : (
+                    <p className="text-muted-foreground text-center py-4">No custom pages have been created yet.</p>
+                )}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader className="flex flex-row justify-between items-center">
+                    <div>
+                        <CardTitle>Manage Predictions</CardTitle>
+                        <CardDescription>
+                            Add, edit, or remove sports predictions.
+                        </CardDescription>
+                    </div>
+                    <Button asChild>
+                        <Link href="/admin/create-prediction">
+                            <Trophy className="mr-2"/>
+                            Add Prediction
+                        </Link>
+                    </Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                {predictions.map((p) => (
+                    <Card key={p.id} className="flex flex-col sm:flex-row items-start gap-4 p-4">
+                    <div className="flex-grow space-y-2">
+                        <h3 className="font-semibold text-lg">{p.match}</h3>
+                        <div className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
+                        <Badge variant="outline">{p.league}</Badge>
+                        <span>&middot;</span>
+                        <span>{p.prediction}</span>
+                        <span>&middot;</span>
+                        <span>Odds: {p.odds}</span>
+                        </div>
+                        <div className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
+                            <Badge variant={getStatusBadgeVariant(p.status) as any}>{p.status}</Badge>
+                            <Badge variant="secondary">{p.confidence} confidence</Badge>
+                            {p.isHot && <Badge variant="destructive">Hot Tip</Badge>}
+                        </div>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm">Delete</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <form action={handleDeletePrediction}>
+                                    <input type="hidden" name="id" value={p.id} />
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently delete this page.
+                                            This action cannot be undone. This will permanently delete this prediction.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter className="mt-4">
                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                                         <AlertDialogAction type="submit">Delete</AlertDialogAction>
                                     </AlertDialogFooter>
-                                </form> */}
-                              </AlertDialogContent>
-                          </AlertDialog>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              ) : (
-                 <p className="text-muted-foreground text-center py-4">No custom pages have been created yet.</p>
-              )}
-            </CardContent>
-        </Card>
-
-        <Card>
-            <CardHeader className="flex flex-row justify-between items-center">
-                <div>
-                    <CardTitle>Manage Predictions</CardTitle>
-                    <CardDescription>
-                        Add, edit, or remove sports predictions.
-                    </CardDescription>
-                </div>
-                 <Button asChild>
-                    <Link href="/admin/create-prediction">
-                        <Trophy className="mr-2"/>
-                        Add Prediction
-                    </Link>
-                </Button>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {predictions.map((p) => (
-                <Card key={p.id} className="flex flex-col sm:flex-row items-start gap-4 p-4">
-                  <div className="flex-grow space-y-2">
-                    <h3 className="font-semibold text-lg">{p.match}</h3>
-                    <div className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
-                      <Badge variant="outline">{p.league}</Badge>
-                      <span>&middot;</span>
-                      <span>{p.prediction}</span>
-                       <span>&middot;</span>
-                      <span>Odds: {p.odds}</span>
+                                </form>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
-                     <div className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
-                         <Badge variant={getStatusBadgeVariant(p.status) as any}>{p.status}</Badge>
-                         <Badge variant="secondary">{p.confidence} confidence</Badge>
-                         {p.isHot && <Badge variant="destructive">Hot Tip</Badge>}
-                     </div>
-                  </div>
-                  <div className="flex gap-2 shrink-0">
-                      <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm">Delete</Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <form action={handleDeletePrediction}>
-                                <input type="hidden" name="id" value={p.id} />
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete this prediction.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter className="mt-4">
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction type="submit">Delete</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </form>
-                          </AlertDialogContent>
-                      </AlertDialog>
-                  </div>
-                </Card>
-              ))}
-            </CardContent>
-        </Card>
+                    </Card>
+                ))}
+                </CardContent>
+            </Card>
 
-        <Card>
-            <CardHeader className="flex flex-row justify-between items-center">
-                <div>
-                    <CardTitle>Manage Categories</CardTitle>
-                    <CardDescription>
-                        Create, edit, or delete blog post categories.
-                    </CardDescription>
-                </div>
-                 <Button asChild>
-                    <Link href="/admin/create-category">
-                        <Folder className="mr-2"/>
-                        Create Category
-                    </Link>
-                </Button>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {categories.map((category) => (
-                <Card key={category.id} className="flex items-center gap-4 p-4">
-                  <div className="flex-grow">
-                    <h3 className="font-semibold text-lg">{category.name}</h3>
-                    <p className="text-sm text-muted-foreground">Slug: {category.slug}</p>
-                  </div>
-                  <div className="flex gap-2">
-                      <Button variant="outline" size="sm" asChild>
-                        <Link href={`/admin/edit-category/${category.id}`}>Edit</Link>
-                      </Button>
-                      <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm">Delete</Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <form action={handleDeleteCategory}>
-                                <input type="hidden" name="id" value={category.id} />
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete this category.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter className="mt-4">
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction type="submit">Delete</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </form>
-                          </AlertDialogContent>
-                      </AlertDialog>
-                  </div>
-                </Card>
-              ))}
-            </CardContent>
-        </Card>
-        
-        <Card>
-            <CardHeader className="flex flex-row justify-between items-center">
-                <div>
-                    <CardTitle>Manage Team</CardTitle>
-                    <CardDescription>
-                        Add, edit, or remove team members from your About page.
-                    </CardDescription>
-                </div>
-                 <Button asChild>
-                    <Link href="/admin/add-member">
-                        <UserPlus className="mr-2"/>
-                        Add Member
-                    </Link>
-                </Button>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {teamMembers.map((member) => (
-                <Card key={member.id} className="flex items-center gap-4 p-4">
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={member.image} alt={member.name} />
-                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-grow">
-                    <h3 className="font-semibold text-lg">{member.name}</h3>
-                    <p className="text-primary">{member.role}</p>
-                  </div>
-                  <div className="flex gap-2">
-                      <Button variant="outline" size="sm" asChild>
-                        <Link href={`/admin/edit-member/${member.id}`}>Edit</Link>
-                      </Button>
-                      <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm">Delete</Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <form action={handleDeleteTeamMember}>
-                                <input type="hidden" name="id" value={member.id} />
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete the team member from your site.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter className="mt-4">
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction type="submit">Delete</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </form>
-                          </AlertDialogContent>
-                      </AlertDialog>
-                  </div>
-                </Card>
-              ))}
-            </CardContent>
-        </Card>
+            <Card>
+                <CardHeader className="flex flex-row justify-between items-center">
+                    <div>
+                        <CardTitle>Manage Categories</CardTitle>
+                        <CardDescription>
+                            Create, edit, or delete blog post categories.
+                        </CardDescription>
+                    </div>
+                    <Button asChild>
+                        <Link href="/admin/create-category">
+                            <Folder className="mr-2"/>
+                            Create Category
+                        </Link>
+                    </Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                {categories.map((category) => (
+                    <Card key={category.id} className="flex items-center gap-4 p-4">
+                    <div className="flex-grow">
+                        <h3 className="font-semibold text-lg">{category.name}</h3>
+                        <p className="text-sm text-muted-foreground">Slug: {category.slug}</p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={`/admin/edit-category/${category.id}`}>Edit</Link>
+                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm">Delete</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <form action={handleDeleteCategory}>
+                                    <input type="hidden" name="id" value={category.id} />
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete this category.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter className="mt-4">
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </form>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
+                    </Card>
+                ))}
+                </CardContent>
+            </Card>
+            
+            <Card>
+                <CardHeader className="flex flex-row justify-between items-center">
+                    <div>
+                        <CardTitle>Manage Team</CardTitle>
+                        <CardDescription>
+                            Add, edit, or remove team members from your About page.
+                        </CardDescription>
+                    </div>
+                    <Button asChild>
+                        <Link href="/admin/add-member">
+                            <UserPlus className="mr-2"/>
+                            Add Member
+                        </Link>
+                    </Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                {teamMembers.map((member) => (
+                    <Card key={member.id} className="flex items-center gap-4 p-4">
+                    <Avatar className="h-16 w-16">
+                        <AvatarImage src={member.image} alt={member.name} />
+                        <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-grow">
+                        <h3 className="font-semibold text-lg">{member.name}</h3>
+                        <p className="text-primary">{member.role}</p>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={`/admin/edit-member/${member.id}`}>Edit</Link>
+                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm">Delete</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <form action={handleDeleteTeamMember}>
+                                    <input type="hidden" name="id" value={member.id} />
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete the team member from your site.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter className="mt-4">
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </form>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
+                    </Card>
+                ))}
+                </CardContent>
+            </Card>
+        </>
+        )}
 
       </div>
     </div>

@@ -11,12 +11,12 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isAdmin, isLoading } = useAuth();
+  const { user, isAdmin, isEditor, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // If not loading and user is not an admin, redirect them.
-    if (!isLoading && !isAdmin) {
+    // If auth is done loading and the user is not an admin or an editor, redirect them.
+    if (!isLoading && !isAdmin && !isEditor) {
       // If there's no user at all, send to login. Otherwise, to home.
       if (!user) {
         router.push('/login');
@@ -24,10 +24,10 @@ export default function AdminLayout({
         router.push('/');
       }
     }
-  }, [user, isAdmin, isLoading, router]);
+  }, [user, isAdmin, isEditor, isLoading, router]);
 
   // While checking auth, show a loader.
-  if (isLoading || !isAdmin) {
+  if (isLoading || (!isAdmin && !isEditor)) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -35,6 +35,6 @@ export default function AdminLayout({
     );
   }
 
-  // If user is an admin, render the children.
+  // If user is an admin or editor, render the children.
   return <>{children}</>;
 }
