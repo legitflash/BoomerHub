@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.zenithbank.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'scontent.*.fbcdn.net',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
