@@ -18,7 +18,7 @@ export async function seedPredictions(): Promise<void> {
 
   // Only seed if the collection is empty
   if (!snapshot.empty) {
-    console.log("Predictions collection already exists. Skipping seed.");
+    // console.log("Predictions collection already exists. Skipping seed.");
     return;
   }
 
