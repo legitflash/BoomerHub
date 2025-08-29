@@ -52,6 +52,8 @@ export default function AdminPage() {
                     <div className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
                       <Badge variant="outline">{post.category}</Badge>
                       <span>&middot;</span>
+                      <span>{post.author}</span>
+                       <span>&middot;</span>
                       <span>{post.date}</span>
                     </div>
                   </div>

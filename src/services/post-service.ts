@@ -13,6 +13,7 @@ type CreatePostData = {
     category: string;
     image: string;
     content: string;
+    author: string;
 };
 
 // Function to create a new post in Firestore
@@ -20,14 +21,10 @@ export async function createPost(postData: CreatePostData): Promise<string> {
   try {
     const postsCollection = collection(db, 'posts');
     
-    // In a real application, you'd fetch author details from the logged-in user.
-    // For now, we'll use a placeholder.
-    const author = 'Favour Uduafemhe';
-    const authorImage = `https://picsum.photos/seed/author1/40/40`;
+    const authorImage = `https://i.pravatar.cc/40?u=${postData.author}`;
 
     const docRef = await addDoc(postsCollection, {
       ...postData,
-      author: author,
       authorImage: authorImage,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),

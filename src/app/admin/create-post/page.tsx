@@ -23,6 +23,7 @@ const formSchema = z.object({
   category: z.string().min(1, { message: "Please select a category." }),
   image: z.string().url({ message: "Please enter a valid image URL." }),
   content: z.string().min(100, { message: "Content must be at least 100 characters long." }),
+  author: z.string().min(2, { message: "Author name must be at least 2 characters long." }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -39,6 +40,7 @@ export default function CreatePostPage() {
             category: '',
             image: '',
             content: '',
+            author: 'Favour Uduafemhe',
         }
     });
 
@@ -97,28 +99,43 @@ export default function CreatePostPage() {
                                         </FormItem>
                                     )}
                                 />
-                                <FormField
-                                    control={form.control}
-                                    name="category"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Category</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select a category for your post" />
-                                                    </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                    {blogCategories.filter(c => c.slug !== 'betting-predictions').map(category => (
-                                                        <SelectItem key={category.slug} value={category.name}>{category.name}</SelectItem>
-                                                    ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                 <div className="grid sm:grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="category"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Category</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select a category" />
+                                                        </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                        {blogCategories.filter(c => c.slug !== 'betting-predictions').map(category => (
+                                                            <SelectItem key={category.slug} value={category.name}>{category.name}</SelectItem>
+                                                        ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                     <FormField
+                                        control={form.control}
+                                        name="author"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Author Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="e.g., Jane Doe" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
                                 <FormField
                                     control={form.control}
                                     name="image"
