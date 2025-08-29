@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Shield, UserPlus, Trophy, Folder } from "lucide-react";
+import { PlusCircle, Shield, UserPlus, Trophy, Folder, FilePlus } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -120,6 +120,27 @@ export default async function AdminPage() {
             </CardContent>
         </Card>
         
+        <Card>
+            <CardHeader className="flex flex-row justify-between items-center">
+                <div>
+                    <CardTitle>Manage Pages</CardTitle>
+                    <CardDescription>
+                        Create and manage standalone pages.
+                    </CardDescription>
+                </div>
+                 <Button asChild>
+                    <Link href="/admin/create-page">
+                        <FilePlus className="mr-2"/>
+                        Create Page
+                    </Link>
+                </Button>
+            </CardHeader>
+            <CardContent>
+              {/* Page list will go here */}
+              <p className="text-muted-foreground text-center py-4">Page management is coming soon.</p>
+            </CardContent>
+        </Card>
+
         <Card>
             <CardHeader className="flex flex-row justify-between items-center">
                 <div>
@@ -295,3 +316,5 @@ export default async function AdminPage() {
     </div>
   );
 }
+
+    
