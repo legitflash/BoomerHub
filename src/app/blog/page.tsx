@@ -1,11 +1,12 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { blogPosts, blogCategories } from '@/lib/data';
+import { blogCategories } from '@/lib/data';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import IntelligentSearchForm from '@/components/search/intelligent-search-form';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp } from 'lucide-react';
+import { getAllPosts } from '@/services/post-service';
 
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
   DollarSign,
@@ -23,7 +24,9 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
 };
 
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const blogPosts = await getAllPosts();
+
   return (
     <div className="container py-12 md:py-16">
       <header className="text-center mb-12">

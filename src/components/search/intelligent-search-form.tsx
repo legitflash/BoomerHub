@@ -1,6 +1,7 @@
 
 'use client';
 
+import * as React from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -13,7 +14,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { blogPosts } from '@/lib/data';
+import { getAllPosts } from '@/services/post-service';
+import type { Post } from '@/lib/types';
+
 
 const formSchema = z.object({
   query: z.string().min(3, { message: 'Search query must be at least 3 characters long.' }),
@@ -36,6 +39,16 @@ export default function IntelligentSearchForm() {
   const [results, setResults] = useState<IntelligentSearchOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
+
+  React.useEffect(() => {
+    // Fetch all posts once on component mount to help with slug resolution
+    async function fetchPosts() {
+      const posts = await getAllPosts();
+      setAllPosts(posts);
+    }
+    fetchPosts();
+  }, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -59,7 +72,7 @@ export default function IntelligentSearchForm() {
   }
 
   const findSlugByTitle = (title: string): string => {
-    const item = blogPosts.find(i => i.title.toLowerCase() === title.toLowerCase());
+    const item = allPosts.find(i => i.title.toLowerCase() === title.toLowerCase());
     return item ? item.slug : slugify(title);
   }
 

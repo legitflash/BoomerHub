@@ -1,5 +1,4 @@
 
-'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -8,9 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import IntelligentSearchForm from '@/components/search/intelligent-search-form';
-import { blogPosts, topCategories } from '@/lib/data';
+import { topCategories } from '@/lib/data';
+import { getAllPosts } from '@/services/post-service';
 
-export default function Home() {
+export default async function Home() {
+  const blogPosts = await getAllPosts();
 
   return (
     <div className="flex flex-col gap-16 md:gap-24">

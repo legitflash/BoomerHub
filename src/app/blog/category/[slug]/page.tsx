@@ -1,10 +1,11 @@
 
 import { notFound } from 'next/navigation';
-import { blogPosts, blogCategories } from '@/lib/data';
+import { blogCategories } from '@/lib/data';
 import type { Post } from '@/lib/types';
 import BlogCategoryClientPage from '@/components/blog/category-client-page';
+import { getAllPosts } from '@/services/post-service';
 
-export default function BlogCategoryPage({ params }: { params: { slug: string } }) {
+export default async function BlogCategoryPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
 
   if (slug === 'betting-predictions') {
@@ -18,7 +19,8 @@ export default function BlogCategoryPage({ params }: { params: { slug: string } 
     notFound();
   }
 
-  const postsForCategory: Post[] = blogPosts.filter((p) => p.category.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === slug);
+  const allPosts = await getAllPosts();
+  const postsForCategory: Post[] = allPosts.filter((p) => p.category.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === slug);
 
   return <BlogCategoryClientPage category={category} initialPosts={postsForCategory} />;
 }

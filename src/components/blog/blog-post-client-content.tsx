@@ -2,10 +2,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { blogPosts } from '@/lib/data';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -21,7 +19,7 @@ const getPostContentAsText = (element: HTMLElement | null) => {
 }
 
 // This is the Client Component that handles all interactivity.
-export default function BlogPostContent({ post }: { post: Post }) {
+export default function BlogPostContent({ post, relatedPosts }: { post: Post, relatedPosts: Post[] }) {
   const { toast } = useToast();
   const articleRef = useRef<HTMLDivElement>(null);
   
@@ -109,41 +107,9 @@ export default function BlogPostContent({ post }: { post: Post }) {
   const showOriginalContent = () => {
       setTranslatedContent(null);
   }
-
-  const relatedPosts = blogPosts
-    .filter((p) => p.category === post.category && p.slug !== post.slug)
-    .slice(0, 5);
     
   const articleBody = (
-     <div ref={articleRef} className="prose prose-lg dark:prose-invert max-w-none mx-auto">
-        <p className="lead">{post.description}</p>
-        <p>The world of online opportunities is vast and ever-expanding. Whether you're looking to make a little extra cash on the side or build a full-fledged online empire, the right knowledge and tools can make all the difference. This article is your starting point for one of the many paths you can take.</p>
-        <h2>Understanding the Fundamentals</h2>
-        <p>Before diving in, it's crucial to understand the core concepts. For instance, in forex trading, this means grasping what currency pairs are and how they are traded. If you're exploring social media, it's about understanding your target audience and the platform's algorithm. We'll break down these essentials in a clear, easy-to-digest manner.</p>
-        <Image src="https://picsum.photos/800/450" alt="Fundamentals" width={800} height={450} data-ai-hint="planning board" className="rounded-md" />
-        <h2>Step-by-Step Guide</h2>
-        <p>Let's get practical. Here’s a general roadmap to get you started:</p>
-        <ol>
-          <li><strong>Research and Learn:</strong> Dedicate time to learn the basics. Read blogs, watch tutorials, and consider taking a foundational course.</li>
-          <li><strong>Set Up Your Tools:</strong> This could be opening a brokerage account, creating a social media business profile, or signing up for a no-code app builder.</li>
-          <li><strong>Start Small:</strong> Don't risk a large amount of capital or time initially. Start with a small project or investment to test the waters.</li>
-          <li><strong>Analyze and Adapt:</strong> Review your results. What's working? What isn't? Adjust your strategy based on data, not emotion.</li>
-          <li><strong>Scale Up:</strong> Once you have a proven strategy that yields positive results, you can begin to scale your efforts.</li>
-        </ol>
-        <h2>Common Pitfalls to Avoid</h2>
-        <p>Many beginners make similar mistakes. Being aware of them can save you time and money.</p>
-        <ul>
-          <li><strong>Lack of Patience:</strong> Success rarely happens overnight. Be prepared for a journey of consistent effort.</li>
-          <li><strong>Ignoring Risk Management:</strong> In any venture involving money, understanding and managing risk is paramount.</li>
-          <li><strong>Following Hype Blindly:</strong> What works for one person might not work for you. Do your own research before jumping on a trend.</li>
-        </ul>
-        <p>By following these guidelines and committing to continuous learning, you're well on your way to achieving your goals. Explore our other articles to dive deeper into specific topics that interest you.</p>
-         <div className="mt-12 text-sm p-4 bg-muted/50 rounded-lg">
-          <p className="text-muted-foreground">
-              <strong>Disclaimer:</strong> Some of the links in this article may be affiliate links, which means we may earn a small commission if you make a purchase at no additional cost to you. This helps support our work in bringing you valuable content.
-          </p>
-      </div>
-    </div>
+     <div ref={articleRef} className="prose prose-lg dark:prose-invert max-w-none mx-auto" dangerouslySetInnerHTML={{ __html: post.content || '' }} />
   )
 
   return (

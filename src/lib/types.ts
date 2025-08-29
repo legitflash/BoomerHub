@@ -14,6 +14,7 @@ export type Post = {
   title: string;
   category: string;
   description: string;
+  content?: string;
   image: string;
   dataAiHint: string;
   author: string;
