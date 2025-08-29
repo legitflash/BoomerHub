@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -13,30 +13,28 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Search } from 'lucide-react';
 import type { Post } from '@/lib/types';
 
-export default function BlogCategoryPage({ params: { slug } }: { params: { slug: string } }) {
+export default function BlogCategoryPage({ params }: { params: { slug: string } }) {
+  const { slug } = params;
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
 
   const category = blogCategories.find((c) => c.slug === slug);
   
-  const postsForCategory = blogPosts.filter((p) => p.category.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === slug);
-
   useEffect(() => {
+    const postsForCategory = blogPosts.filter((p) => p.category.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === slug);
     const results = postsForCategory.filter(post =>
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredPosts(results);
-  }, [searchTerm, slug, postsForCategory]);
+  }, [searchTerm, slug]);
 
   if (!category) {
-    // We have a special page for betting predictions
-    if (slug !== 'betting-predictions') {
-        notFound();
+    if (slug === 'betting-predictions') {
+        // This is handled by a different page, so we can return null or a loader.
+        return null; 
     }
-    // Let the betting predictions page handle itself. This is a bit of a workaround.
-    // A better solution would be to merge the logic, but for now this works.
-    return null;
+    notFound();
   }
   
   return (
@@ -104,7 +102,7 @@ export default function BlogCategoryPage({ params: { slug } }: { params: { slug:
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground">No posts found for your search term.</p>
+        <p className="text-center text-muted-foreground">No posts found for your search term in this category.</p>
       )}
     </div>
   );

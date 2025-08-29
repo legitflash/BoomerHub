@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Flame, TrendingUp, X } from "lucide-react";
+import { ArrowLeft, Check, Flame, TrendingUp, X } from "lucide-react";
 import Link from "next/link";
 import { predictions } from "@/lib/data";
 
@@ -32,6 +32,14 @@ export default function BettingPredictionsPage() {
 
   return (
     <div className="container py-12 md:py-16">
+       <div className="mb-8">
+        <Button variant="outline" asChild>
+          <Link href="/blog">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Blog
+          </Link>
+        </Button>
+      </div>
       <header className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">Betting Predictions</h1>
         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
