@@ -22,7 +22,7 @@ type UpdatePostData = CreatePostData;
 // Function to create a new post in Firestore
 export async function createPost(postData: CreatePostData): Promise<string> {
   try {
-    console.log("A new article has been generated at src/lib/generated-articles/top-10-richest-men-nigeria.html. To create the post, go to the admin panel, click 'Create New Post', and copy the content from the file into the 'Main Content' field. Use 'https://picsum.photos/seed/nigeria-finance/1200/800' for the image URL and an appropriate title and description.");
+    console.log("New generated articles are available at src/lib/generated-articles/. To create the post, go to the admin panel, click 'Create New Post', and copy the content from the relevant file into the 'Main Content' field.");
     const postsCollection = collection(db, 'posts');
     const teamMembers = await getAllTeamMembers();
     const authorData = teamMembers.find(member => member.name === postData.author);
