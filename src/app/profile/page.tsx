@@ -13,7 +13,7 @@ import { Loader2, Bookmark, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ProfilePage() {
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user, isLoading: isAuthLoading, signOutUser } = useAuth();
   const [savedPosts, setSavedPosts] = useState<Post[]>([]);
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);
 
@@ -63,6 +63,7 @@ export default function ProfilePage() {
         </Avatar>
         <h1 className="text-4xl font-bold tracking-tighter font-headline">My Profile</h1>
         <p className="text-muted-foreground text-lg mt-2">{user.email}</p>
+         <Button variant="link" onClick={signOutUser} className="mt-2 text-destructive">Sign Out</Button>
       </header>
       
       <main>

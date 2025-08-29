@@ -147,8 +147,8 @@ export function Header() {
                         </div>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href="/profile" className="flex items-center"><Bookmark className="mr-2"/> My Saved Posts</Link>
+                       <DropdownMenuItem asChild>
+                         <Link href="/profile" className="flex items-center"><User className="mr-2"/> My Profile</Link>
                       </DropdownMenuItem>
                       {isAdmin && (
                         <DropdownMenuItem asChild>
