@@ -8,6 +8,18 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAllPosts } from "@/services/post-service";
 import { getAllTeamMembers } from "@/services/team-service";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { handleDeleteTeamMember } from "../actions";
 
 export default async function AdminPage() {
   const posts = await getAllPosts();
@@ -100,7 +112,26 @@ export default async function AdminPage() {
                   </div>
                   <div className="flex gap-2">
                       <Button variant="outline" size="sm">Edit</Button>
-                      <Button variant="destructive" size="sm">Delete</Button>
+                      <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm">Delete</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <form action={handleDeleteTeamMember}>
+                                <input type="hidden" name="id" value={member.id} />
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete the team member from your site.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter className="mt-4">
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </form>
+                          </AlertDialogContent>
+                      </AlertDialog>
                   </div>
                 </Card>
               ))}

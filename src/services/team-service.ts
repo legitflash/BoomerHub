@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
 import type { TeamMember } from '@/lib/types';
 
 type CreateTeamMemberData = Omit<TeamMember, 'id'>;
@@ -42,5 +42,17 @@ export async function getAllTeamMembers(): Promise<TeamMember[]> {
     } catch (error) {
         console.error("Error getting team members: ", error);
         return [];
+    }
+}
+
+
+export async function deleteTeamMember(id: string): Promise<void> {
+    try {
+        const memberDocRef = doc(db, 'team', id);
+        await deleteDoc(memberDocRef);
+        console.log("Team member deleted with ID: ", id);
+    } catch (error) {
+        console.error("Error deleting team member: ", error);
+        throw new Error('Could not delete team member from database.');
     }
 }
