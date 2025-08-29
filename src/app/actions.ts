@@ -7,6 +7,7 @@ import { deletePost, updatePost } from '@/services/post-service';
 import { deleteCategory, updateCategory } from '@/services/category-service';
 import type { TeamMember, Post, BlogCategory } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
+import { updatePrediction } from '@/services/prediction-service';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
   try {
@@ -129,3 +130,28 @@ export async function handleUpdateCategory(formData: FormData) {
     }
 }
 
+export async function handleUpdatePrediction(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) {
+        throw new Error('Prediction ID is required for update');
+    }
+
+    const predictionData = {
+        league: formData.get('league') as string,
+        match: formData.get('match') as string,
+        prediction: formData.get('prediction') as string,
+        correctScore: formData.get('correctScore') as string,
+        odds: formData.get('odds') as string,
+        confidence: formData.get('confidence') as string,
+        status: formData.get('status') as 'Won' | 'Lost' | 'Pending',
+        isHot: formData.get('isHot') === 'true',
+    };
+
+    try {
+        await updatePrediction(id, predictionData);
+        revalidatePath('/admin');
+    } catch (error) {
+        console.error('Error updating prediction:', error);
+        throw new Error('Failed to update prediction.');
+    }
+}

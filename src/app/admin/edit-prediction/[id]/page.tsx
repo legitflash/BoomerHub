@@ -16,9 +16,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Trophy } from 'lucide-react';
-import { getPredictionById, updatePrediction } from '@/services/prediction-service';
+import { getPredictionById } from '@/services/prediction-service';
 import type { Prediction } from '@/lib/types';
 import { Switch } from '@/components/ui/switch';
+import { handleUpdatePrediction } from '@/app/actions';
 
 
 const formSchema = z.object({
@@ -55,7 +56,10 @@ export default function EditPredictionPage() {
                     const fetchedPrediction = await getPredictionById(id);
                     if (fetchedPrediction) {
                         setPrediction(fetchedPrediction);
-                        form.reset(fetchedPrediction);
+                        form.reset({
+                          ...fetchedPrediction,
+                          confidence: fetchedPrediction.confidence.toLowerCase(),
+                        });
                     } else {
                         toast({ title: "Prediction not found", variant: "destructive" });
                         router.push('/admin');
@@ -74,13 +78,15 @@ export default function EditPredictionPage() {
     async function onSubmit(values: FormValues) {
         if (!prediction) return;
         
-        const dataToUpdate = {
-          ...values,
-          teams: prediction.teams, // Preserve original teams data
-        };
-
         try {
-            await updatePrediction(id, dataToUpdate);
+            const formData = new FormData();
+            formData.append('id', id);
+            Object.entries(values).forEach(([key, value]) => {
+                formData.append(key, value.toString());
+            });
+
+            await handleUpdatePrediction(formData);
+
             toast({
                 title: "Prediction Updated!",
                 description: "The prediction has been successfully updated.",
@@ -260,9 +266,9 @@ export default function EditPredictionPage() {
                                         control={form.control}
                                         name="isHot"
                                         render={({ field }) => (
-                                          <FormItem className="flex flex-col rounded-lg border p-3 shadow-sm">
+                                          <FormItem className="flex flex-col justify-center rounded-lg border p-3 shadow-sm">
                                             <FormLabel>Hot Tip?</FormLabel>
-                                             <div className="flex items-center space-x-2">
+                                             <div className="flex items-center space-x-2 pt-2">
                                                 <FormControl>
                                                     <Switch
                                                     checked={field.value}
