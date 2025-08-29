@@ -18,9 +18,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { getPostById } from '@/services/post-service';
-import type { Post, BlogCategory } from '@/lib/types';
+import type { Post, BlogCategory, TeamMember } from '@/lib/types';
 import { handleUpdatePost } from '@/app/actions';
 import { getAllCategories } from '@/services/category-service';
+import { getAllTeamMembers } from '@/services/team-service';
 
 const formSchema = z.object({
   title: z.string().min(10, { message: "Title must be at least 10 characters long." }),
@@ -28,7 +29,7 @@ const formSchema = z.object({
   category: z.string().min(1, { message: "Please select a category." }),
   image: z.string().url({ message: "Please enter a valid image URL." }),
   content: z.string().min(100, { message: "Content must be at least 100 characters long. Use HTML for formatting." }),
-  author: z.string().min(2, { message: "Author name must be at least 2 characters long." }),
+  author: z.string().min(1, { message: "Please select an author." }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -40,6 +41,7 @@ export default function EditPostPage() {
     const [post, setPost] = useState<Post | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [categories, setCategories] = useState<BlogCategory[]>([]);
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
     const id = params.id as string;
 
@@ -56,11 +58,15 @@ export default function EditPostPage() {
     });
 
     useEffect(() => {
-        async function fetchCategories() {
-            const fetchedCategories = await getAllCategories();
+        async function fetchData() {
+             const [fetchedCategories, fetchedTeamMembers] = await Promise.all([
+                getAllCategories(),
+                getAllTeamMembers()
+            ]);
             setCategories(fetchedCategories);
+            setTeamMembers(fetchedTeamMembers);
         }
-        fetchCategories();
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -206,10 +212,19 @@ export default function EditPostPage() {
                                         name="author"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Author Name</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="e.g., Jane Doe" {...field} />
-                                                </FormControl>
+                                                <FormLabel>Author</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select an author" />
+                                                    </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                    {teamMembers.map(member => (
+                                                        <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
+                                                    ))}
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}

@@ -4,6 +4,7 @@
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, where, updateDoc, deleteDoc } from 'firebase/firestore';
 import type { Post } from '@/lib/types';
+import { getAllTeamMembers } from './team-service';
 
 // This is a simplified version of what a Post object might look like for creation.
 // In a real app, you'd likely have a more robust validation schema (e.g., using Zod).
@@ -22,8 +23,10 @@ type UpdatePostData = CreatePostData;
 export async function createPost(postData: CreatePostData): Promise<string> {
   try {
     const postsCollection = collection(db, 'posts');
+    const teamMembers = await getAllTeamMembers();
+    const authorData = teamMembers.find(member => member.name === postData.author);
     
-    const authorImage = `https://i.pravatar.cc/40?u=${postData.author}`;
+    const authorImage = authorData ? authorData.image : `https://i.pravatar.cc/40?u=${postData.author}`;
 
     const docRef = await addDoc(postsCollection, {
       ...postData,
@@ -145,11 +148,14 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 export async function updatePost(id: string, postData: UpdatePostData): Promise<void> {
   try {
     const postDocRef = doc(db, 'posts', id);
+    const teamMembers = await getAllTeamMembers();
+    const authorData = teamMembers.find(member => member.name === postData.author);
 
     const newSlug = postData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
     
     await updateDoc(postDocRef, {
       ...postData,
+      authorImage: authorData ? authorData.image : `https://i.pravatar.cc/40?u=${postData.author}`,
       slug: newSlug,
       updatedAt: serverTimestamp(),
     });

@@ -5,7 +5,7 @@ import { intelligentSearch, type IntelligentSearchInput, type IntelligentSearchO
 import { deleteTeamMember, updateTeamMember } from '@/services/team-service';
 import { deletePost, updatePost } from '@/services/post-service';
 import { deleteCategory, updateCategory } from '@/services/category-service';
-import { deletePage } from '@/services/page-service';
+import { deletePage, getPageBySlug } from '@/services/page-service';
 import type { TeamMember, Post, BlogCategory } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { deletePrediction } from '@/services/prediction-service';
@@ -41,12 +41,13 @@ export async function handleUpdateTeamMember(formData: FormData) {
     const name = formData.get('name') as string;
     const role = formData.get('role') as string;
     const image = formData.get('image') as string;
+    const description = formData.get('description') as string;
 
     if (!id) {
         throw new Error('Member ID is required for update');
     }
 
-    const memberData: Omit<TeamMember, 'id'> = { name, role, image };
+    const memberData = { name, role, image, description };
 
     try {
         await updateTeamMember(id, memberData);

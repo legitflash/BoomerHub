@@ -18,7 +18,8 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { createPost } from '@/services/post-service';
 import { getAllCategories } from '@/services/category-service';
-import type { BlogCategory } from '@/lib/types';
+import { getAllTeamMembers } from '@/services/team-service';
+import type { BlogCategory, TeamMember } from '@/lib/types';
 
 const formSchema = z.object({
   title: z.string().min(10, { message: "Title must be at least 10 characters long." }),
@@ -26,7 +27,7 @@ const formSchema = z.object({
   category: z.string().min(1, { message: "Please select a category." }),
   image: z.string().url({ message: "Please enter a valid image URL." }),
   content: z.string().min(100, { message: "Content must be at least 100 characters long. Use HTML for formatting." }),
-  author: z.string().min(2, { message: "Author name must be at least 2 characters long." }),
+  author: z.string().min(1, { message: "Please select an author." }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -35,13 +36,18 @@ export default function CreatePostPage() {
     const router = useRouter();
     const { toast } = useToast();
     const [categories, setCategories] = useState<BlogCategory[]>([]);
+    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
     useEffect(() => {
-        async function fetchCategories() {
-            const fetchedCategories = await getAllCategories();
+        async function fetchData() {
+            const [fetchedCategories, fetchedTeamMembers] = await Promise.all([
+                getAllCategories(),
+                getAllTeamMembers()
+            ]);
             setCategories(fetchedCategories);
+            setTeamMembers(fetchedTeamMembers);
         }
-        fetchCategories();
+        fetchData();
     }, []);
 
     const form = useForm<FormValues>({
@@ -52,7 +58,7 @@ export default function CreatePostPage() {
             category: '',
             image: '',
             content: '',
-            author: 'Favour Uduafemhe',
+            author: '',
         }
     });
 
@@ -139,10 +145,19 @@ export default function CreatePostPage() {
                                         name="author"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Author Name</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="e.g., Jane Doe" {...field} />
-                                                </FormControl>
+                                                <FormLabel>Author</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select an author" />
+                                                    </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                    {teamMembers.map(member => (
+                                                        <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
+                                                    ))}
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}

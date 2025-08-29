@@ -37,6 +37,7 @@ export async function getAllTeamMembers(): Promise<TeamMember[]> {
                 name: data.name,
                 role: data.role,
                 image: data.image,
+                description: data.description || '',
             };
         });
 
@@ -63,6 +64,7 @@ export async function getTeamMemberById(id: string): Promise<TeamMember | null> 
             name: data.name,
             role: data.role,
             image: data.image,
+            description: data.description || '',
         };
     } catch (error) {
         console.error("Error getting team member:", error);

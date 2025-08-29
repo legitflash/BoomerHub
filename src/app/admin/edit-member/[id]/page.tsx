@@ -18,11 +18,13 @@ import { ArrowLeft, UserCog } from 'lucide-react';
 import { getTeamMemberById } from '@/services/team-service';
 import type { TeamMember } from '@/lib/types';
 import { handleUpdateTeamMember } from '@/app/actions';
+import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   role: z.string().min(2, { message: "Role must be at least 2 characters." }),
   image: z.string().url({ message: "Please enter a valid image URL." }),
+  description: z.string().min(10, { message: "Description must be at least 10 characters." }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -42,6 +44,7 @@ export default function EditMemberPage() {
             name: '',
             role: '',
             image: '',
+            description: '',
         }
     });
 
@@ -76,6 +79,7 @@ export default function EditMemberPage() {
             formData.append('name', values.name);
             formData.append('role', values.role);
             formData.append('image', values.image);
+            formData.append('description', values.description);
 
             await handleUpdateTeamMember(formData);
             
@@ -109,6 +113,7 @@ export default function EditMemberPage() {
                             <Skeleton className="h-10 w-full" />
                             <Skeleton className="h-10 w-full" />
                             <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-20 w-full" />
                             <Skeleton className="h-10 w-full" />
                         </CardContent>
                     </Card>
@@ -174,6 +179,19 @@ export default function EditMemberPage() {
                                             <FormLabel>Image URL</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="https://example.com/image.jpg" {...field} />
+                                            </FormControl>
+                                             <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Description</FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder="A short bio about the team member." {...field} />
                                             </FormControl>
                                              <FormMessage />
                                         </FormItem>

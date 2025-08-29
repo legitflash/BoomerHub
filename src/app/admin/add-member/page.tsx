@@ -14,11 +14,13 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, UserPlus } from 'lucide-react';
 import { addTeamMember } from '@/services/team-service';
+import { Textarea } from '@/components/ui/textarea';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   role: z.string().min(2, { message: "Role must be at least 2 characters." }),
   image: z.string().url({ message: "Please enter a valid image URL." }),
+  description: z.string().min(10, { message: "Description must be at least 10 characters." }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -33,6 +35,7 @@ export default function AddMemberPage() {
             name: '',
             role: '',
             image: '',
+            description: '',
         }
     });
 
@@ -112,6 +115,19 @@ export default function AddMemberPage() {
                                             <FormLabel>Image URL</FormLabel>
                                             <FormControl>
                                                 <Input placeholder="https://example.com/image.jpg" {...field} />
+                                            </FormControl>
+                                             <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Description</FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder="A short bio about the team member." {...field} />
                                             </FormControl>
                                              <FormMessage />
                                         </FormItem>

@@ -18,7 +18,7 @@ export type Post = {
   image: string;
   dataAiHint: string;
   author: string;
-  authorImage: string;
+  authorImage?: string;
   date: string;
 };
 
@@ -78,6 +78,7 @@ export type TeamMember = {
   name: string;
   role: string;
   image: string;
+  description: string;
 };
 
 export type SavedPost = {

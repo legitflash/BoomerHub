@@ -42,16 +42,17 @@ export default async function AboutPage() {
 
       <section className="text-center">
          <h2 className="text-3xl font-bold tracking-tighter font-headline mb-8">Meet the Team</h2>
-         <div className="flex justify-center flex-wrap gap-4">
+         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {teamMembers.map((member) => (
-              <Card key={member.name} className="max-w-sm">
-                <CardContent className="flex flex-col items-center text-center p-6">
-                  <Avatar className="h-24 w-24 mb-4">
+              <Card key={member.id} className="text-center">
+                <CardContent className="p-6">
+                  <Avatar className="h-24 w-24 mb-4 mx-auto">
                     <AvatarImage src={member.image} alt={member.name} />
                     <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <h3 className="font-semibold text-lg">{member.name}</h3>
-                  <p className="text-primary">{member.role}</p>
+                  <p className="text-primary mb-2">{member.role}</p>
+                  <p className="text-sm text-muted-foreground">{member.description}</p>
                 </CardContent>
               </Card>
             ))}
