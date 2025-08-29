@@ -38,19 +38,9 @@ export async function getAllTeamMembers(): Promise<TeamMember[]> {
             };
         });
 
-        // Ensure the owner is always present, even if DB is empty initially
-        const ownerExists = teamMembers.some(member => member.name === 'Favour Uduafemhe');
-        if (!ownerExists) {
-            const ownerData = { id: '1', name: 'Favour Uduafemhe', role: 'Founder & Editor-in-Chief', image: 'https://picsum.photos/100/100' };
-            // You might want to add the owner to the DB here if they don't exist
-            // await addTeamMember(ownerData); 
-            teamMembers.unshift(ownerData);
-        }
-
         return teamMembers;
     } catch (error) {
         console.error("Error getting team members: ", error);
-        // Fallback to default owner if DB fails
-        return [{ id: '1', name: 'Favour Uduafemhe', role: 'Founder & Editor-in-Chief', image: 'https://picsum.photos/100/100' }];
+        return [];
     }
 }

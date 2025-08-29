@@ -31,9 +31,7 @@ export const aiToolsCategories = [
     { name: 'AI Financial Advisor', icon: PiggyBank, slug: '/ai/financial-adviser' },
 ];
 
-export const teamMembers: TeamMember[] = [
-  { id: '1', name: 'Favour Uduafemhe', role: 'Founder & Editor-in-Chief', image: 'https://picsum.photos/100/100' },
-];
+export const teamMembers: TeamMember[] = [];
 
 export const predictions: Prediction[] = [
   {
