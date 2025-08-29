@@ -1,32 +1,67 @@
 
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield } from "lucide-react";
+import Link from "next/link";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { PlusCircle, Shield } from "lucide-react";
+import { blogPosts } from "@/lib/data";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 export default function AdminPage() {
   return (
     <div className="container py-12 md:py-16">
-      <header className="text-center mb-12">
-         <div className="inline-block bg-primary/10 p-4 rounded-lg mb-4">
-            <Shield className="h-10 w-10 text-primary" />
-        </div>
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">Admin Panel</h1>
-        <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
-          Manage your application's content and users.
-        </p>
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
+         <div className="text-center sm:text-left">
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline flex items-center gap-2">
+                <Shield className="h-10 w-10 text-primary" />
+                Admin Panel
+            </h1>
+            <p className="max-w-2xl mt-2 text-muted-foreground md:text-xl">
+            Manage your blog posts and site content.
+            </p>
+         </div>
+        <Button asChild>
+            <Link href="#">
+                <PlusCircle className="mr-2"/>
+                Create New Post
+            </Link>
+        </Button>
       </header>
 
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <Card>
             <CardHeader>
-                <CardTitle>Coming Soon</CardTitle>
+                <CardTitle>Manage Posts</CardTitle>
                 <CardDescription>
-                    This is where you will manage your application's data.
+                    Here you can view, edit, and delete your existing blog posts.
                 </CardDescription>
             </CardHeader>
-            <CardContent>
-                <p>Stay tuned!</p>
+            <CardContent className="space-y-4">
+              {blogPosts.map((post) => (
+                <Card key={post.slug} className="flex flex-col sm:flex-row items-center gap-4 p-4">
+                  <Image 
+                    src={post.image} 
+                    alt={post.title}
+                    width={150}
+                    height={100}
+                    className="rounded-md object-cover aspect-video"
+                  />
+                  <div className="flex-grow">
+                    <h3 className="font-semibold text-lg">{post.title}</h3>
+                    <div className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
+                      <Badge variant="outline">{post.category}</Badge>
+                      <span>&middot;</span>
+                      <span>{post.date}</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                      <Button variant="outline" size="sm">Edit</Button>
+                      <Button variant="destructive" size="sm">Delete</Button>
+                  </div>
+                </Card>
+              ))}
             </CardContent>
         </Card>
       </div>
