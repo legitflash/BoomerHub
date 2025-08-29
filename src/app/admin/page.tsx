@@ -111,7 +111,9 @@ export default async function AdminPage() {
                     <p className="text-primary">{member.role}</p>
                   </div>
                   <div className="flex gap-2">
-                      <Button variant="outline" size="sm">Edit</Button>
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/admin/edit-member/${member.id}`}>Edit</Link>
+                      </Button>
                       <AlertDialog>
                           <AlertDialogTrigger asChild>
                               <Button variant="destructive" size="sm">Delete</Button>
