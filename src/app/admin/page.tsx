@@ -26,6 +26,7 @@ import { handleDeleteTeamMember, handleDeletePost, handleDeleteCategory, handleD
 import { auth } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useAuth } from "@/hooks/use-auth";
 
 
 async function getUserRole() {
@@ -399,3 +400,5 @@ export default async function AdminPage() {
     </div>
   );
 }
+
+    
