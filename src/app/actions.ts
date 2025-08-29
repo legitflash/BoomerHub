@@ -5,6 +5,7 @@ import { intelligentSearch, type IntelligentSearchInput, type IntelligentSearchO
 import { deleteTeamMember, updateTeamMember } from '@/services/team-service';
 import { deletePost, updatePost } from '@/services/post-service';
 import { deleteCategory, updateCategory } from '@/services/category-service';
+import { deletePage } from '@/services/page-service';
 import type { TeamMember, Post, BlogCategory } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { deletePrediction } from '@/services/prediction-service';
@@ -141,5 +142,19 @@ export async function handleDeletePrediction(formData: FormData) {
     } catch (error) {
         console.error('Error deleting prediction:', error);
         throw new Error('Failed to delete prediction.');
+    }
+}
+
+export async function handleDeletePage(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) {
+        throw new Error('Page ID is required');
+    }
+    try {
+        await deletePage(id);
+        revalidatePath('/admin');
+    } catch (error) {
+        console.error('Error deleting page:', error);
+        throw new Error('Failed to delete page.');
     }
 }

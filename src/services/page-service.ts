@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, where } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, where, deleteDoc } from 'firebase/firestore';
 import type { Page } from '@/lib/types';
 
 type CreatePageData = {
@@ -48,12 +48,15 @@ export async function getAllPages(): Promise<Page[]> {
 
     const pages: Page[] = querySnapshot.docs.map(doc => {
       const data = doc.data();
-      const createdAt = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString() : 'N/A';
+      const createdAt = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A';
       return {
         id: doc.id,
-        ...data,
-        createdAt,
-      } as Page;
+        slug: data.slug,
+        title: data.title,
+        content: data.content,
+        createdAt: createdAt,
+        updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A',
+      };
     });
 
     return pages;
@@ -88,5 +91,15 @@ export async function getPageBySlug(slug: string): Promise<Page | null> {
   } catch (error) {
     console.error("Error getting page by slug: ", error);
     return null;
+  }
+}
+
+export async function deletePage(id: string): Promise<void> {
+  try {
+    const pageDocRef = doc(db, 'pages', id);
+    await deleteDoc(pageDocRef);
+  } catch (error) {
+    console.error("Error deleting page: ", error);
+    throw new Error('Could not delete page from database.');
   }
 }

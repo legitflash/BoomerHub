@@ -10,6 +10,7 @@ import { getAllPosts } from "@/services/post-service";
 import { getAllTeamMembers } from "@/services/team-service";
 import { getAllPredictions } from "@/services/prediction-service";
 import { getAllCategories } from "@/services/category-service";
+import { getAllPages } from "@/services/page-service";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +29,7 @@ export default async function AdminPage() {
   const teamMembers = await getAllTeamMembers();
   const predictions = await getAllPredictions();
   const categories = await getAllCategories();
+  const pages = await getAllPages();
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -136,8 +138,45 @@ export default async function AdminPage() {
                 </Button>
             </CardHeader>
             <CardContent>
-              {/* Page list will go here */}
-              <p className="text-muted-foreground text-center py-4">Page management is coming soon.</p>
+              {pages.length > 0 ? (
+                <div className="space-y-4">
+                  {pages.map((page) => (
+                     <Card key={page.id} className="flex items-center gap-4 p-4">
+                      <div className="flex-grow">
+                        <h3 className="font-semibold text-lg">{page.title}</h3>
+                        <p className="text-sm text-muted-foreground">/{page.slug} &middot; Created on {String(page.createdAt)}</p>
+                      </div>
+                      <div className="flex gap-2">
+                          <Button variant="outline" size="sm" asChild>
+                            <Link href={`/${page.slug}`} target="_blank">View</Link>
+                          </Button>
+                          <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                  <Button variant="destructive" size="sm">Delete</Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                {/* <form action={handleDeletePage}>
+                                    <input type="hidden" name="id" value={page.id} />
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete this page.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter className="mt-4">
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </form> */}
+                              </AlertDialogContent>
+                          </AlertDialog>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                 <p className="text-muted-foreground text-center py-4">No custom pages have been created yet.</p>
+              )}
             </CardContent>
         </Card>
 
@@ -313,5 +352,3 @@ export default async function AdminPage() {
     </div>
   );
 }
-
-    
