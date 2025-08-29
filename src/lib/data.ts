@@ -1,5 +1,5 @@
 
-import type { Prediction, TopCategory, BlogCategory } from './types';
+import type { Prediction, TopCategory, BlogCategory, TeamMember } from './types';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Bot, AudioLines, PiggyBank, Search } from 'lucide-react';
 
 export const topCategories: TopCategory[] = [
@@ -29,6 +29,10 @@ export const aiToolsCategories = [
     { name: 'AI Match Prediction', icon: Search, slug: '/ai/match-prediction' },
     { name: 'AI Audio Transcriber', icon: AudioLines, slug: '/ai/audio-transcriber' },
     { name: 'AI Financial Advisor', icon: PiggyBank, slug: '/ai/financial-adviser' },
+];
+
+export const teamMembers: TeamMember[] = [
+  { name: 'Favour Uduafemhe', role: 'Founder & Editor-in-Chief', image: 'https://picsum.photos/100/100' },
 ];
 
 export const predictions: Prediction[] = [

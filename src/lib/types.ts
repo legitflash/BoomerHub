@@ -63,6 +63,12 @@ export type Prediction = {
   };
 };
 
+export type TeamMember = {
+  name: string;
+  role: string;
+  image: string;
+};
+
 export type SavedPost = {
     userId: string;
     postId: string;

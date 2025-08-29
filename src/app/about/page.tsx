@@ -5,12 +5,9 @@ import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { teamMembers } from "@/lib/data";
 
 export default function AboutPage() {
-  const teamMembers = [
-    { name: 'Favour Uduafemhe', role: 'Founder & Editor-in-Chief', image: 'https://picsum.photos/100/100' },
-  ];
-
   return (
     <div className="container py-12 md:py-24 space-y-16">
       <section className="text-center">
