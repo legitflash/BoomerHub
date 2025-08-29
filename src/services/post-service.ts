@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, where } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, where, updateDoc, deleteDoc } from 'firebase/firestore';
 import type { Post } from '@/lib/types';
 
 // This is a simplified version of what a Post object might look like for creation.
@@ -15,6 +15,8 @@ type CreatePostData = {
     content: string;
     author: string;
 };
+
+type UpdatePostData = CreatePostData;
 
 // Function to create a new post in Firestore
 export async function createPost(postData: CreatePostData): Promise<string> {
@@ -75,6 +77,38 @@ export async function getAllPosts(): Promise<Post[]> {
   }
 }
 
+// Function to fetch a single post by its ID
+export async function getPostById(id: string): Promise<Post | null> {
+  try {
+    const postDocRef = doc(db, 'posts', id);
+    const docSnap = await getDoc(postDocRef);
+
+    if (!docSnap.exists()) {
+      console.log("No such document!");
+      return null;
+    }
+
+    const data = docSnap.data();
+    return {
+        id: docSnap.id,
+        slug: data.slug,
+        title: data.title,
+        category: data.category,
+        description: data.description,
+        content: data.content,
+        image: data.image,
+        dataAiHint: data.dataAiHint,
+        author: data.author,
+        authorImage: data.authorImage,
+        date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
+    };
+  } catch (error) {
+    console.error("Error getting post by ID:", error);
+    throw new Error('Could not retrieve post from database.');
+  }
+}
+
+
 // Function to fetch a single post by its slug
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
@@ -104,5 +138,34 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
   } catch (error) {
     console.error("Error getting document by slug: ", error);
     return null;
+  }
+}
+
+// Function to update a post in Firestore
+export async function updatePost(id: string, postData: UpdatePostData): Promise<void> {
+  try {
+    const postDocRef = doc(db, 'posts', id);
+
+    const newSlug = postData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+    
+    await updateDoc(postDocRef, {
+      ...postData,
+      slug: newSlug,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error("Error updating post: ", error);
+    throw new Error('Could not update post in database.');
+  }
+}
+
+// Function to delete a post from Firestore
+export async function deletePost(id: string): Promise<void> {
+  try {
+    const postDocRef = doc(db, 'posts', id);
+    await deleteDoc(postDocRef);
+  } catch (error) {
+    console.error("Error deleting post: ", error);
+    throw new Error('Could not delete post from database.');
   }
 }

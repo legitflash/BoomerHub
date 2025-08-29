@@ -3,7 +3,8 @@
 
 import { intelligentSearch, type IntelligentSearchInput, type IntelligentSearchOutput } from '@/ai/flows/intelligent-search';
 import { deleteTeamMember, updateTeamMember } from '@/services/team-service';
-import type { TeamMember } from '@/lib/types';
+import { deletePost, updatePost } from '@/services/post-service';
+import type { TeamMember, Post } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
@@ -50,5 +51,45 @@ export async function handleUpdateTeamMember(formData: FormData) {
     } catch (error) {
         console.error('Error updating team member:', error);
         throw new Error('Failed to update team member.');
+    }
+}
+
+
+export async function handleDeletePost(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) {
+        throw new Error('Post ID is required');
+    }
+    try {
+        await deletePost(id);
+        revalidatePath('/admin'); 
+    } catch (error) {
+        console.error('Error deleting post:', error);
+        throw new Error('Failed to delete post.');
+    }
+}
+
+export async function handleUpdatePost(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) {
+        throw new Error('Post ID is required for update');
+    }
+    
+    const postData = {
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        category: formData.get('category') as string,
+        image: formData.get('image') as string,
+        content: formData.get('content') as string,
+        author: formData.get('author') as string,
+    };
+
+    try {
+        await updatePost(id, postData);
+        revalidatePath('/admin');
+        revalidatePath(`/blog/${formData.get('slug')}`);
+    } catch (error) {
+        console.error('Error updating post:', error);
+        throw new Error('Failed to update post.');
     }
 }

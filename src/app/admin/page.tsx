@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { handleDeleteTeamMember } from "../actions";
+import { handleDeleteTeamMember, handleDeletePost } from "../actions";
 
 export default async function AdminPage() {
   const posts = await getAllPosts();
@@ -57,7 +57,7 @@ export default async function AdminPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               {posts.map((post) => (
-                <Card key={post.slug} className="flex flex-col sm:flex-row items-center gap-4 p-4">
+                <Card key={post.id} className="flex flex-col sm:flex-row items-center gap-4 p-4">
                   <Image 
                     src={post.image} 
                     alt={post.title}
@@ -76,8 +76,29 @@ export default async function AdminPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                      <Button variant="outline" size="sm">Edit</Button>
-                      <Button variant="destructive" size="sm">Delete</Button>
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/admin/edit-post/${post.id}`}>Edit</Link>
+                      </Button>
+                      <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm">Delete</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <form action={handleDeletePost}>
+                                <input type="hidden" name="id" value={post.id} />
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete this post.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter className="mt-4">
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </form>
+                          </AlertDialogContent>
+                      </AlertDialog>
                   </div>
                 </Card>
               ))}
