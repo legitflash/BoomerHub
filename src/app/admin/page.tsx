@@ -2,12 +2,13 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Shield, UserPlus } from "lucide-react";
+import { PlusCircle, Shield, UserPlus, Trophy } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAllPosts } from "@/services/post-service";
 import { getAllTeamMembers } from "@/services/team-service";
+import { getAllPredictions } from "@/services/prediction-service";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +25,18 @@ import { handleDeleteTeamMember, handleDeletePost } from "../actions";
 export default async function AdminPage() {
   const posts = await getAllPosts();
   const teamMembers = await getAllTeamMembers();
+  const predictions = await getAllPredictions();
+
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+      case 'Won':
+        return 'success';
+      case 'Lost':
+        return 'destructive';
+      default:
+        return 'secondary';
+    }
+  };
 
   return (
     <div className="container py-12 md:py-16">
@@ -97,6 +110,69 @@ export default async function AdminPage() {
                                     <AlertDialogAction type="submit">Delete</AlertDialogAction>
                                 </AlertDialogFooter>
                             </form>
+                          </AlertDialogContent>
+                      </AlertDialog>
+                  </div>
+                </Card>
+              ))}
+            </CardContent>
+        </Card>
+        
+        <Card>
+            <CardHeader className="flex flex-row justify-between items-center">
+                <div>
+                    <CardTitle>Manage Predictions</CardTitle>
+                    <CardDescription>
+                        Add, edit, or remove sports predictions.
+                    </CardDescription>
+                </div>
+                 <Button asChild>
+                    <Link href="/admin/create-prediction">
+                        <Trophy className="mr-2"/>
+                        Add Prediction
+                    </Link>
+                </Button>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {predictions.map((p) => (
+                <Card key={p.id} className="flex flex-col sm:flex-row items-start gap-4 p-4">
+                  <div className="flex-grow space-y-2">
+                    <h3 className="font-semibold text-lg">{p.match}</h3>
+                    <div className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
+                      <Badge variant="outline">{p.league}</Badge>
+                      <span>&middot;</span>
+                      <span>{p.prediction}</span>
+                       <span>&middot;</span>
+                      <span>Odds: {p.odds}</span>
+                    </div>
+                     <div className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
+                         <Badge variant={getStatusBadgeVariant(p.status) as any}>{p.status}</Badge>
+                         <Badge variant="secondary">{p.confidence} confidence</Badge>
+                         {p.isHot && <Badge variant="destructive">Hot Tip</Badge>}
+                     </div>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                      <Button variant="outline" size="sm" asChild>
+                        <Link href={`/admin/edit-prediction/${p.id}`}>Edit</Link>
+                      </Button>
+                      <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm">Delete</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            {/*<form action={handleDeletePrediction}>*/}
+                                <input type="hidden" name="id" value={p.id} />
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete this prediction.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter className="mt-4">
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                                </AlertDialogFooter>
+                            {/*</form>*/}
                           </AlertDialogContent>
                       </AlertDialog>
                   </div>

@@ -40,7 +40,7 @@ export type TopCategory = {
 }
 
 export type Prediction = {
-  id: number;
+  id: string;
   league: string;
   match: string;
   prediction: string;
