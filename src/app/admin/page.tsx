@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from "next/link";
@@ -23,7 +22,7 @@ export default function AdminPage() {
             </p>
          </div>
         <Button asChild>
-            <Link href="#">
+            <Link href="/admin/create-post">
                 <PlusCircle className="mr-2"/>
                 Create New Post
             </Link>
