@@ -1,0 +1,249 @@
+
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
+import { blogPosts } from '@/lib/data';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Share2, Loader2, Globe, Download } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import type { Post } from '@/lib/types';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { translateText } from '@/ai/flows/translate-text';
+
+const getPostContentAsText = (element: HTMLElement | null) => {
+    return element?.textContent || '';
+}
+
+// This is the Client Component that handles all interactivity.
+export default function BlogPostContent({ post }: { post: Post }) {
+  const { toast } = useToast();
+  const articleRef = useRef<HTMLDivElement>(null);
+  
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [translatedContent, setTranslatedContent] = useState<string | null>(null);
+  const originalContentRef = useRef<string | null>(null);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: `${post.description} via BoomerHub`,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+        navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Link Copied",
+          description: "The article URL has been copied to your clipboard.",
+        });
+    }
+  };
+  
+  const handleDownload = async () => {
+    try {
+        const response = await fetch(post.image);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${post.slug}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Error downloading image:', error);
+        toast({
+            variant: "destructive",
+            title: "Download failed",
+            description: "Could not download the image. Please try again.",
+        });
+    }
+  };
+
+
+  const handleTranslate = async (language: string) => {
+    if (isTranslating) return;
+
+    setIsTranslating(true);
+    // Store original content if it's not already stored
+    if (originalContentRef.current === null && articleRef.current) {
+        originalContentRef.current = getPostContentAsText(articleRef.current);
+    }
+    
+    if (!originalContentRef.current) {
+         toast({
+            variant: "destructive",
+            title: "Translation Failed",
+            description: "Could not read the article content.",
+        });
+        setIsTranslating(false);
+        return;
+    }
+
+    try {
+        const result = await translateText({ text: originalContentRef.current, targetLanguage: language });
+        setTranslatedContent(result.translatedText);
+    } catch (error) {
+        console.error("Translation failed:", error);
+        toast({
+            variant: "destructive",
+            title: "Translation Failed",
+            description: "Could not translate the article. Please try again.",
+        });
+    } finally {
+        setIsTranslating(false);
+    }
+  }
+
+  const showOriginalContent = () => {
+      setTranslatedContent(null);
+  }
+
+  const relatedPosts = blogPosts
+    .filter((p) => p.category === post.category && p.slug !== post.slug)
+    .slice(0, 5);
+    
+  const articleBody = (
+     <div ref={articleRef} className="prose prose-lg dark:prose-invert max-w-none mx-auto">
+        <p className="lead">{post.description}</p>
+        <p>The world of online opportunities is vast and ever-expanding. Whether you're looking to make a little extra cash on the side or build a full-fledged online empire, the right knowledge and tools can make all the difference. This article is your starting point for one of the many paths you can take.</p>
+        <h2>Understanding the Fundamentals</h2>
+        <p>Before diving in, it's crucial to understand the core concepts. For instance, in forex trading, this means grasping what currency pairs are and how they are traded. If you're exploring social media, it's about understanding your target audience and the platform's algorithm. We'll break down these essentials in a clear, easy-to-digest manner.</p>
+        <Image src="https://picsum.photos/800/450" alt="Fundamentals" width={800} height={450} data-ai-hint="planning board" className="rounded-md" />
+        <h2>Step-by-Step Guide</h2>
+        <p>Let's get practical. Here’s a general roadmap to get you started:</p>
+        <ol>
+          <li><strong>Research and Learn:</strong> Dedicate time to learn the basics. Read blogs, watch tutorials, and consider taking a foundational course.</li>
+          <li><strong>Set Up Your Tools:</strong> This could be opening a brokerage account, creating a social media business profile, or signing up for a no-code app builder.</li>
+          <li><strong>Start Small:</strong> Don't risk a large amount of capital or time initially. Start with a small project or investment to test the waters.</li>
+          <li><strong>Analyze and Adapt:</strong> Review your results. What's working? What isn't? Adjust your strategy based on data, not emotion.</li>
+          <li><strong>Scale Up:</strong> Once you have a proven strategy that yields positive results, you can begin to scale your efforts.</li>
+        </ol>
+        <h2>Common Pitfalls to Avoid</h2>
+        <p>Many beginners make similar mistakes. Being aware of them can save you time and money.</p>
+        <ul>
+          <li><strong>Lack of Patience:</strong> Success rarely happens overnight. Be prepared for a journey of consistent effort.</li>
+          <li><strong>Ignoring Risk Management:</strong> In any venture involving money, understanding and managing risk is paramount.</li>
+          <li><strong>Following Hype Blindly:</strong> What works for one person might not work for you. Do your own research before jumping on a trend.</li>
+        </ul>
+        <p>By following these guidelines and committing to continuous learning, you're well on your way to achieving your goals. Explore our other articles to dive deeper into specific topics that interest you.</p>
+         <div className="mt-12 text-sm p-4 bg-muted/50 rounded-lg">
+          <p className="text-muted-foreground">
+              <strong>Disclaimer:</strong> Some of the links in this article may be affiliate links, which means we may earn a small commission if you make a purchase at no additional cost to you. This helps support our work in bringing you valuable content.
+          </p>
+      </div>
+    </div>
+  )
+
+  return (
+    <>
+      <article className="container max-w-4xl py-12 md:py-24">
+        <header className="mb-8">
+          <div className="text-center">
+              <Badge variant="outline" className="mb-4">{post.category}</Badge>
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline mb-4">{post.title}</h1>
+              <div className="flex items-center justify-center gap-4 text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8">
+                      <AvatarImage src={post.authorImage} alt={post.author} />
+                      <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <span>{post.author}</span>
+                  </div>
+                  <span>&middot;</span>
+                  <span>{post.date}</span>
+              </div>
+          </div>
+          <div className="mt-6 flex items-center justify-center flex-wrap gap-2 border-t border-b py-4">
+              <Button variant="ghost" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
+              <Button variant="ghost" size="sm" onClick={handleDownload}><Download className="mr-2"/> Download Image</Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" disabled={isTranslating}>
+                        {isTranslating ? <Loader2 className="mr-2 animate-spin" /> : <Globe className="mr-2" />}
+                        Translate
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => handleTranslate('Spanish')}>Spanish</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleTranslate('French')}>French</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleTranslate('German')}>German</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleTranslate('Japanese')}>Japanese</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+          </div>
+        </header>
+
+        <Image
+          src={post.image}
+          alt={post.title}
+          width={1200}
+          height={600}
+          data-ai-hint={post.dataAiHint}
+          className="rounded-lg object-cover aspect-video mb-8"
+          priority
+          crossOrigin="anonymous" 
+        />
+
+        <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
+          {isTranslating && (
+             <div className="text-center p-8">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+                <p className="mt-4 text-muted-foreground">Translating article...</p>
+             </div>
+          )}
+
+          {!isTranslating && translatedContent && (
+             <div>
+                <Button variant="outline" onClick={showOriginalContent} className='mb-4'>Show Original</Button>
+                <div className="whitespace-pre-wrap">{translatedContent}</div>
+             </div>
+          )}
+          
+          {!isTranslating && !translatedContent && articleBody}
+
+        </div>
+
+      </article>
+
+      {relatedPosts.length > 0 && (
+        <aside className="container max-w-4xl py-16">
+          <h2 className="text-3xl font-bold tracking-tighter mb-8 text-center font-headline">Related Articles</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedPosts.map((relatedPost) => (
+              <Card key={relatedPost.slug} className="group flex flex-col">
+                <Link href={`/blog/${relatedPost.slug}`} className="block">
+                  <Image
+                    src={relatedPost.image}
+                    alt={relatedPost.title}
+                    width={600}
+                    height={400}
+                    data-ai-hint={relatedPost.dataAiHint}
+                    className="rounded-t-lg object-cover aspect-video"
+                  />
+                </Link>
+                <CardContent className="p-4 space-y-2 flex-grow flex flex-col">
+                   <Badge variant="outline" className="w-fit">{relatedPost.category}</Badge>
+                   <Link href={`/blog/${relatedPost.slug}`} className="block">
+                    <h3 className="text-lg font-semibold group-hover:text-primary transition-colors flex-grow">{relatedPost.title}</h3>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </aside>
+      )}
+    </>
+  );
+}
