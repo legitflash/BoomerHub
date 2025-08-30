@@ -7,9 +7,23 @@ const auth = new GoogleAuth({
 });
 
 // Use GOOGLE_APPLICATION_CREDENTIALS_JSON if provided, otherwise fall back to default credentials
-const credentials = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON
-  ? JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON)
-  : undefined;
+let credentials;
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+  try {
+    // Standard JSON parsing
+    credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+  } catch (e) {
+    try {
+      // Fallback for improperly escaped newlines
+      const sanitizedJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON.replace(/\\n/g, '\n');
+      credentials = JSON.parse(sanitizedJson);
+    } catch (error) {
+      console.error("Failed to parse GOOGLE_APPLICATION_CREDENTIALS_JSON:", error);
+      credentials = undefined;
+    }
+  }
+}
+
 
 export const ai = genkit({
   plugins: [googleAI({
