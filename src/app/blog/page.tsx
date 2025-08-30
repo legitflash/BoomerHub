@@ -7,6 +7,7 @@ import IntelligentSearchForm from '@/components/search/intelligent-search-form';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp } from 'lucide-react';
 import { getAllPosts } from '@/services/post-service';
 import { getAllCategories } from '@/services/category-service';
+import PaginationControls from '@/components/blog/pagination-controls';
 
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
   DollarSign,
@@ -23,10 +24,19 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
   TrendingUp,
 };
 
+const POSTS_PER_PAGE = 6;
 
-export default async function BlogPage() {
-  const blogPosts = await getAllPosts();
+export default async function BlogPage({ searchParams }: { searchParams: { page?: string } }) {
+  const allPosts = await getAllPosts();
   const blogCategories = await getAllCategories();
+
+  const currentPage = Number(searchParams?.page) || 1;
+  const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
+
+  const paginatedPosts = allPosts.slice(
+    (currentPage - 1) * POSTS_PER_PAGE,
+    currentPage * POSTS_PER_PAGE
+  );
 
   return (
     <div className="container py-12 md:py-16">
@@ -57,7 +67,7 @@ export default async function BlogPage() {
       </div>
 
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {blogPosts.map((post) => (
+        {paginatedPosts.map((post) => (
           <Card key={post.slug} className="group flex flex-col">
             <Link href={`/blog/${post.slug}`} className="block">
               <Image
@@ -87,6 +97,14 @@ export default async function BlogPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+      
+      <div className="mt-12">
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          baseUrl="/blog"
+        />
       </div>
     </div>
   );
