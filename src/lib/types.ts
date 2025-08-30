@@ -54,6 +54,7 @@ export type Prediction = {
   isHot: boolean;
   analysis?: string;
   matchDate?: string;
+  createdAt?: string;
   teams: {
     home: {
       name:string;

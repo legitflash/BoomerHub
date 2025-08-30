@@ -6,6 +6,7 @@ import { ArrowLeft, Check, Flame, Send, TrendingUp, X, Calendar } from "lucide-r
 import Link from "next/link";
 import { getAllPredictions } from "@/services/prediction-service";
 import type { Prediction } from "@/lib/types";
+import { format } from "date-fns";
 
 
 export default async function BettingPredictionsPage() {
@@ -66,7 +67,12 @@ export default async function BettingPredictionsPage() {
                {p.matchDate && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
                   <Calendar className="h-4 w-4" />
-                  <span>{p.matchDate}</span>
+                  <span>Match Date: {p.matchDate}</span>
+                </div>
+              )}
+               {p.createdAt && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                  <span>Posted: {format(new Date(p.createdAt), "PPP")}</span>
                 </div>
               )}
             </CardHeader>
