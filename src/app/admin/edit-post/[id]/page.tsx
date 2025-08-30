@@ -22,6 +22,7 @@ import type { Post, BlogCategory, TeamMember } from '@/lib/types';
 import { handleUpdatePost } from '@/app/actions';
 import { getAllCategories } from '@/services/category-service';
 import { getAllTeamMembers } from '@/services/team-service';
+import { useAuth } from '@/hooks/use-auth';
 
 const formSchema = z.object({
   title: z.string().min(10, { message: "Title must be at least 10 characters long." }),
@@ -38,6 +39,7 @@ export default function EditPostPage() {
     const router = useRouter();
     const params = useParams();
     const { toast } = useToast();
+    const { isAdmin } = useAuth();
     const [post, setPost] = useState<Post | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [categories, setCategories] = useState<BlogCategory[]>([]);
@@ -47,14 +49,6 @@ export default function EditPostPage() {
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            title: '',
-            description: '',
-            category: '',
-            image: '',
-            content: '',
-            author: '',
-        }
     });
 
     useEffect(() => {
@@ -213,18 +207,22 @@ export default function EditPostPage() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Author</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select an author" />
-                                                    </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                    {teamMembers.map(member => (
-                                                        <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
-                                                    ))}
-                                                    </SelectContent>
-                                                </Select>
+                                                {isAdmin ? (
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select an author" />
+                                                        </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                        {teamMembers.map(member => (
+                                                            <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
+                                                        ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    <Input {...field} disabled />
+                                                )}
                                                 <FormMessage />
                                             </FormItem>
                                         )}

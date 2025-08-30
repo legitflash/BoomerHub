@@ -20,6 +20,7 @@ import { createPost } from '@/services/post-service';
 import { getAllCategories } from '@/services/category-service';
 import { getAllTeamMembers } from '@/services/team-service';
 import type { BlogCategory, TeamMember } from '@/lib/types';
+import { useAuth } from '@/hooks/use-auth';
 
 const formSchema = z.object({
   title: z.string().min(10, { message: "Title must be at least 10 characters long." }),
@@ -35,6 +36,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function CreatePostPage() {
     const router = useRouter();
     const { toast } = useToast();
+    const { user, isAdmin } = useAuth();
     const [categories, setCategories] = useState<BlogCategory[]>([]);
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
@@ -58,9 +60,16 @@ export default function CreatePostPage() {
             category: '',
             image: '',
             content: '',
-            author: '',
+            author: !isAdmin && user ? user.displayName || user.email || '' : '',
         }
     });
+
+    useEffect(() => {
+        if (user && !isAdmin) {
+            form.setValue('author', user.displayName || user.email || '');
+        }
+    }, [user, isAdmin, form]);
+
 
     async function onSubmit(values: FormValues) {
         try {
@@ -146,18 +155,22 @@ export default function CreatePostPage() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Author</FormLabel>
-                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                    <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select an author" />
-                                                    </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                    {teamMembers.map(member => (
-                                                        <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
-                                                    ))}
-                                                    </SelectContent>
-                                                </Select>
+                                                {isAdmin ? (
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select an author" />
+                                                        </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                        {teamMembers.map(member => (
+                                                            <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
+                                                        ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    <Input {...field} disabled />
+                                                )}
                                                 <FormMessage />
                                             </FormItem>
                                         )}
