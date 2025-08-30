@@ -51,7 +51,7 @@ export default function CreatePostPage() {
             author: '',
         }
     });
-
+    
     useEffect(() => {
         async function fetchData() {
             const [fetchedCategories, fetchedTeamMembers] = await Promise.all([
@@ -65,11 +65,13 @@ export default function CreatePostPage() {
             if (isEditor && !isAdmin && user) {
                 const currentMember = fetchedTeamMembers.find(member => member.email === user.email);
                 if (currentMember) {
-                    form.setValue('author', currentMember.name);
+                    form.setValue('author', currentMember.name, { shouldValidate: true });
                 }
             }
         }
-        fetchData();
+        if (user) {
+          fetchData();
+        }
     }, [isEditor, isAdmin, user, form]);
 
 

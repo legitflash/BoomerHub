@@ -39,7 +39,7 @@ export default function EditPostPage() {
     const router = useRouter();
     const params = useParams();
     const { toast } = useToast();
-    const { isAdmin, isEditor } = useAuth();
+    const { user, isAdmin, isEditor } = useAuth();
     const [post, setPost] = useState<Post | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [categories, setCategories] = useState<BlogCategory[]>([]);
@@ -53,39 +53,45 @@ export default function EditPostPage() {
 
     useEffect(() => {
         async function fetchData() {
-             const [fetchedCategories, fetchedTeamMembers] = await Promise.all([
-                getAllCategories(),
-                getAllTeamMembers()
-            ]);
-            setCategories(fetchedCategories);
-            setTeamMembers(fetchedTeamMembers);
-        }
-        fetchData();
-    }, []);
+             if (!user) return;
+             setIsLoading(true);
+             try {
+                const [fetchedCategories, fetchedTeamMembers, fetchedPost] = await Promise.all([
+                    getAllCategories(),
+                    getAllTeamMembers(),
+                    getPostById(id)
+                ]);
+                
+                setCategories(fetchedCategories);
+                setTeamMembers(fetchedTeamMembers);
 
-    useEffect(() => {
-        if (id) {
-            const fetchPost = async () => {
-                setIsLoading(true);
-                try {
-                    const fetchedPost = await getPostById(id);
-                    if (fetchedPost) {
-                        setPost(fetchedPost);
-                        form.reset(fetchedPost);
-                    } else {
-                        toast({ title: "Post not found", variant: "destructive" });
-                        router.push('/admin');
+                if (fetchedPost) {
+                    // Security check: if editor is not admin, they can only edit their own posts.
+                    if (isEditor && !isAdmin) {
+                        const currentMember = fetchedTeamMembers.find(member => member.email === user.email);
+                        if (fetchedPost.author !== currentMember?.name) {
+                            toast({ title: "Access Denied", description: "You can only edit your own posts.", variant: "destructive" });
+                            router.push('/admin');
+                            return;
+                        }
                     }
-                } catch (error) {
-                    toast({ title: "Failed to fetch post", variant: "destructive" });
-                    console.error(error);
-                } finally {
-                    setIsLoading(false);
+                    setPost(fetchedPost);
+                    form.reset(fetchedPost);
+                } else {
+                    toast({ title: "Post not found", variant: "destructive" });
+                    router.push('/admin');
                 }
-            };
-            fetchPost();
+            } catch (error) {
+                toast({ title: "Failed to fetch data", variant: "destructive" });
+                console.error(error);
+            } finally {
+                setIsLoading(false);
+            }
         }
-    }, [id, form, router, toast]);
+        if (id && user) {
+            fetchData();
+        }
+    }, [id, form, router, toast, user, isEditor, isAdmin]);
 
     async function onSubmit(values: FormValues) {
         if (!post) return;
