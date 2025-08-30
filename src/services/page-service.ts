@@ -69,7 +69,7 @@ export async function getAllPages(): Promise<Page[]> {
 export async function getPageBySlug(slug: string): Promise<Page | null> {
   try {
     // Exclude known routes that have their own dedicated pages
-    const excludedSlugs = ['about', 'contact', 'admin', 'blog'];
+    const excludedSlugs = ['about', 'contact', 'admin', 'blog', 'privacy-policy', 'terms-of-use', 'advertise-with-us', 'write-for-us', 'login', 'signup', 'profile'];
     if (excludedSlugs.includes(slug) || slug.startsWith('ai/') || slug.startsWith('admin/')) {
         return null;
     }
@@ -84,9 +84,16 @@ export async function getPageBySlug(slug: string): Promise<Page | null> {
 
     const doc = querySnapshot.docs[0];
     const data = doc.data();
+    const createdAt = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A';
+    const updatedAt = data.updatedAt?.toDate ? data.updatedAt.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A';
+    
     return {
       id: doc.id,
-      ...data
+      slug: data.slug,
+      title: data.title,
+      content: data.content,
+      createdAt,
+      updatedAt,
     } as Page;
   } catch (error) {
     console.error("Error getting page by slug: ", error);

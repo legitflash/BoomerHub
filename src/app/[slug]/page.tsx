@@ -4,6 +4,12 @@ import { getPageBySlug } from '@/services/page-service';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function CustomPage({ params }: { params: { slug: string } }) {
+  // A simple check to avoid trying to render known static routes with this dynamic page.
+  const staticRoutes = ['about', 'contact', 'advertise-with-us', 'write-for-us', 'login', 'signup', 'profile', 'privacy-policy', 'terms-of-use'];
+  if (staticRoutes.includes(params.slug) || params.slug.startsWith('ai') || params.slug.startsWith('blog') || params.slug.startsWith('admin')) {
+    notFound();
+  }
+
   const page = await getPageBySlug(params.slug);
 
   if (!page) {
