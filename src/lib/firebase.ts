@@ -6,15 +6,15 @@ import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration is now loaded from environment variables
 const firebaseConfig = {
-  "projectId": "boomer-academy",
-  "appId": "1:505117928434:web:56384349d9c03b33a4196b",
-  "storageBucket": "boomer-academy.firebasestorage.app",
-  "apiKey": "AIzaSyAOw7XczLuooO1ZUwWcZAub1R_v48zAOs4",
-  "authDomain": "boomer-academy.firebaseapp.com",
-  "measurementId": "",
-  "messagingSenderId": "505117928434"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
