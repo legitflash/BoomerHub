@@ -240,6 +240,9 @@ export default function CreatePredictionPage() {
                                                   {...field} 
                                                 />
                                             </FormControl>
+                                             <FormDescription>
+                                                You can use HTML tags for formatting (e.g., &lt;b&gt;bold&lt;/b&gt;, &lt;p&gt;paragraph&lt;/p&gt;).
+                                            </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -276,7 +279,3 @@ export default function CreatePredictionPage() {
         </div>
     );
 }
-
-    
-
-    

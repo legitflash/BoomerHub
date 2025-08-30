@@ -38,9 +38,8 @@ export async function seedPredictions(): Promise<void> {
   }
 }
 
-// Ensure seeding is attempted when the service is loaded
-// In a real app, you might run this as a separate deployment script.
-seedPredictions();
+// We will not run the seeder by default anymore
+// seedPredictions();
 
 
 // Function to create a new prediction in Firestore
@@ -79,6 +78,7 @@ export async function getAllPredictions(): Promise<Prediction[]> {
         isHot: data.isHot,
         teams: data.teams,
         analysis: data.analysis,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
       };
     });
 

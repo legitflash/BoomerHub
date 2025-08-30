@@ -1,16 +1,16 @@
 
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { predictions } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Check, TrendingUp, Users, Shield, X, Flame } from 'lucide-react';
 import Image from 'next/image';
 import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
+import { getPredictionById } from '@/services/prediction-service';
 
 export default async function MatchAnalysisPage({ params: { id } }: { params: { id: string } }) {
-  const prediction = predictions.find((p) => p.id.toString() === id);
+  const prediction = await getPredictionById(id);
 
   if (!prediction) {
     notFound();
@@ -82,6 +82,17 @@ export default async function MatchAnalysisPage({ params: { id } }: { params: { 
           </CardContent>
         </Card>
       </header>
+      
+      {prediction.analysis && (
+        <Card className="mb-8">
+            <CardHeader>
+                <CardTitle>Expert Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: prediction.analysis }} />
+            </CardContent>
+        </Card>
+      )}
 
       <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
         <div className="grid md:grid-cols-2 gap-8 mb-8">
@@ -103,7 +114,7 @@ export default async function MatchAnalysisPage({ params: { id } }: { params: { 
             </Card>
         </div>
 
-        <h2>Expert Opinion & Rationale</h2>
+        <h2>AI Generated Opinion & Rationale</h2>
         <p>
             {analysis.expertOpinion}
         </p>
@@ -138,10 +149,4 @@ export default async function MatchAnalysisPage({ params: { id } }: { params: { 
       </div>
     </div>
   );
-}
-
-export async function generateStaticParams() {
-  return predictions.map((p) => ({
-    id: p.id.toString(),
-  }));
 }
