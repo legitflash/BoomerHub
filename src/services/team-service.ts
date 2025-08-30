@@ -124,6 +124,8 @@ export async function getTeamMemberBySlug(slug: string): Promise<TeamMember | nu
       role: data.role,
       image: data.image,
       description: data.description || '',
+      email: data.email,
+      userRole: data.userRole,
     };
   } catch (error) {
     console.error("Error getting team member by slug: ", error);
