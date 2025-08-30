@@ -1,7 +1,7 @@
 
 'use client';
 
-import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -12,6 +12,10 @@ interface PaginationControlsProps {
 }
 
 export default function PaginationControls({ currentPage, totalPages, baseUrl }: PaginationControlsProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const hasPreviousPage = currentPage > 1;
   const hasNextPage = currentPage < totalPages;
 
@@ -19,8 +23,16 @@ export default function PaginationControls({ currentPage, totalPages, baseUrl }:
     return null;
   }
 
+  const handlePageChange = (page: number) => {
+    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    current.set('page', String(page));
+    const search = current.toString();
+    const query = search ? `?${search}` : '';
+    router.push(`${pathname}${query}`);
+  };
+
   const getPageNumbers = () => {
-    const pageNumbers = [];
+    const pageNumbers: (number | string)[] = [];
     // Show first page
     if (currentPage > 2) {
         pageNumbers.push(1);
@@ -51,10 +63,8 @@ export default function PaginationControls({ currentPage, totalPages, baseUrl }:
 
   return (
     <div className="flex items-center justify-center gap-2">
-      <Button variant="outline" size="icon" asChild disabled={!hasPreviousPage}>
-        <Link href={`${baseUrl}?page=${currentPage - 1}`} scroll={false}>
+      <Button variant="outline" size="icon" disabled={!hasPreviousPage} onClick={() => handlePageChange(currentPage - 1)}>
           <ChevronLeft />
-        </Link>
       </Button>
 
       {getPageNumbers().map((page, index) =>
@@ -63,9 +73,9 @@ export default function PaginationControls({ currentPage, totalPages, baseUrl }:
             key={`${page}-${index}`}
             variant={currentPage === page ? 'default' : 'outline'}
             size="icon"
-            asChild
+            onClick={() => handlePageChange(page)}
           >
-            <Link href={`${baseUrl}?page=${page}`} scroll={false}>{page}</Link>
+            {page}
           </Button>
         ) : (
           <span key={`ellipsis-${index}`} className="px-4 py-2">
@@ -74,11 +84,11 @@ export default function PaginationControls({ currentPage, totalPages, baseUrl }:
         )
       )}
 
-      <Button variant="outline" size="icon" asChild disabled={!hasNextPage}>
-        <Link href={`${baseUrl}?page=${currentPage + 1}`} scroll={false}>
+      <Button variant="outline" size="icon" disabled={!hasNextPage} onClick={() => handlePageChange(currentPage + 1)}>
           <ChevronRight />
-        </Link>
       </Button>
     </div>
   );
 }
+
+    

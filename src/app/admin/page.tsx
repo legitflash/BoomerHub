@@ -30,11 +30,14 @@ import {
 import { handleDeleteTeamMember, handleDeletePost, handleDeleteCategory, handleDeletePrediction, handleDeletePage, handleDeleteAdvertisement } from "../actions";
 import { useAuth } from "@/hooks/use-auth";
 import PaginationControls from "@/components/blog/pagination-controls";
+import { useSearchParams } from 'next/navigation';
 
 const POSTS_PER_PAGE = 10;
 
-export default function AdminPage({ searchParams }: { searchParams: { page?: string } }) {
+export default function AdminPage() {
   const { user, isAdmin, isEditor, isLoading: isAuthLoading } = useAuth();
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page');
 
   const [allPosts, setAllPosts] = useState<Post[]>([]);
   const [paginatedPosts, setPaginatedPosts] = useState<Post[]>([]);
@@ -45,7 +48,7 @@ export default function AdminPage({ searchParams }: { searchParams: { page?: str
   const [ads, setAds] = useState<Advertisement[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
-  const currentPage = Number(searchParams?.page) || 1;
+  const currentPage = Number(page) || 1;
   const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
   
   useEffect(() => {
