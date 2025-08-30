@@ -44,6 +44,11 @@ export default function AdminPage() {
 
   useEffect(() => {
     async function fetchData() {
+        if (!user) {
+          setIsLoadingData(false);
+          return;
+        };
+
         setIsLoadingData(true);
         const [
             postsData, 
@@ -61,9 +66,9 @@ export default function AdminPage() {
             getAllAdvertisements()
         ]);
         
-        // Filter posts for editors
-        if (isEditor && !isAdmin && user) {
-            const authorName = user.displayName || user.email;
+        // Filter posts for editors, but show all for admins
+        if (isEditor && !isAdmin) {
+            const authorName = teamMembersData.find(member => member.email === user.email)?.name;
             setPosts(postsData.filter(post => post.author === authorName));
         } else {
             setPosts(postsData);

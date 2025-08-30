@@ -18,10 +18,6 @@ import { getSavesForPost } from '@/services/saves-service';
 import { handleToggleSavePost } from '@/app/actions';
 import { getActiveAdvertisementsByPlacement } from '@/services/ad-service';
 
-const getPostContentAsText = (element: HTMLElement | null) => {
-    return element?.textContent || '';
-}
-
 function slugify(text: string) {
   return text
     .toString()
@@ -33,6 +29,9 @@ function slugify(text: string) {
     .replace(/-+$/, ''); // Trim - from end of text
 }
 
+const getPostContentAsText = (element: HTMLElement | null) => {
+    return element?.textContent || '';
+}
 
 const AdBanner = ({ ad }: { ad: Advertisement }) => {
     return (
@@ -166,10 +165,10 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
 
     setIsTranslating(true);
     if (originalContentRef.current === null && articleRef.current) {
-        originalContentRef.current = getPostContentAsText(articleRef.current);
+        originalContentRef.current = articleRef.current.innerHTML;
     }
     
-    if (!originalContentRef.current) {
+    if (!articleRef.current?.textContent) {
          toast({
             variant: "destructive",
             title: "Translation Failed",
@@ -180,7 +179,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
     }
 
     try {
-        const result = await translateText({ text: originalContentRef.current, targetLanguage: language });
+        const result = await translateText({ text: articleRef.current.textContent, targetLanguage: language });
         setTranslatedContent(result.translatedText);
     } catch (error) {
         console.error("Translation failed:", error);
@@ -215,7 +214,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
                       <AvatarImage src={post.authorImage} alt={post.author} />
                       <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <span>{post.author}</span>
+                      <Link href={`/author/${post.authorSlug}`} className="hover:underline">{post.author}</Link>
                   </div>
                   <span>&middot;</span>
                   <span>{post.date}</span>

@@ -62,18 +62,15 @@ export default function CreatePostPage() {
             setTeamMembers(fetchedTeamMembers);
 
             // Set default author if user is editor but not admin
-            if (isEditor && user) {
-                const authorName = user.displayName || user.email;
-                if (authorName) {
-                    const memberExists = fetchedTeamMembers.some(member => member.name === authorName);
-                    if (memberExists) {
-                        form.setValue('author', authorName);
-                    }
+            if (isEditor && !isAdmin && user) {
+                const currentMember = fetchedTeamMembers.find(member => member.email === user.email);
+                if (currentMember) {
+                    form.setValue('author', currentMember.name);
                 }
             }
         }
         fetchData();
-    }, [isEditor, user, form]);
+    }, [isEditor, isAdmin, user, form]);
 
 
     async function onSubmit(values: FormValues) {
@@ -94,8 +91,6 @@ export default function CreatePostPage() {
             console.error("Failed to create post:", error);
         }
     }
-
-    const currentAuthor = form.watch('author');
 
     return (
         <div className="container py-12 md:py-16">

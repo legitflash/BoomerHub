@@ -90,7 +90,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
                   <AvatarImage src={post.authorImage} alt={post.author} />
                   <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <span>{post.author}</span>
+                <Link href={`/author/${post.authorSlug}`} className="hover:underline">{post.author}</Link>
                 <span>&middot;</span>
                 <span>{post.date}</span>
               </div>
