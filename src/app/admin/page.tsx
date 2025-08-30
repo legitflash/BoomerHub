@@ -32,7 +32,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 
 export default function AdminPage() {
-  const { isAdmin, isEditor, isLoading: isAuthLoading } = useAuth();
+  const { user, isAdmin, isEditor, isLoading: isAuthLoading } = useAuth();
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -60,7 +60,15 @@ export default function AdminPage() {
             getAllPages(),
             getAllAdvertisements()
         ]);
-        setPosts(postsData);
+        
+        // Filter posts for editors
+        if (isEditor && !isAdmin && user) {
+            const authorName = user.displayName || user.email;
+            setPosts(postsData.filter(post => post.author === authorName));
+        } else {
+            setPosts(postsData);
+        }
+
         setTeamMembers(teamMembersData);
         setPredictions(predictionsData);
         setCategories(categoriesData);
@@ -72,7 +80,7 @@ export default function AdminPage() {
     if (!isAuthLoading) {
         fetchData();
     }
-  }, [isAuthLoading]);
+  }, [isAuthLoading, isEditor, isAdmin, user]);
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {

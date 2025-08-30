@@ -36,21 +36,9 @@ type FormValues = z.infer<typeof formSchema>;
 export default function CreatePostPage() {
     const router = useRouter();
     const { toast } = useToast();
-    const { user, isAdmin } = useAuth();
+    const { user, isAdmin, isEditor } = useAuth();
     const [categories, setCategories] = useState<BlogCategory[]>([]);
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-
-    useEffect(() => {
-        async function fetchData() {
-            const [fetchedCategories, fetchedTeamMembers] = await Promise.all([
-                getAllCategories(),
-                getAllTeamMembers()
-            ]);
-            setCategories(fetchedCategories);
-            setTeamMembers(fetchedTeamMembers);
-        }
-        fetchData();
-    }, []);
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
@@ -60,15 +48,32 @@ export default function CreatePostPage() {
             category: '',
             image: '',
             content: '',
-            author: !isAdmin && user ? user.displayName || user.email || '' : '',
+            author: '',
         }
     });
 
     useEffect(() => {
-        if (user && !isAdmin) {
-            form.setValue('author', user.displayName || user.email || '');
+        async function fetchData() {
+            const [fetchedCategories, fetchedTeamMembers] = await Promise.all([
+                getAllCategories(),
+                getAllTeamMembers()
+            ]);
+            setCategories(fetchedCategories);
+            setTeamMembers(fetchedTeamMembers);
+
+            // Set default author if user is editor but not admin
+            if (isEditor && user) {
+                const authorName = user.displayName || user.email;
+                if (authorName) {
+                    const memberExists = fetchedTeamMembers.some(member => member.name === authorName);
+                    if (memberExists) {
+                        form.setValue('author', authorName);
+                    }
+                }
+            }
         }
-    }, [user, isAdmin, form]);
+        fetchData();
+    }, [isEditor, user, form]);
 
 
     async function onSubmit(values: FormValues) {
@@ -89,6 +94,8 @@ export default function CreatePostPage() {
             console.error("Failed to create post:", error);
         }
     }
+
+    const currentAuthor = form.watch('author');
 
     return (
         <div className="container py-12 md:py-16">
@@ -155,22 +162,22 @@ export default function CreatePostPage() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Author</FormLabel>
-                                                {isAdmin ? (
-                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                        <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select an author" />
-                                                        </SelectTrigger>
-                                                        </FormControl>
-                                                        <SelectContent>
-                                                        {teamMembers.map(member => (
-                                                            <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
-                                                        ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                ) : (
-                                                    <Input {...field} disabled />
-                                                )}
+                                                <Select 
+                                                    onValueChange={field.onChange} 
+                                                    value={field.value}
+                                                    disabled={isEditor && !isAdmin}
+                                                >
+                                                    <FormControl>
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select an author" />
+                                                    </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                    {teamMembers.map(member => (
+                                                        <SelectItem key={member.id} value={member.name}>{member.name}</SelectItem>
+                                                    ))}
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}

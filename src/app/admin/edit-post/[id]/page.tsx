@@ -39,7 +39,7 @@ export default function EditPostPage() {
     const router = useRouter();
     const params = useParams();
     const { toast } = useToast();
-    const { isAdmin } = useAuth();
+    const { isAdmin, isEditor } = useAuth();
     const [post, setPost] = useState<Post | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [categories, setCategories] = useState<BlogCategory[]>([]);
@@ -185,7 +185,7 @@ export default function EditPostPage() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Category</FormLabel>
-                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <Select onValueChange={field.onChange} value={field.value}>
                                                         <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select a category" />
@@ -207,8 +207,11 @@ export default function EditPostPage() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Author</FormLabel>
-                                                {isAdmin ? (
-                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <Select 
+                                                        onValueChange={field.onChange} 
+                                                        value={field.value}
+                                                        disabled={isEditor && !isAdmin}
+                                                    >
                                                         <FormControl>
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Select an author" />
@@ -220,9 +223,6 @@ export default function EditPostPage() {
                                                         ))}
                                                         </SelectContent>
                                                     </Select>
-                                                ) : (
-                                                    <Input {...field} disabled />
-                                                )}
                                                 <FormMessage />
                                             </FormItem>
                                         )}
