@@ -29,12 +29,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import { handleDeleteTeamMember, handleDeletePost, handleDeleteCategory, handleDeletePrediction, handleDeletePage, handleDeleteAdvertisement } from "../actions";
 import { useAuth } from "@/hooks/use-auth";
+import PaginationControls from "@/components/blog/pagination-controls";
 
+const POSTS_PER_PAGE = 10;
 
-export default function AdminPage() {
+export default function AdminPage({ searchParams }: { searchParams: { page?: string } }) {
   const { user, isAdmin, isEditor, isLoading: isAuthLoading } = useAuth();
 
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
+  const [paginatedPosts, setPaginatedPosts] = useState<Post[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [categories, setCategories] = useState<BlogCategory[]>([]);
@@ -42,6 +45,9 @@ export default function AdminPage() {
   const [ads, setAds] = useState<Advertisement[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
+  const currentPage = Number(searchParams?.page) || 1;
+  const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
+  
   useEffect(() => {
     async function fetchData() {
         if (!user) {
@@ -66,13 +72,13 @@ export default function AdminPage() {
             getAllAdvertisements()
         ]);
         
+        let filteredPosts = postsData;
         // Filter posts for editors, but show all for admins
         if (isEditor && !isAdmin) {
             const authorName = teamMembersData.find(member => member.email === user.email)?.name;
-            setPosts(postsData.filter(post => post.author === authorName));
-        } else {
-            setPosts(postsData);
+            filteredPosts = postsData.filter(post => post.author === authorName);
         }
+        setAllPosts(filteredPosts);
 
         setTeamMembers(teamMembersData);
         setPredictions(predictionsData);
@@ -86,6 +92,15 @@ export default function AdminPage() {
         fetchData();
     }
   }, [isAuthLoading, isEditor, isAdmin, user]);
+
+  useEffect(() => {
+    const paginated = allPosts.slice(
+        (currentPage - 1) * POSTS_PER_PAGE,
+        currentPage * POSTS_PER_PAGE
+    );
+    setPaginatedPosts(paginated);
+  }, [currentPage, allPosts]);
+
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
@@ -158,7 +173,7 @@ export default function AdminPage() {
                     </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                {posts.map((post) => (
+                {paginatedPosts.map((post) => (
                     <Card key={post.id} className="flex flex-col sm:flex-row items-center gap-4 p-4">
                     <Image 
                         src={post.image} 
@@ -204,6 +219,13 @@ export default function AdminPage() {
                     </div>
                     </Card>
                 ))}
+                 <div className="mt-8">
+                    <PaginationControls
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        baseUrl="/admin"
+                    />
+                </div>
                 </CardContent>
             </Card>
 
@@ -529,7 +551,7 @@ export default function AdminPage() {
                     </Button>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                {posts.map((post) => (
+                {paginatedPosts.map((post) => (
                     <Card key={post.id} className="flex flex-col sm:flex-row items-center gap-4 p-4">
                     <Image 
                         src={post.image} 
@@ -575,6 +597,13 @@ export default function AdminPage() {
                     </div>
                     </Card>
                 ))}
+                 <div className="mt-8">
+                    <PaginationControls
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        baseUrl="/admin"
+                    />
+                </div>
                 </CardContent>
             </Card>
             </div>
@@ -590,3 +619,5 @@ export default function AdminPage() {
     </div>
   );
 }
+
+    

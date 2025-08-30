@@ -66,7 +66,7 @@ export default async function Home() {
           </Button>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {blogPosts.slice(0, 4).map((post) => (
+          {blogPosts.slice(0, 10).map((post) => (
             <Card key={post.slug} className="group">
               <Link href={`/blog/${post.slug}`}>
                 <Image
@@ -100,3 +100,5 @@ export default async function Home() {
     </div>
   );
 }
+
+    

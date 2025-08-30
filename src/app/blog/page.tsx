@@ -25,7 +25,7 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
   Plane,
 };
 
-const POSTS_PER_PAGE = 6;
+const POSTS_PER_PAGE = 10;
 
 export default async function BlogPage({ searchParams }: { searchParams: { page?: string } }) {
   const allPosts = await getAllPosts();
@@ -110,3 +110,5 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
     </div>
   );
 }
+
+    
