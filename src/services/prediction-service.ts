@@ -4,7 +4,6 @@
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy, doc, getDoc, addDoc, serverTimestamp, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 import type { Prediction } from '@/lib/types';
-import { predictions as staticPredictions } from '@/lib/data'; // For one-time seeding
 
 type CreatePredictionData = Omit<Prediction, 'id'>;
 type UpdatePredictionData = Partial<CreatePredictionData>;
@@ -24,12 +23,8 @@ export async function seedPredictions(): Promise<void> {
 
   console.log("Seeding initial predictions...");
   const batch = writeBatch(db);
-  staticPredictions.forEach((prediction) => {
-    const { id, ...predictionData } = prediction; // Exclude the old static ID
-    const docRef = doc(collection(db, 'predictions'));
-    batch.set(docRef, { ...predictionData, createdAt: serverTimestamp() });
-  });
-
+  // staticPredictions is empty now, so this will do nothing.
+  
   try {
     await batch.commit();
     console.log("Successfully seeded predictions.");
@@ -78,6 +73,7 @@ export async function getAllPredictions(): Promise<Prediction[]> {
         isHot: data.isHot,
         teams: data.teams,
         analysis: data.analysis,
+        // Convert timestamp to string to avoid serialization errors
         createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
       };
     });
@@ -111,6 +107,7 @@ export async function getPredictionById(id: string): Promise<Prediction | null> 
         isHot: data.isHot,
         teams: data.teams,
         analysis: data.analysis,
+         // Convert timestamp to string to avoid serialization errors
         createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
     } as Prediction;
   } catch (error) {
