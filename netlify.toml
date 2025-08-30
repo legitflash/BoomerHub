@@ -1,9 +1,9 @@
 [build]
   command = "npm run build"
   publish = ".next"
-  environment = {
-    SECRETS_SCAN_OMIT_KEYS = "GEMINI_API_KEY,NEXT_PUBLIC_FIREBASE_API_KEY"
-  }
+
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "GEMINI_API_KEY,NEXT_PUBLIC_FIREBASE_API_KEY"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
