@@ -1,6 +1,6 @@
 
 import type { Prediction, TopCategory, BlogCategory, TeamMember } from './types';
-import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Bot, AudioLines, PiggyBank, Search } from 'lucide-react';
+import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Bot, AudioLines, PiggyBank, Search, Plane } from 'lucide-react';
 
 export const topCategories: TopCategory[] = [
   { name: 'Forex', icon: LineChart, slug: 'finance' },
@@ -22,6 +22,7 @@ export const blogCategories: BlogCategory[] = [
     { name: 'Sports', iconName: 'Gamepad', slug: 'sports' },
     { name: 'Top 10s', iconName: 'Trophy', slug: 'top-10s' },
     { name: 'Betting Predictions', iconName: 'TrendingUp', slug: 'betting-predictions' },
+    { name: 'Travel', iconName: 'Plane', slug: 'travel' },
 ];
 
 

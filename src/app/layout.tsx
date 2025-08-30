@@ -10,6 +10,7 @@ import { AuthProvider } from '@/hooks/use-auth';
 export const metadata: Metadata = {
   title: 'BoomerHub',
   description: 'Learn Skills. Earn Income. Get Certified.',
+  icons: null,
 };
 
 export default function RootLayout({

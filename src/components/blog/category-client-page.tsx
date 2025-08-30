@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Search, Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Plane } from 'lucide-react';
 import type { Post, BlogCategory } from '@/lib/types';
 
 interface BlogCategoryClientPageProps {
@@ -29,6 +29,7 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
   Gamepad,
   Trophy,
   TrendingUp,
+  Plane,
 };
 
 export default function BlogCategoryClientPage({ category, initialPosts }: BlogCategoryClientPageProps) {
