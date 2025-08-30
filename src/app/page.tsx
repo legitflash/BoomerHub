@@ -6,9 +6,9 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import IntelligentSearchForm from '@/components/search/intelligent-search-form';
 import { topCategories } from '@/lib/data';
 import { getAllPosts } from '@/services/post-service';
+import HeroSearch from '@/components/home/hero-search';
 
 export default async function Home() {
   const blogPosts = await getAllPosts();
@@ -28,7 +28,7 @@ export default async function Home() {
                   Explore our articles to master new skills in finance, tech, sports betting, and online business.
                 </p>
               </div>
-              <IntelligentSearchForm />
+              <HeroSearch />
             </div>
             <Image
               src="https://picsum.photos/1200/800"
@@ -100,5 +100,3 @@ export default async function Home() {
     </div>
   );
 }
-
-    
