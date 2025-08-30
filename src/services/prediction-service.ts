@@ -101,7 +101,17 @@ export async function getPredictionById(id: string): Promise<Prediction | null> 
     const data = docSnap.data();
     return {
         id: docSnap.id,
-        ...data
+        league: data.league,
+        match: data.match,
+        prediction: data.prediction,
+        correctScore: data.correctScore,
+        odds: data.odds,
+        confidence: data.confidence,
+        status: data.status,
+        isHot: data.isHot,
+        teams: data.teams,
+        analysis: data.analysis,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
     } as Prediction;
   } catch (error) {
     console.error("Error getting prediction by ID:", error);
