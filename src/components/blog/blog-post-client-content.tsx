@@ -87,16 +87,16 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
       try {
         await navigator.share({
           title: post.title,
-          text: `${post.description} via BoomerHub`,
+          text: `${post.description}`,
           url: window.location.href,
         });
       } catch (error: any) {
-        if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
-          fallbackCopyLink();
-        } else {
-          console.error('Error sharing:', error);
-          fallbackCopyLink();
+        // If the user cancels the share dialog, do nothing.
+        if (error.name === 'AbortError') {
+          return;
         }
+        console.error('Error sharing:', error);
+        fallbackCopyLink();
       }
     } else {
       fallbackCopyLink();
