@@ -1,12 +1,16 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Check, Flame, Send, TrendingUp, X } from "lucide-react";
 import Link from "next/link";
-import { predictions } from "@/lib/data";
+import { getAllPredictions } from "@/services/prediction-service";
+import type { Prediction } from "@/lib/types";
 
 
-export default function BettingPredictionsPage() {
+export default async function BettingPredictionsPage() {
+  const predictions: Prediction[] = await getAllPredictions();
+  
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "Won":
