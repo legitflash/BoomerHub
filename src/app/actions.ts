@@ -6,11 +6,12 @@ import { deleteTeamMember, updateTeamMember } from '@/services/team-service';
 import { deletePost, updatePost } from '@/services/post-service';
 import { deleteCategory, updateCategory } from '@/services/category-service';
 import { deletePage, getPageBySlug } from '@/services/page-service';
-import type { TeamMember, Post, BlogCategory, Submission, Prediction } from '@/lib/types';
+import type { TeamMember, Post, BlogCategory, Submission, Prediction, Advertisement } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { deletePrediction, updatePrediction } from '@/services/prediction-service';
 import { getSavesForPost, toggleSavePost, getSavedPostsForUser } from '@/services/saves-service';
 import { createSubmission } from '@/services/submission-service';
+import { deleteAdvertisement, updateAdvertisement } from '@/services/ad-service';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
   try {
@@ -197,6 +198,42 @@ export async function handleDeletePage(formData: FormData) {
     } catch (error) {
         console.error('Error deleting page:', error);
         throw new Error('Failed to delete page.');
+    }
+}
+
+export async function handleDeleteAdvertisement(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) {
+        throw new Error('Ad ID is required');
+    }
+    try {
+        await deleteAdvertisement(id);
+        revalidatePath('/admin');
+    } catch (error) {
+        console.error('Error deleting advertisement:', error);
+        throw new Error('Failed to delete advertisement.');
+    }
+}
+
+export async function handleUpdateAdvertisement(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) {
+        throw new Error('Ad ID is required for update');
+    }
+    
+    const adData = {
+        title: formData.get('title') as string,
+        content: formData.get('content') as string,
+        placement: formData.get('placement') as Advertisement['placement'],
+        isActive: formData.get('isActive') === 'on',
+    };
+
+    try {
+        await updateAdvertisement(id, adData);
+        revalidatePath('/admin');
+    } catch (error) {
+        console.error('Error updating advertisement:', error);
+        throw new Error('Failed to update advertisement.');
     }
 }
 

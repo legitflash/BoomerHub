@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Shield, UserPlus, Trophy, Folder, FilePlus, Inbox, Loader2 } from "lucide-react";
+import { PlusCircle, Shield, UserPlus, Trophy, Folder, FilePlus, Inbox, Loader2, Megaphone, EyeOff, Eye } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,6 +15,7 @@ import { getAllTeamMembers, type TeamMember } from "@/services/team-service";
 import { getAllPredictions, type Prediction } from "@/services/prediction-service";
 import { getAllCategories, type BlogCategory } from "@/services/category-service";
 import { getAllPages, type Page } from "@/services/page-service";
+import { getAllAdvertisements, type Advertisement } from "@/services/ad-service";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,7 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { handleDeleteTeamMember, handleDeletePost, handleDeleteCategory, handleDeletePrediction, handleDeletePage } from "../actions";
+import { handleDeleteTeamMember, handleDeletePost, handleDeleteCategory, handleDeletePrediction, handleDeletePage, handleDeleteAdvertisement } from "../actions";
 import { useAuth } from "@/hooks/use-auth";
 
 
@@ -38,6 +39,7 @@ export default function AdminPage() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [pages, setPages] = useState<Page[]>([]);
+  const [ads, setAds] = useState<Advertisement[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
   useEffect(() => {
@@ -48,19 +50,22 @@ export default function AdminPage() {
             teamMembersData, 
             predictionsData, 
             categoriesData, 
-            pagesData
+            pagesData,
+            adsData
         ] = await Promise.all([
             getAllPosts(),
             getAllTeamMembers(),
             getAllPredictions(),
             getAllCategories(),
-            getAllPages()
+            getAllPages(),
+            getAllAdvertisements()
         ]);
         setPosts(postsData);
         setTeamMembers(teamMembersData);
         setPredictions(predictionsData);
         setCategories(categoriesData);
         setPages(pagesData);
+        setAds(adsData);
         setIsLoadingData(false);
     }
     
@@ -174,6 +179,63 @@ export default function AdminPage() {
                                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                         <AlertDialogDescription>
                                             This action cannot be undone. This will permanently delete this post.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter className="mt-4">
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction type="submit">Delete</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </form>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
+                    </Card>
+                ))}
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader className="flex flex-row justify-between items-center">
+                    <div>
+                        <CardTitle className="flex items-center gap-2"><Megaphone/> Manage Advertisements</CardTitle>
+                        <CardDescription>
+                            Create, edit, and manage advertisements on your site.
+                        </CardDescription>
+                    </div>
+                    <Button asChild>
+                        <Link href="/admin/create-ad">
+                            <PlusCircle className="mr-2"/>
+                            Create New Ad
+                        </Link>
+                    </Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                {ads.map((ad) => (
+                    <Card key={ad.id} className="flex flex-col sm:flex-row items-center gap-4 p-4">
+                    <div className="flex-grow">
+                        <div className="flex items-center gap-2">
+                             {ad.isActive ? <Eye className="text-green-500" /> : <EyeOff className="text-red-500" />}
+                            <h3 className="font-semibold text-lg">{ad.title}</h3>
+                        </div>
+                        <div className="text-sm text-muted-foreground flex items-center gap-2 flex-wrap">
+                            <Badge variant="outline">{ad.placement}</Badge>
+                        </div>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={`/admin/edit-ad/${ad.id}`}>Edit</Link>
+                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive" size="sm">Delete</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <form action={handleDeleteAdvertisement}>
+                                    <input type="hidden" name="id" value={ad.id} />
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete this advertisement.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter className="mt-4">

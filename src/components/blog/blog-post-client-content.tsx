@@ -10,16 +10,26 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Share2, Loader2, Globe, Download, Bookmark } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Post } from '@/lib/types';
+import type { Post, Advertisement } from '@/lib/types';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { translateText } from '@/ai/flows/translate-text';
 import { useAuth } from '@/hooks/use-auth';
 import { getSavesForPost } from '@/services/saves-service';
 import { handleToggleSavePost } from '@/app/actions';
+import { getActiveAdvertisementsByPlacement } from '@/services/ad-service';
 
 const getPostContentAsText = (element: HTMLElement | null) => {
     return element?.textContent || '';
 }
+
+const AdBanner = ({ ad }: { ad: Advertisement }) => {
+    return (
+        <div 
+            className="my-8 p-4 border rounded-lg bg-muted/20 flex items-center justify-center"
+            dangerouslySetInnerHTML={{ __html: ad.content }}
+        />
+    );
+};
 
 export default function BlogPostContent({ post, relatedPosts }: { post: Post, relatedPosts: Post[] }) {
   const { toast } = useToast();
@@ -34,6 +44,9 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
   const [saveCount, setSaveCount] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
 
+  const [adBefore, setAdBefore] = useState<Advertisement | null>(null);
+  const [adAfter, setAdAfter] = useState<Advertisement | null>(null);
+
   useEffect(() => {
     const fetchSaveStatus = async () => {
       const { count, isSaved: userHasSaved } = await getSavesForPost(post.slug, user?.uid);
@@ -41,7 +54,18 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
       setIsSaved(userHasSaved);
     };
 
+    const fetchAds = async () => {
+        const [beforeAds, afterAds] = await Promise.all([
+            getActiveAdvertisementsByPlacement('before-post-content'),
+            getActiveAdvertisementsByPlacement('after-post-content')
+        ]);
+        // Display one random ad for each placement if available
+        if (beforeAds.length > 0) setAdBefore(beforeAds[Math.floor(Math.random() * beforeAds.length)]);
+        if (afterAds.length > 0) setAdAfter(afterAds[Math.floor(Math.random() * afterAds.length)]);
+    };
+
     fetchSaveStatus();
+    fetchAds();
   }, [post.slug, user]);
 
   const toggleSave = async () => {
@@ -220,6 +244,8 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
           crossOrigin="anonymous" 
         />
 
+        {adBefore && <AdBanner ad={adBefore} />}
+
         <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
           {isTranslating && (
              <div className="text-center p-8">
@@ -238,6 +264,8 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
           {!isTranslating && !translatedContent && articleBody}
 
         </div>
+        
+        {adAfter && <AdBanner ad={adAfter} />}
 
       </article>
 
