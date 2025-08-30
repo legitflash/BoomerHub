@@ -74,40 +74,48 @@ export function Header() {
                   <span className="font-bold">BoomerHub</span>
                 </Link>
                 <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
-                  <div className="flex flex-col space-y-3">
-                    <Link href="/" className="text-foreground font-semibold py-4">Home</Link>
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="blog" className="border-b-0">
-                        <AccordionTrigger>Blog</AccordionTrigger>
-                        <AccordionContent className="flex flex-col space-y-2 pl-4">
-                            {blogCategories.map((category) => (
-                            <Link key={category.slug} href={`/blog/category/${category.slug}`}>{category.name}</Link>
-                          ))}
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="ai-tools" className="border-b-0">
-                        <AccordionTrigger className="flex items-center gap-2"><Bot className="h-4 w-4" /> Boomerhub AI</AccordionTrigger>
-                        <AccordionContent className="flex flex-col space-y-2 pl-4">
-                            {aiToolsCategories.map((tool) => (
-                              <Link key={tool.slug} href={tool.slug} className="flex items-center gap-2">
-                              <tool.icon className="h-4 w-4" />
-                              {tool.name}
-                            </Link>
-                          ))}
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                     <Link href="/about" className="text-foreground py-4 border-t">About</Link>
-                     <Link href="/contact" className="text-foreground py-4 border-t">Contact</Link>
-                    {(isAdmin || isEditor) && <Link href="/admin" className="font-semibold text-primary flex items-center gap-2 border-t py-4"><Shield/> {isAdmin ? 'Admin Panel' : 'Editor Dashboard'}</Link>}
-                  </div>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="home" className="border-b-0">
+                        <Link href="/" className="text-foreground font-semibold py-4 w-full block">Home</Link>
+                    </AccordionItem>
+                    <AccordionItem value="blog" className="border-b-0">
+                      <AccordionTrigger>Blog</AccordionTrigger>
+                      <AccordionContent className="flex flex-col space-y-2 pl-4">
+                          {blogCategories.map((category) => (
+                          <Link key={category.slug} href={`/blog/category/${category.slug}`}>{category.name}</Link>
+                        ))}
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="ai-tools" className="border-b-0">
+                      <AccordionTrigger className="flex items-center gap-2"><Bot className="h-4 w-4" /> Boomerhub AI</AccordionTrigger>
+                      <AccordionContent className="flex flex-col space-y-2 pl-4">
+                          {aiToolsCategories.map((tool) => (
+                            <Link key={tool.slug} href={tool.slug} className="flex items-center gap-2">
+                            <tool.icon className="h-4 w-4" />
+                            {tool.name}
+                          </Link>
+                        ))}
+                      </AccordionContent>
+                    </AccordionItem>
+                    <AccordionItem value="about" className="border-b-0">
+                        <Link href="/about" className="text-foreground py-4 w-full block">About</Link>
+                    </AccordionItem>
+                    <AccordionItem value="contact" className="border-b-0">
+                        <Link href="/contact" className="text-foreground py-4 w-full block">Contact</Link>
+                    </AccordionItem>
+                     {(isAdmin || isEditor) && (
+                        <AccordionItem value="admin" className="border-b-0">
+                            <Link href="/admin" className="font-semibold text-primary flex items-center gap-2 py-4 w-full block"><Shield/> {isAdmin ? 'Admin Panel' : 'Editor Dashboard'}</Link>
+                        </AccordionItem>
+                     )}
+                  </Accordion>
                 </div>
               </SheetContent>
             </Sheet>
         </div>
 
         {/* Center: Logo */}
-        <div className="flex-1 flex justify-center">
+        <div className="flex justify-center">
             <Link href="/" className="flex items-center space-x-2">
                 <GraduationCap className="h-6 w-6 text-primary" />
                 <span className="font-bold">BoomerHub</span>
