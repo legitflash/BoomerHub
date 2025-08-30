@@ -76,7 +76,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
                 width={600}
                 height={400}
                 data-ai-hint={post.dataAiHint}
-                className="rounded-t-lg object-cover aspect-video"
+                className="w-full rounded-t-lg object-cover aspect-video"
               />
             </Link>
             <CardContent className="p-4 space-y-2 flex-grow flex flex-col">
