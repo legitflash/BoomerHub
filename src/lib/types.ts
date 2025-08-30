@@ -77,6 +77,8 @@ export type TeamMember = {
   role: string;
   image: string;
   description: string;
+  email?: string;
+  userRole?: 'admin' | 'editor' | 'member';
 };
 
 export type SavedPost = {

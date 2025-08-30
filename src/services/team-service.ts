@@ -4,9 +4,10 @@
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, deleteDoc, getDoc, updateDoc, where } from 'firebase/firestore';
 import type { TeamMember } from '@/lib/types';
+import { findUserByEmail, updateUserRole } from './user-service';
 
 type CreateTeamMemberData = Omit<TeamMember, 'id' | 'slug'>;
-type UpdateTeamMemberData = Omit<TeamMember, 'id' | 'slug'>;
+type UpdateTeamMemberData = Partial<Omit<TeamMember, 'id' | 'slug'>>;
 
 function slugify(text: string) {
   return text
@@ -30,6 +31,18 @@ export async function addTeamMember(memberData: CreateTeamMemberData): Promise<s
             slug,
             createdAt: serverTimestamp(),
         });
+
+        // If email and userRole are provided, update the user's role in the 'users' collection
+        if (memberData.email && memberData.userRole) {
+            const user = await findUserByEmail(memberData.email);
+            if (user) {
+                await updateUserRole(user.uid, memberData.userRole);
+            } else {
+                // Optionally handle cases where no user is found for the email
+                console.warn(`No user found with email ${memberData.email}. Role not assigned.`);
+            }
+        }
+
         console.log("Team member added with ID: ", docRef.id);
         return docRef.id;
     } catch (error) {
@@ -53,6 +66,8 @@ export async function getAllTeamMembers(): Promise<TeamMember[]> {
                 role: data.role,
                 image: data.image,
                 description: data.description || '',
+                email: data.email,
+                userRole: data.userRole,
             };
         });
 
@@ -81,6 +96,8 @@ export async function getTeamMemberById(id: string): Promise<TeamMember | null> 
             role: data.role,
             image: data.image,
             description: data.description || '',
+            email: data.email || '',
+            userRole: data.userRole || 'member',
         };
     } catch (error) {
         console.error("Error getting team member:", error);
@@ -117,12 +134,25 @@ export async function getTeamMemberBySlug(slug: string): Promise<TeamMember | nu
 export async function updateTeamMember(id: string, memberData: UpdateTeamMemberData): Promise<void> {
     try {
         const memberDocRef = doc(db, 'team', id);
-        const slug = slugify(memberData.name);
+        const slug = memberData.name ? slugify(memberData.name) : undefined;
+        
+        const dataToUpdate: any = { ...memberData };
+        if (slug) {
+            dataToUpdate.slug = slug;
+        }
+        
         await updateDoc(memberDocRef, {
-            ...memberData,
-            slug,
+            ...dataToUpdate,
             updatedAt: serverTimestamp(),
         });
+
+        // If email and userRole are provided, update the user's role
+        if (memberData.email && memberData.userRole) {
+            const user = await findUserByEmail(memberData.email);
+            if (user) {
+                await updateUserRole(user.uid, memberData.userRole);
+            }
+        }
         console.log("Team member updated with ID: ", id);
     } catch (error) {
         console.error("Error updating team member: ", error);
@@ -133,6 +163,8 @@ export async function updateTeamMember(id: string, memberData: UpdateTeamMemberD
 
 export async function deleteTeamMember(id: string): Promise<void> {
     try {
+        // Here you might also want to remove the user's 'editor' or 'admin' role
+        // but for now, we'll just delete the team member profile.
         const memberDocRef = doc(db, 'team', id);
         await deleteDoc(memberDocRef);
         console.log("Team member deleted with ID: ", id);

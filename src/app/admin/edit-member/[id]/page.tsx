@@ -10,8 +10,9 @@ import { useRouter, useParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, UserCog } from 'lucide-react';
@@ -25,6 +26,8 @@ const formSchema = z.object({
   role: z.string().min(2, { message: "Role must be at least 2 characters." }),
   image: z.string().url({ message: "Please enter a valid image URL." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
+  email: z.string().email({ message: "Please enter a valid email." }),
+  userRole: z.enum(['member', 'editor', 'admin']),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -40,12 +43,6 @@ export default function EditMemberPage() {
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: {
-            name: '',
-            role: '',
-            image: '',
-            description: '',
-        }
     });
 
     useEffect(() => {
@@ -56,7 +53,14 @@ export default function EditMemberPage() {
                     const fetchedMember = await getTeamMemberById(id);
                     if (fetchedMember) {
                         setMember(fetchedMember);
-                        form.reset(fetchedMember);
+                        form.reset({
+                            name: fetchedMember.name,
+                            role: fetchedMember.role,
+                            image: fetchedMember.image,
+                            description: fetchedMember.description,
+                            email: fetchedMember.email || '',
+                            userRole: fetchedMember.userRole || 'member',
+                        });
                     } else {
                         toast({ title: "Member not found", variant: "destructive" });
                         router.push('/admin');
@@ -76,16 +80,15 @@ export default function EditMemberPage() {
         try {
             const formData = new FormData();
             formData.append('id', id);
-            formData.append('name', values.name);
-            formData.append('role', values.role);
-            formData.append('image', values.image);
-            formData.append('description', values.description);
+            Object.entries(values).forEach(([key, value]) => {
+                formData.append(key, value as string);
+            });
 
             await handleUpdateTeamMember(formData);
             
             toast({
                 title: "Member Updated!",
-                description: "The team member's details have been successfully updated.",
+                description: "The team member's details and role have been successfully updated.",
                 variant: "success",
             });
             router.push('/admin');
@@ -109,7 +112,7 @@ export default function EditMemberPage() {
                            <Skeleton className="h-8 w-1/2" />
                            <Skeleton className="h-4 w-3/4" />
                         </CardHeader>
-                        <CardContent className="space-y-6">
+                        <CardContent className="space-y-6 pt-6">
                             <Skeleton className="h-10 w-full" />
                             <Skeleton className="h-10 w-full" />
                             <Skeleton className="h-10 w-full" />
@@ -163,10 +166,48 @@ export default function EditMemberPage() {
                                     name="role"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Role / Title</FormLabel>
+                                            <FormLabel>Public Role / Title</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="e.g., Lead Developer" {...field} />
+                                                <Input placeholder="e.g., Lead Developer, Senior Editor" {...field} />
                                             </FormControl>
+                                             <FormDescription>This is the role displayed on their public profile.</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>User's Email Address</FormLabel>
+                                            <FormControl>
+                                                <Input type="email" placeholder="user@example.com" {...field} />
+                                            </FormControl>
+                                            <FormDescription>The email must match their registered user account to link them.</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="userRole"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Site Role</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a role for this user" />
+                                                </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="member">Member</SelectItem>
+                                                    <SelectItem value="editor">Editor</SelectItem>
+                                                    <SelectItem value="admin">Admin</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormDescription>This sets their permissions (e.g., Editor can write posts).</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}

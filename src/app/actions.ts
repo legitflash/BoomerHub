@@ -12,6 +12,7 @@ import { deletePrediction, updatePrediction } from '@/services/prediction-servic
 import { getSavesForPost, toggleSavePost, getSavedPostsForUser } from '@/services/saves-service';
 import { createSubmission } from '@/services/submission-service';
 import { deleteAdvertisement, updateAdvertisement } from '@/services/ad-service';
+import { findUserByEmail, updateUserRole } from '@/services/user-service';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
   try {
@@ -55,15 +56,23 @@ export async function handleUpdateTeamMember(formData: FormData) {
     const role = formData.get('role') as string;
     const image = formData.get('image') as string;
     const description = formData.get('description') as string;
+    const email = formData.get('email') as string | undefined;
+    const userRole = formData.get('userRole') as 'admin' | 'editor' | 'member' | undefined;
 
     if (!id) {
         throw new Error('Member ID is required for update');
     }
 
-    const memberData = { name, role, image, description };
-
+    const memberData: Partial<TeamMember> = { name, role, image, description, email, userRole };
+    
     try {
         await updateTeamMember(id, memberData);
+        if (email && userRole) {
+            const user = await findUserByEmail(email);
+            if (user) {
+                await updateUserRole(user.uid, userRole);
+            }
+        }
         revalidatePath('/admin');
     } catch (error) {
         console.error('Error updating team member:', error);
