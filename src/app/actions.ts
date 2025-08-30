@@ -174,6 +174,7 @@ export async function handleUpdatePrediction(formData: FormData) {
         status: formData.get('status') as string,
         isHot: formData.get('isHot') === 'on',
         analysis: formData.get('analysis') as string,
+        matchDate: formData.get('matchDate') as string,
     };
 
     try {

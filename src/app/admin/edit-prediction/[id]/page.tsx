@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
+import { format } from "date-fns"
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,10 +18,13 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Trophy } from 'lucide-react';
+import { ArrowLeft, Trophy, Calendar as CalendarIcon } from 'lucide-react';
 import { getPredictionById } from '@/services/prediction-service';
 import type { Prediction } from '@/lib/types';
 import { handleUpdatePrediction } from '@/app/actions';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 const formSchema = z.object({
   match: z.string().min(5, { message: "Match name must be at least 5 characters." }),
@@ -32,6 +36,7 @@ const formSchema = z.object({
   status: z.enum(['Pending', 'Won', 'Lost']),
   isHot: z.boolean().default(false),
   analysis: z.string().optional(),
+  matchDate: z.date().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -60,6 +65,7 @@ export default function EditPredictionPage() {
                         form.reset({
                             ...fetchedPrediction,
                             analysis: fetchedPrediction.analysis || '',
+                            matchDate: fetchedPrediction.matchDate ? new Date(fetchedPrediction.matchDate) : undefined,
                         });
                     } else {
                         toast({ title: "Prediction not found", variant: "destructive" });
@@ -81,11 +87,17 @@ export default function EditPredictionPage() {
         try {
             const formData = new FormData();
             formData.append('id', id);
-            Object.entries(values).forEach(([key, value]) => {
+
+            const updatedValues: any = {
+                ...values,
+                matchDate: values.matchDate ? format(values.matchDate, 'yyyy-MM-dd') : '',
+            };
+
+            Object.entries(updatedValues).forEach(([key, value]) => {
                 if (typeof value === 'boolean') {
                     formData.append(key, value ? 'on' : 'off');
                 } else if(value !== undefined && value !== null) {
-                    formData.append(key, value);
+                    formData.append(key, value as string);
                 }
             });
 
@@ -164,6 +176,44 @@ export default function EditPredictionPage() {
                                         </FormItem>
                                     )}
                                 />
+                                 <FormField
+                                    control={form.control}
+                                    name="matchDate"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-col">
+                                        <FormLabel>Match Date</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                variant={"outline"}
+                                                className={cn(
+                                                    "w-full pl-3 text-left font-normal",
+                                                    !field.value && "text-muted-foreground"
+                                                )}
+                                                >
+                                                {field.value ? (
+                                                    format(field.value, "PPP")
+                                                ) : (
+                                                    <span>Pick a date</span>
+                                                )}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={field.value}
+                                                onSelect={field.onChange}
+                                                initialFocus
+                                            />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                        </FormItem>
+                                    )}
+                                    />
                                  <FormField
                                     control={form.control}
                                     name="league"

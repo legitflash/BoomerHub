@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Check, Flame, Send, TrendingUp, X } from "lucide-react";
+import { ArrowLeft, Check, Flame, Send, TrendingUp, X, Calendar } from "lucide-react";
 import Link from "next/link";
 import { getAllPredictions } from "@/services/prediction-service";
 import type { Prediction } from "@/lib/types";
@@ -63,6 +63,12 @@ export default async function BettingPredictionsPage() {
             <CardHeader>
               <CardTitle>{p.match}</CardTitle>
               <CardDescription>{p.league}</CardDescription>
+               {p.matchDate && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
+                  <Calendar className="h-4 w-4" />
+                  <span>{p.matchDate}</span>
+                </div>
+              )}
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
               <div>

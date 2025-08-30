@@ -4,40 +4,11 @@
 import { db } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy, doc, getDoc, addDoc, serverTimestamp, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 import type { Prediction } from '@/lib/types';
+import { format, toDate } from 'date-fns';
 
 type CreatePredictionData = Omit<Prediction, 'id'>;
 type UpdatePredictionData = Partial<CreatePredictionData>;
 
-
-// Function to seed initial data from static file to Firestore.
-// This should only be run once.
-export async function seedPredictions(): Promise<void> {
-  const predictionsCollection = collection(db, 'predictions');
-  const snapshot = await getDocs(query(predictionsCollection));
-
-  // Only seed if the collection is empty
-  if (!snapshot.empty) {
-    // console.log("Predictions collection already exists. Skipping seed.");
-    return;
-  }
-
-  console.log("Seeding initial predictions...");
-  const batch = writeBatch(db);
-  // staticPredictions is empty now, so this will do nothing.
-  
-  try {
-    await batch.commit();
-    console.log("Successfully seeded predictions.");
-  } catch (error) {
-    console.error("Error seeding predictions: ", error);
-  }
-}
-
-// We will not run the seeder by default anymore
-// seedPredictions();
-
-
-// Function to create a new prediction in Firestore
 export async function createPrediction(predictionData: CreatePredictionData): Promise<string> {
   try {
     const predictionsCollection = collection(db, 'predictions');
@@ -52,7 +23,6 @@ export async function createPrediction(predictionData: CreatePredictionData): Pr
   }
 }
 
-// Function to fetch all predictions from Firestore
 export async function getAllPredictions(): Promise<Prediction[]> {
   try {
     const predictionsCollection = collection(db, 'predictions');
@@ -61,6 +31,8 @@ export async function getAllPredictions(): Promise<Prediction[]> {
 
     const predictions: Prediction[] = querySnapshot.docs.map(doc => {
       const data = doc.data();
+      const matchDate = data.matchDate ? toDate(new Date(data.matchDate)) : null;
+
       return {
         id: doc.id,
         league: data.league,
@@ -73,7 +45,7 @@ export async function getAllPredictions(): Promise<Prediction[]> {
         isHot: data.isHot,
         teams: data.teams,
         analysis: data.analysis,
-        // Convert timestamp to string to avoid serialization errors
+        matchDate: matchDate ? format(matchDate, 'PPP') : undefined,
         createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
       };
     });
@@ -107,7 +79,7 @@ export async function getPredictionById(id: string): Promise<Prediction | null> 
         isHot: data.isHot,
         teams: data.teams,
         analysis: data.analysis,
-         // Convert timestamp to string to avoid serialization errors
+        matchDate: data.matchDate,
         createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
     } as Prediction;
   } catch (error) {
@@ -126,7 +98,6 @@ export async function updatePrediction(id: string, predictionData: UpdatePredict
   }
 }
 
-// Function to delete a prediction from Firestore
 export async function deletePrediction(id: string): Promise<void> {
   try {
     const predictionDocRef = doc(db, 'predictions', id);

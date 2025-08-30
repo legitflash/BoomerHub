@@ -53,6 +53,7 @@ export type Prediction = {
   status: 'Won' | 'Lost' | 'Pending';
   isHot: boolean;
   analysis?: string;
+  matchDate?: string;
   teams: {
     home: {
       name:string;
