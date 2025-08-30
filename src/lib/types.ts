@@ -11,6 +11,7 @@ export type Post = {
   image: string;
   dataAiHint: string;
   author: string;
+  authorSlug: string;
   authorImage?: string;
   date: string;
 };
@@ -72,6 +73,7 @@ export type Prediction = {
 export type TeamMember = {
   id: string;
   name: string;
+  slug: string;
   role: string;
   image: string;
   description: string;

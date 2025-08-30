@@ -2,18 +2,32 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, deleteDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, deleteDoc, getDoc, updateDoc, where } from 'firebase/firestore';
 import type { TeamMember } from '@/lib/types';
 
-type CreateTeamMemberData = Omit<TeamMember, 'id'>;
-type UpdateTeamMemberData = Omit<TeamMember, 'id'>;
+type CreateTeamMemberData = Omit<TeamMember, 'id' | 'slug'>;
+type UpdateTeamMemberData = Omit<TeamMember, 'id' | 'slug'>;
+
+function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')       // Replace spaces with -
+    .replace(/[^\w-]+/g, '')    // Remove all non-word chars
+    .replace(/--+/g, '-')       // Replace multiple - with single -
+    .replace(/^-+/, '')          // Trim - from start of text
+    .replace(/-+$/, '');         // Trim - from end of text
+}
 
 
 export async function addTeamMember(memberData: CreateTeamMemberData): Promise<string> {
     try {
         const teamCollection = collection(db, 'team');
+        const slug = slugify(memberData.name);
+
         const docRef = await addDoc(teamCollection, {
             ...memberData,
+            slug,
             createdAt: serverTimestamp(),
         });
         console.log("Team member added with ID: ", docRef.id);
@@ -35,6 +49,7 @@ export async function getAllTeamMembers(): Promise<TeamMember[]> {
             return {
                 id: doc.id,
                 name: data.name,
+                slug: data.slug || slugify(data.name),
                 role: data.role,
                 image: data.image,
                 description: data.description || '',
@@ -62,6 +77,7 @@ export async function getTeamMemberById(id: string): Promise<TeamMember | null> 
         return {
             id: docSnap.id,
             name: data.name,
+            slug: data.slug || slugify(data.name),
             role: data.role,
             image: data.image,
             description: data.description || '',
@@ -72,11 +88,39 @@ export async function getTeamMemberById(id: string): Promise<TeamMember | null> 
     }
 }
 
+export async function getTeamMemberBySlug(slug: string): Promise<TeamMember | null> {
+  try {
+    const teamCollection = collection(db, 'team');
+    const q = query(teamCollection, where('slug', '==', slug));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      return null;
+    }
+
+    const doc = querySnapshot.docs[0];
+    const data = doc.data();
+    return {
+      id: doc.id,
+      name: data.name,
+      slug: data.slug,
+      role: data.role,
+      image: data.image,
+      description: data.description || '',
+    };
+  } catch (error) {
+    console.error("Error getting team member by slug: ", error);
+    return null;
+  }
+}
+
 export async function updateTeamMember(id: string, memberData: UpdateTeamMemberData): Promise<void> {
     try {
         const memberDocRef = doc(db, 'team', id);
+        const slug = slugify(memberData.name);
         await updateDoc(memberDocRef, {
             ...memberData,
+            slug,
             updatedAt: serverTimestamp(),
         });
         console.log("Team member updated with ID: ", id);

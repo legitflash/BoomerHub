@@ -19,23 +19,36 @@ type CreatePostData = {
 
 type UpdatePostData = CreatePostData;
 
+function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')       // Replace spaces with -
+    .replace(/[^\w-]+/g, '')    // Remove all non-word chars
+    .replace(/--+/g, '-')       // Replace multiple - with single -
+    .replace(/^-+/, '')          // Trim - from start of text
+    .replace(/-+$/, '');         // Trim - from end of text
+}
+
+
 // Function to create a new post in Firestore
 export async function createPost(postData: CreatePostData): Promise<string> {
   try {
-    console.log("New generated articles are available at src/lib/generated-articles/. To create the post, go to the admin panel, click 'Create New Post', and copy the content from the relevant file into the 'Main Content' field.");
     const postsCollection = collection(db, 'posts');
     const teamMembers = await getAllTeamMembers();
     const authorData = teamMembers.find(member => member.name === postData.author);
     
     const authorImage = authorData ? authorData.image : `https://i.pravatar.cc/40?u=${postData.author}`;
+    const authorSlug = authorData ? authorData.slug : slugify(postData.author);
 
     const docRef = await addDoc(postsCollection, {
       ...postData,
       authorImage: authorImage,
+      authorSlug: authorSlug,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
        // A simple slug generation. A more robust solution might handle special characters better.
-      slug: postData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
+      slug: slugify(postData.title),
       date: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
       dataAiHint: 'article content', // Placeholder AI hint
     });
@@ -67,6 +80,7 @@ export async function getAllPosts(): Promise<Post[]> {
         image: data.image,
         dataAiHint: data.dataAiHint,
         author: data.author,
+        authorSlug: data.authorSlug || slugify(data.author),
         authorImage: data.authorImage,
         // Convert Firestore Timestamp to a simple date string if necessary
         date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
@@ -103,6 +117,7 @@ export async function getPostById(id: string): Promise<Post | null> {
         image: data.image,
         dataAiHint: data.dataAiHint,
         author: data.author,
+        authorSlug: data.authorSlug || slugify(data.author),
         authorImage: data.authorImage,
         date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
     };
@@ -136,12 +151,44 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       image: data.image,
       dataAiHint: data.dataAiHint,
       author: data.author,
+      authorSlug: data.authorSlug || slugify(data.author),
       authorImage: data.authorImage,
       date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
     };
   } catch (error) {
     console.error("Error getting document by slug: ", error);
     return null;
+  }
+}
+
+export async function getPostsByAuthorSlug(authorSlug: string): Promise<Post[]> {
+  try {
+    const postsCollection = collection(db, 'posts');
+    const q = query(postsCollection, where('authorSlug', '==', authorSlug), orderBy('createdAt', 'desc'));
+    const querySnapshot = await getDocs(q);
+
+    const posts: Post[] = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        slug: data.slug,
+        title: data.title,
+        category: data.category,
+        description: data.description,
+        content: data.content,
+        image: data.image,
+        dataAiHint: data.dataAiHint,
+        author: data.author,
+        authorSlug: data.authorSlug,
+        authorImage: data.authorImage,
+        date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
+      };
+    });
+
+    return posts;
+  } catch (error) {
+    console.error("Error getting posts by author: ", error);
+    return [];
   }
 }
 
@@ -152,11 +199,12 @@ export async function updatePost(id: string, postData: UpdatePostData): Promise<
     const teamMembers = await getAllTeamMembers();
     const authorData = teamMembers.find(member => member.name === postData.author);
 
-    const newSlug = postData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '');
+    const newSlug = slugify(postData.title);
     
     await updateDoc(postDocRef, {
       ...postData,
       authorImage: authorData ? authorData.image : `https://i.pravatar.cc/40?u=${postData.author}`,
+      authorSlug: authorData ? authorData.slug : slugify(postData.author),
       slug: newSlug,
       updatedAt: serverTimestamp(),
     });
