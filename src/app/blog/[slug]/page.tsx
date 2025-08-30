@@ -17,7 +17,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const allPosts = await getAllPosts();
   const relatedPosts = allPosts
     .filter((p) => p.category === post.category && p.slug !== post.slug)
-    .slice(0, 3);
+    .slice(0, 10);
 
   return <BlogPostContent post={post} relatedPosts={relatedPosts} />;
 }

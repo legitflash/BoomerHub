@@ -22,6 +22,18 @@ const getPostContentAsText = (element: HTMLElement | null) => {
     return element?.textContent || '';
 }
 
+function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/[^\w-]+/g, '') // Remove all non-word chars
+    .replace(/--+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start of text
+    .replace(/-+$/, ''); // Trim - from end of text
+}
+
+
 const AdBanner = ({ ad }: { ad: Advertisement }) => {
     return (
         <div 
@@ -266,6 +278,17 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
         </div>
         
         {adAfter && <AdBanner ad={adAfter} />}
+
+        <div className="mt-12 border-t pt-8">
+            <h3 className="text-lg font-semibold mb-4">READ MORE</h3>
+            <div className="flex flex-wrap gap-2">
+                <Button variant="outline" asChild>
+                    <Link href={`/blog/category/${slugify(post.category)}`}>
+                        {post.category}
+                    </Link>
+                </Button>
+            </div>
+        </div>
 
       </article>
 
