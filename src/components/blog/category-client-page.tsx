@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Script from 'next/script';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -77,6 +78,12 @@ export default function BlogCategoryClientPage({ category, initialPosts }: BlogC
         </div>
       </div>
       
+      {/* Adsterra Ad Banner */}
+      <div className="my-8 flex justify-center">
+        <Script async={true} data-cfasync="false" src="//chickenadjacent.com/f3f0d27c1b811dd6ad39758bea4c8f40/invoke.js" />
+        <div id="container-f3f0d27c1b811dd6ad39758bea4c8f40"></div>
+      </div>
+
       {filteredPosts.length > 0 ? (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {filteredPosts.map((post) => (
