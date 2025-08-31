@@ -9,9 +9,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { topCategories } from '@/lib/data';
 import { getAllPosts } from '@/services/post-service';
 import HeroSearch from '@/components/home/hero-search';
+import PaginationControls from '@/components/blog/pagination-controls';
 
-export default async function Home() {
+const POSTS_PER_PAGE = 10;
+
+export default async function Home({ searchParams }: { searchParams: { page?: string } }) {
   const blogPosts = await getAllPosts();
+  
+  const currentPage = Number(searchParams?.page) || 1;
+  const totalPages = Math.ceil(blogPosts.length / POSTS_PER_PAGE);
+
+  const paginatedPosts = blogPosts.slice(
+    (currentPage - 1) * POSTS_PER_PAGE,
+    currentPage * POSTS_PER_PAGE
+  );
+
 
   return (
     <div className="flex flex-col gap-16 md:gap-24">
@@ -19,16 +31,18 @@ export default async function Home() {
       <section className="pt-12 md:pt-24">
         <div className="container px-4 md:px-6">
           <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-            <div className="flex flex-col justify-center space-y-4">
+            <div className="flex flex-col justify-center space-y-4 text-center lg:text-left">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none font-headline">
                   Insights for Growth.
                 </h1>
-                <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                <p className="max-w-[600px] text-muted-foreground md:text-xl mx-auto lg:mx-0">
                   Explore our articles to master new skills in finance, tech, sports betting, and online business.
                 </p>
               </div>
-              <HeroSearch />
+              <div className="w-full max-w-sm mx-auto lg:mx-0">
+                <HeroSearch />
+              </div>
             </div>
             <Image
               src="https://picsum.photos/1200/800"
@@ -36,7 +50,7 @@ export default async function Home() {
               width={1200}
               height={800}
               data-ai-hint="learning online"
-              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last lg:aspect-square"
+              className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
             />
           </div>
         </div>
@@ -65,8 +79,8 @@ export default async function Home() {
             <Link href="/blog">View All <ArrowRight className="ml-2 h-4 w-4" /></Link>
           </Button>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {blogPosts.slice(0, 10).map((post) => (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {paginatedPosts.map((post) => (
             <Card key={post.slug} className="group">
               <Link href={`/blog/${post.slug}`}>
                 <Image
@@ -95,6 +109,13 @@ export default async function Home() {
               </CardContent>
             </Card>
           ))}
+        </div>
+        <div className="mt-12">
+            <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            baseUrl="/"
+            />
         </div>
       </section>
     </div>
