@@ -19,7 +19,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 
 const languages = [
-  "Spanish", "French", "German", "Japanese", "Chinese (Simplified)", "Italian", "Portuguese", "Russian", "Arabic", "Korean"
+  "Arabic", "Bengali", "Chinese (Simplified)", "Dutch", "French", "German", "Greek", "Hausa", "Hebrew", "Hindi", "Igbo", "Indonesian", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swahili", "Swedish", "Thai", "Turkish", "Vietnamese", "Yoruba"
 ];
 
 const formSchema = z.object({
