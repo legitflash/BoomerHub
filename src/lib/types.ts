@@ -119,3 +119,18 @@ export type Advertisement = {
     isActive: boolean;
     createdAt?: string;
 };
+
+export type CategoryFollow = {
+  userId: string;
+  categorySlug: string;
+};
+
+export type Notification = {
+  id: string;
+  userId: string;
+  postId: string;
+  postTitle: string;
+  categorySlug: string;
+  createdAt: string;
+  isRead: boolean;
+};

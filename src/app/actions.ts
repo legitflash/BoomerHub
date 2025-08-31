@@ -6,13 +6,14 @@ import { deleteTeamMember, updateTeamMember } from '@/services/team-service';
 import { deletePost, updatePost } from '@/services/post-service';
 import { deleteCategory, updateCategory } from '@/services/category-service';
 import { deletePage, getPageBySlug } from '@/services/page-service';
-import type { TeamMember, Post, BlogCategory, Submission, Prediction, Advertisement } from '@/lib/types';
+import type { TeamMember, Post, BlogCategory, Submission, Prediction, Advertisement, Notification } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { deletePrediction, updatePrediction } from '@/services/prediction-service';
 import { getSavesForPost, toggleSavePost, getSavedPostsForUser } from '@/services/saves-service';
 import { createSubmission } from '@/services/submission-service';
 import { deleteAdvertisement, updateAdvertisement } from '@/services/ad-service';
 import { findUserByEmail, updateUserRole } from '@/services/user-service';
+import { getNotificationsForUser, isFollowingCategory, toggleFollowCategory } from '@/services/notification-service';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
   try {
@@ -246,7 +247,6 @@ export async function handleUpdateAdvertisement(formData: FormData) {
     }
 }
 
-// New action for handling saved posts
 export async function handleToggleSavePost(postId: string, userId: string): Promise<{ isSaved: boolean }> {
   if (!userId) {
     throw new Error('User must be logged in to save posts.');
@@ -262,7 +262,6 @@ export async function handleToggleSavePost(postId: string, userId: string): Prom
   }
 }
 
-// New action to get saved posts for a user
 export async function handleGetSavedPosts(userId: string): Promise<Post[]> {
   if (!userId) {
     console.log("No user ID provided, returning empty array.");
@@ -275,4 +274,26 @@ export async function handleGetSavedPosts(userId: string): Promise<Post[]> {
     console.error('Error getting saved posts:', error);
     return [];
   }
+}
+
+// --- Category Follow and Notification Actions ---
+
+export async function handleIsFollowingCategory(userId: string, categorySlug: string): Promise<boolean> {
+    if (!userId) return false;
+    return isFollowingCategory(userId, categorySlug);
+}
+
+export async function handleToggleFollowCategory(userId: string, categorySlug: string): Promise<{ isFollowing: boolean }> {
+    if (!userId) {
+        throw new Error("User must be logged in to follow categories.");
+    }
+    const result = await toggleFollowCategory(userId, categorySlug);
+    revalidatePath(`/blog/category/${categorySlug}`);
+    revalidatePath('/profile');
+    return result;
+}
+
+export async function handleGetNotifications(userId: string): Promise<Notification[]> {
+    if (!userId) return [];
+    return getNotificationsForUser(userId);
 }

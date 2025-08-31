@@ -9,8 +9,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Plane } from 'lucide-react';
+import { ArrowLeft, Search, Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Plane, Rss, Loader2 } from 'lucide-react';
 import type { Post, BlogCategory } from '@/lib/types';
+import { useAuth } from '@/hooks/use-auth';
+import { handleIsFollowingCategory, handleToggleFollowCategory } from '@/app/actions';
+import { useToast } from '@/hooks/use-toast';
+
 
 interface BlogCategoryClientPageProps {
   category: BlogCategory;
@@ -36,6 +40,11 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
 export default function BlogCategoryClientPage({ category, initialPosts }: BlogCategoryClientPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredPosts, setFilteredPosts] = useState<Post[]>(initialPosts);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isLoadingFollow, setIsLoadingFollow] = useState(true);
+  
+  const { user } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     const results = initialPosts.filter(post =>
@@ -44,6 +53,48 @@ export default function BlogCategoryClientPage({ category, initialPosts }: BlogC
     );
     setFilteredPosts(results);
   }, [searchTerm, initialPosts]);
+
+  useEffect(() => {
+    async function checkFollowStatus() {
+        if (user) {
+            setIsLoadingFollow(true);
+            const following = await handleIsFollowingCategory(user.uid, category.slug);
+            setIsFollowing(following);
+            setIsLoadingFollow(false);
+        } else {
+            setIsLoadingFollow(false);
+        }
+    }
+    checkFollowStatus();
+  }, [user, category.slug]);
+
+  const toggleFollow = async () => {
+    if (!user) {
+        toast({
+            title: "Login Required",
+            description: "You must be logged in to follow categories.",
+            variant: "destructive"
+        });
+        return;
+    }
+    setIsLoadingFollow(true);
+    try {
+        const result = await handleToggleFollowCategory(user.uid, category.slug);
+        setIsFollowing(result.isFollowing);
+        toast({
+            title: result.isFollowing ? "Category Followed!" : "Category Unfollowed",
+            description: result.isFollowing 
+                ? `You'll now receive notifications for new posts in ${category.name}.`
+                : `You will no longer receive notifications for ${category.name}.`,
+            variant: "success"
+        });
+    } catch (error) {
+        toast({ title: "Error", description: "Could not update follow status.", variant: "destructive" });
+    } finally {
+        setIsLoadingFollow(false);
+    }
+  };
+
 
   const Icon = iconMap[category.iconName] || DollarSign;
   
@@ -63,6 +114,12 @@ export default function BlogCategoryClientPage({ category, initialPosts }: BlogC
         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
           Browse all articles in the "{category.name}" category.
         </p>
+        {user && (
+             <Button onClick={toggleFollow} disabled={isLoadingFollow} className="mt-4">
+                {isLoadingFollow ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Rss className="mr-2 h-4 w-4" />}
+                {isFollowing ? 'Unfollow Category' : 'Follow Category'}
+            </Button>
+        )}
       </header>
 
       <div className="max-w-lg mx-auto mb-12">

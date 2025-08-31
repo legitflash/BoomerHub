@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, where, updateDoc, deleteDoc } from 'firebase/firestore';
 import type { Post } from '@/lib/types';
 import { getAllTeamMembers } from './team-service';
+import { createNotificationForFollowers } from './notification-service';
 
 // This is a simplified version of what a Post object might look like for creation.
 // In a real app, you'd likely have a more robust validation schema (e.g., using Zod).
@@ -40,6 +41,7 @@ export async function createPost(postData: CreatePostData): Promise<string> {
     
     const authorImage = authorData ? authorData.image : `https://i.pravatar.cc/40?u=${postData.author}`;
     const authorSlug = authorData ? authorData.slug : slugify(postData.author);
+    const postSlug = slugify(postData.title);
 
     const docRef = await addDoc(postsCollection, {
       ...postData,
@@ -47,13 +49,18 @@ export async function createPost(postData: CreatePostData): Promise<string> {
       authorSlug: authorSlug,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-       // A simple slug generation. A more robust solution might handle special characters better.
-      slug: slugify(postData.title),
+      slug: postSlug,
       date: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
       dataAiHint: 'article content', // Placeholder AI hint
     });
 
     console.log("Document written with ID: ", docRef.id);
+
+    // After post is created, create notifications for followers of the category
+    const categorySlug = slugify(postData.category);
+    await createNotificationForFollowers(categorySlug, docRef.id, postData.title);
+
+
     return docRef.id;
   } catch (error) {
     console.error("Error adding document: ", error);
