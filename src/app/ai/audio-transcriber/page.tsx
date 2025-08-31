@@ -10,10 +10,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, AudioLines, FileMusic, Languages } from "lucide-react";
+import { Loader2, AudioLines, FileMusic } from "lucide-react";
 import { transcribeAudio } from '@/ai/flows/transcribe-audio';
 import type { TranscribeAudioOutput } from '@/ai/flows/transcribe-audio';
-import { Badge } from '@/components/ui/badge';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ACCEPTED_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3", "audio/flac", "audio/x-m4a"];
@@ -77,7 +76,7 @@ export default function AudioTranscriberPage() {
         </div>
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">AI Audio Transcriber</h1>
         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
-          Upload an audio file to get a highly accurate transcription, complete with musical structure and language detection.
+          Upload an audio file to get a highly accurate transcription in English.
         </p>
       </header>
 
@@ -127,11 +126,6 @@ export default function AudioTranscriberPage() {
           <Card className="animate-in fade-in">
             <CardHeader>
               <CardTitle>Transcription Result</CardTitle>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
-                <Languages className="h-5 w-5" />
-                <span>Detected Language:</span>
-                <Badge variant="outline">{transcription.detectedLanguage}</Badge>
-              </div>
             </CardHeader>
             <CardContent>
               <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
