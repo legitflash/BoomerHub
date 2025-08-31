@@ -51,6 +51,11 @@ export function Header() {
     router.push('/');
   }
   
+  const uniqueCategories = blogCategories.filter(
+    (category, index, self) =>
+      index === self.findIndex((c) => c.slug === category.slug)
+  );
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
@@ -81,7 +86,7 @@ export function Header() {
                     <AccordionItem value="blog" className="border-b-0">
                       <AccordionTrigger>Blog</AccordionTrigger>
                       <AccordionContent className="flex flex-col space-y-2 pl-4">
-                          {blogCategories.map((category) => (
+                          {uniqueCategories.map((category) => (
                           <Link key={category.slug} href={`/blog/category/${category.slug}`}>{category.name}</Link>
                         ))}
                       </AccordionContent>
