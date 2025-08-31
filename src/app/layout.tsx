@@ -21,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="d91221cdd32ab4af19a78603576153e265e34cd7" content="d91221cdd32ab4af19a78603576153e265e34cd7" />
+        <meta name="monetag" content="b94362744cd3ba95e527b00f595826f5" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
