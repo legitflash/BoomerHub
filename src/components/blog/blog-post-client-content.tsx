@@ -1,18 +1,16 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Share2, Loader2, Globe, Download, Bookmark } from 'lucide-react';
+import { Share2, Loader2, Bookmark } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Post, Advertisement } from '@/lib/types';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { translateText } from '@/ai/flows/translate-text';
 import { useAuth } from '@/hooks/use-auth';
 import { getSavesForPost } from '@/services/saves-service';
 import { handleToggleSavePost } from '@/app/actions';
@@ -29,10 +27,6 @@ function slugify(text: string) {
     .replace(/-+$/, ''); // Trim - from end of text
 }
 
-const getPostContentAsText = (element: HTMLElement | null) => {
-    return element?.textContent || '';
-}
-
 const AdBanner = ({ ad }: { ad: Advertisement }) => {
     return (
         <div 
@@ -45,12 +39,7 @@ const AdBanner = ({ ad }: { ad: Advertisement }) => {
 export default function BlogPostContent({ post, relatedPosts }: { post: Post, relatedPosts: Post[] }) {
   const { toast } = useToast();
   const { user } = useAuth();
-  const articleRef = useRef<HTMLDivElement>(null);
   
-  const [isTranslating, setIsTranslating] = useState(false);
-  const [translatedContent, setTranslatedContent] = useState<string | null>(null);
-  const originalContentRef = useRef<string | null>(null);
-
   const [isSaved, setIsSaved] = useState(false);
   const [saveCount, setSaveCount] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
@@ -137,68 +126,9 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
       fallbackCopyLink();
     }
   };
-  
-  const handleDownload = async () => {
-    try {
-        const response = await fetch(post.image);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${post.slug}.jpg`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(url);
-    } catch (error) {
-        console.error('Error downloading image:', error);
-        toast({
-            variant: "destructive",
-            title: "Download failed",
-            description: "Could not download the image. Please try again.",
-        });
-    }
-  };
-
-  const handleTranslate = async (language: string) => {
-    if (isTranslating) return;
-
-    setIsTranslating(true);
-    if (originalContentRef.current === null && articleRef.current) {
-        originalContentRef.current = articleRef.current.innerHTML;
-    }
-    
-    if (!articleRef.current?.textContent) {
-         toast({
-            variant: "destructive",
-            title: "Translation Failed",
-            description: "Could not read the article content.",
-        });
-        setIsTranslating(false);
-        return;
-    }
-
-    try {
-        const result = await translateText({ text: articleRef.current.textContent, targetLanguage: language });
-        setTranslatedContent(result.translatedText);
-    } catch (error) {
-        console.error("Translation failed:", error);
-        toast({
-            variant: "destructive",
-            title: "Translation Failed",
-            description: "Could not translate the article. Please try again.",
-        });
-    } finally {
-        setIsTranslating(false);
-    }
-  }
-
-  const showOriginalContent = () => {
-      setTranslatedContent(null);
-  }
     
   const articleBody = (
-     <div ref={articleRef} className="prose prose-lg dark:prose-invert max-w-none mx-auto" dangerouslySetInnerHTML={{ __html: post.content || '' }} />
+     <div className="prose prose-lg dark:prose-invert max-w-none mx-auto" dangerouslySetInnerHTML={{ __html: post.content || '' }} />
   )
 
   return (
@@ -226,21 +156,6 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
                 {isSaved ? 'Saved' : 'Save'} ({saveCount})
               </Button>
               <Button variant="ghost" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
-              <Button variant="ghost" size="sm" onClick={handleDownload}><Download className="mr-2"/> Download Image</Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" disabled={isTranslating}>
-                        {isTranslating ? <Loader2 className="mr-2 animate-spin" /> : <Globe className="mr-2" />}
-                        Translate
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => handleTranslate('Spanish')}>Spanish</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleTranslate('French')}>French</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleTranslate('German')}>German</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleTranslate('Japanese')}>Japanese</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
           </div>
         </header>
 
@@ -258,22 +173,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
         {adBefore && <AdBanner ad={adBefore} />}
 
         <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
-          {isTranslating && (
-             <div className="text-center p-8">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-                <p className="mt-4 text-muted-foreground">Translating article...</p>
-             </div>
-          )}
-
-          {!isTranslating && translatedContent && (
-             <div>
-                <Button variant="outline" onClick={showOriginalContent} className='mb-4'>Show Original</Button>
-                <div className="whitespace-pre-wrap">{translatedContent}</div>
-             </div>
-          )}
-          
-          {!isTranslating && !translatedContent && articleBody}
-
+            {articleBody}
         </div>
         
         {adAfter && <AdBanner ad={adAfter} />}
