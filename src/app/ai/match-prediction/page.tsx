@@ -1,12 +1,14 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
+import { v4 as uuidv4 } from 'uuid';
+
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button";
@@ -19,6 +21,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2, Shield, Users } from 'lucide-react';
 import type { GenerateMatchAnalysisOutput } from '@/ai/flows/generate-match-analysis';
 import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 
 const formSchema = z.object({
@@ -91,6 +95,21 @@ export default function MatchPredictionPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [analysis, setAnalysis] = useState<GenerateMatchAnalysisOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [guestId, setGuestId] = useState<string | null>(null);
+  
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!user) {
+        let storedId = localStorage.getItem('boomerhub_guest_id');
+        if (!storedId) {
+            storedId = uuidv4();
+            localStorage.setItem('boomerhub_guest_id', storedId);
+        }
+        setGuestId(storedId);
+    }
+  }, [user]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -112,17 +131,32 @@ export default function MatchPredictionPage() {
     setIsLoading(true);
     setError(null);
     setAnalysis(null);
+
+    const id = user ? user.uid : guestId;
+    if (!id) {
+        setError("Could not identify user. Please refresh the page.");
+        setIsLoading(false);
+        return;
+    }
+
     try {
       const result = await generateMatchAnalysis({ 
         homeTeam: values.homeTeam, 
         awayTeam: values.awayTeam,
         league: values.league,
         matchDate: values.matchDate ? format(values.matchDate, 'yyyy-MM-dd') : undefined,
+        userId: id,
+        isGuest: !user,
       });
       setAnalysis(result);
     } catch (e: any) {
       console.error(e);
-      setError('An error occurred while generating the analysis. Please try again.');
+      toast({
+        title: "Prediction Failed",
+        description: e.message || 'An error occurred while generating the analysis. Please try again.',
+        variant: "destructive",
+      });
+      setError(e.message || 'An error occurred while generating the analysis. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -278,8 +312,6 @@ export default function MatchPredictionPage() {
             <p className="mt-4 text-muted-foreground">Our AI is analyzing the match... this may take a moment.</p>
           </div>
         )}
-
-        {error && <p className="text-destructive text-center">{error}</p>}
         
         {analysis && (
           <Card className="animate-in fade-in">

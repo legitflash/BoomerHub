@@ -10,12 +10,16 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { checkUsage, recordUsage } from '@/services/usage-service';
+
 
 const GenerateMatchAnalysisInputSchema = z.object({
   homeTeam: z.string().describe('The name of the home team.'),
   awayTeam: z.string().describe('The name of the away team.'),
   league: z.string().describe('The league the match is being played in.'),
   matchDate: z.string().optional().describe('The date of the match (e.g., YYYY-MM-DD).'),
+  userId: z.string().describe('The user ID or guest ID making the request.'),
+  isGuest: z.boolean().describe('Whether the user is a guest.'),
 });
 export type GenerateMatchAnalysisInput = z.infer<typeof GenerateMatchAnalysisInputSchema>;
 
@@ -30,12 +34,26 @@ const GenerateMatchAnalysisOutputSchema = z.object({
 export type GenerateMatchAnalysisOutput = z.infer<typeof GenerateMatchAnalysisOutputSchema>;
 
 export async function generateMatchAnalysis(input: GenerateMatchAnalysisInput): Promise<GenerateMatchAnalysisOutput> {
-  return generateMatchAnalysisFlow(input);
+    const { userId, isGuest, ...analysisInput } = input;
+
+    const usage = await checkUsage(userId, isGuest);
+    if (!usage.hasRemaining) {
+        throw new Error(`Usage limit exceeded. You have ${usage.remainingCount} requests remaining.`);
+    }
+
+    const result = await generateMatchAnalysisFlow(analysisInput);
+
+    // Record usage only after a successful AI call
+    await recordUsage(userId, isGuest);
+    
+    return result;
 }
+
+const promptInputSchema = GenerateMatchAnalysisInputSchema.omit({ userId: true, isGuest: true });
 
 const prompt = ai.definePrompt({
   name: 'generateMatchAnalysisPrompt',
-  input: {schema: GenerateMatchAnalysisInputSchema},
+  input: {schema: promptInputSchema},
   output: {schema: GenerateMatchAnalysisOutputSchema},
   prompt: `You are a world-class sports analyst specializing in football (soccer). Your task is to provide a detailed, insightful, and unbiased analysis for an upcoming match.
 
@@ -61,7 +79,7 @@ const prompt = ai.definePrompt({
 const generateMatchAnalysisFlow = ai.defineFlow(
   {
     name: 'generateMatchAnalysisFlow',
-    inputSchema: GenerateMatchAnalysisInputSchema,
+    inputSchema: promptInputSchema,
     outputSchema: GenerateMatchAnalysisOutputSchema,
   },
   async input => {
