@@ -130,6 +130,7 @@ export type Notification = {
   userId: string;
   postId: string;
   postTitle: string;
+  postSlug: string;
   categorySlug: string;
   createdAt: string;
   isRead: boolean;
