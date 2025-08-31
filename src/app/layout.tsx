@@ -10,9 +10,6 @@ import { AuthProvider } from '@/hooks/use-auth';
 export const metadata: Metadata = {
   title: 'BoomerHub',
   description: 'Learn Skills. Earn Income. Get Certified.',
-  other: {
-    'd91221cdd32ab4af19a78603576153e265e34cd7': 'd91221cdd32ab4af19a78603576153e265e34cd7',
-  }
 };
 
 export default function RootLayout({
@@ -23,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="d91221cdd32ab4af19a78603576153e265e34cd7" content="d91221cdd32ab4af19a78603576153e265e34cd7" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -40,4 +38,3 @@ export default function RootLayout({
     </html>
   );
 }
-
