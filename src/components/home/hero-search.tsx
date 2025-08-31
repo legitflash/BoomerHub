@@ -1,8 +1,8 @@
 
 'use client';
 
-import IntelligentSearchForm from '@/components/search/intelligent-search-form';
+import SearchBar from '@/components/search/search-bar';
 
 export default function HeroSearch() {
-    return <IntelligentSearchForm />;
+    return <SearchBar />;
 }

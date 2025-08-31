@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import IntelligentSearchForm from '@/components/search/intelligent-search-form';
+import SearchBar from '@/components/search/search-bar';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Plane } from 'lucide-react';
 import { getAllPosts } from '@/services/post-service';
 import { getAllCategories } from '@/services/category-service';
@@ -47,7 +47,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
           Insights on finance, tech, social media, and more.
         </p>
         <div className="max-w-lg mx-auto mt-8">
-            <IntelligentSearchForm />
+            <SearchBar />
         </div>
       </header>
 
