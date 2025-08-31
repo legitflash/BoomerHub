@@ -1,10 +1,11 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -14,6 +15,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2, Languages } from "lucide-react";
 import { translateText } from '@/ai/flows/translate-text';
 import type { TranslateTextOutput } from '@/ai/flows/translate-text';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 const languages = [
   "Spanish", "French", "German", "Japanese", "Chinese (Simplified)", "Italian", "Portuguese", "Russian", "Arabic", "Korean"
@@ -30,6 +33,22 @@ export default function TextTranslatorPage() {
   const [translation, setTranslation] = useState<TranslateTextOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [guestId, setGuestId] = useState<string | null>(null);
+
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!user) {
+        let storedId = localStorage.getItem('boomerhub_guest_id');
+        if (!storedId) {
+            storedId = uuidv4();
+            localStorage.setItem('boomerhub_guest_id', storedId);
+        }
+        setGuestId(storedId);
+    }
+  }, [user]);
+
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -44,11 +63,27 @@ export default function TextTranslatorPage() {
     setError(null);
     setTranslation(null);
 
+    const id = user ? user.uid : guestId;
+    if (!id) {
+        setError("Could not identify user. Please refresh the page.");
+        setIsLoading(false);
+        return;
+    }
+
     try {
-      const result = await translateText(values);
+      const result = await translateText({
+        ...values,
+        userId: id,
+        isGuest: !user
+      });
       setTranslation(result);
     } catch (e: any) {
       console.error(e);
+      toast({
+        title: "Request Failed",
+        description: e.message || 'An error occurred during translation. Please try again.',
+        variant: "destructive",
+      });
       setError('An error occurred during translation. Please try again.');
     } finally {
       setIsLoading(false);

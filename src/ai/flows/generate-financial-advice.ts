@@ -10,9 +10,12 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { checkUsage, recordUsage } from '@/services/usage-service';
 
 const GenerateFinancialAdviceInputSchema = z.object({
   query: z.string().describe('The user\'s question or description of their situation.'),
+  userId: z.string().describe('The user ID or guest ID making the request.'),
+  isGuest: z.boolean().describe('Whether the user is a guest.'),
 });
 export type GenerateFinancialAdviceInput = z.infer<typeof GenerateFinancialAdviceInputSchema>;
 
@@ -24,12 +27,25 @@ const GenerateFinancialAdviceOutputSchema = z.object({
 export type GenerateFinancialAdviceOutput = z.infer<typeof GenerateFinancialAdviceOutputSchema>;
 
 export async function generateFinancialAdvice(input: GenerateFinancialAdviceInput): Promise<GenerateFinancialAdviceOutput> {
-  return generateFinancialAdviceFlow(input);
+  const { userId, isGuest } = input;
+
+  const usage = await checkUsage(userId, isGuest);
+  if (!usage.hasRemaining) {
+      throw new Error(`Usage limit exceeded. You have ${usage.remainingCount} requests remaining.`);
+  }
+
+  const result = await generateFinancialAdviceFlow({ query: input.query });
+
+  await recordUsage(userId, isGuest);
+  
+  return result;
 }
+
+const promptInputSchema = GenerateFinancialAdviceInputSchema.pick({ query: true });
 
 const prompt = ai.definePrompt({
   name: 'generateFinancialAdvicePrompt',
-  input: {schema: GenerateFinancialAdviceInputSchema},
+  input: {schema: promptInputSchema},
   output: {schema: GenerateFinancialAdviceOutputSchema},
   prompt: `You are a helpful and wise AI assistant providing personalized advice. The user's query could be about anything from finance to social etiquette. Your goal is to provide safe, practical, and empathetic advice.
 
@@ -48,7 +64,7 @@ const prompt = ai.definePrompt({
 const generateFinancialAdviceFlow = ai.defineFlow(
   {
     name: 'generateFinancialAdviceFlow',
-    inputSchema: GenerateFinancialAdviceInputSchema,
+    inputSchema: promptInputSchema,
     outputSchema: GenerateFinancialAdviceOutputSchema,
   },
   async input => {

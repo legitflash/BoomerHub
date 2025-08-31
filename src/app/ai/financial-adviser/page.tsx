@@ -1,10 +1,11 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -13,6 +14,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, PiggyBank } from "lucide-react";
 import { generateFinancialAdvice } from '@/ai/flows/generate-financial-advice';
 import type { GenerateFinancialAdviceOutput } from '@/ai/flows/generate-financial-advice';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   query: z.string().min(20, { message: "Please describe your situation in at least 20 characters." }),
@@ -24,6 +27,21 @@ export default function FinancialAdviserPage() {
   const [advice, setAdvice] = useState<GenerateFinancialAdviceOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [guestId, setGuestId] = useState<string | null>(null);
+
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!user) {
+        let storedId = localStorage.getItem('boomerhub_guest_id');
+        if (!storedId) {
+            storedId = uuidv4();
+            localStorage.setItem('boomerhub_guest_id', storedId);
+        }
+        setGuestId(storedId);
+    }
+  }, [user]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -37,12 +55,28 @@ export default function FinancialAdviserPage() {
     setError(null);
     setAdvice(null);
 
+    const id = user ? user.uid : guestId;
+    if (!id) {
+        setError("Could not identify user. Please refresh the page.");
+        setIsLoading(false);
+        return;
+    }
+
     try {
-      const result = await generateFinancialAdvice({ query: values.query });
+      const result = await generateFinancialAdvice({ 
+        query: values.query,
+        userId: id,
+        isGuest: !user 
+      });
       setAdvice(result);
     } catch (e: any) {
       console.error(e);
-      setError('An error occurred while generating advice. Please try again.');
+      toast({
+        title: "Request Failed",
+        description: e.message || 'An error occurred while generating the advice. Please try again.',
+        variant: "destructive",
+      });
+      setError(e.message || 'An error occurred while generating advice. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -101,8 +135,6 @@ export default function FinancialAdviserPage() {
             <p className="mt-4 text-muted-foreground">Our AI is crafting your personalized advice...</p>
           </div>
         )}
-
-        {error && <p className="text-destructive text-center">{error}</p>}
         
         {advice && (
           <Card className="animate-in fade-in">

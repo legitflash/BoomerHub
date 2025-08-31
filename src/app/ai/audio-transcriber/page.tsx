@@ -1,10 +1,11 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -13,6 +14,8 @@ import { Input } from '@/components/ui/input';
 import { Loader2, AudioLines, FileMusic } from "lucide-react";
 import { transcribeAudio } from '@/ai/flows/transcribe-audio';
 import type { TranscribeAudioOutput } from '@/ai/flows/transcribe-audio';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ACCEPTED_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3", "audio/flac", "audio/x-m4a"];
@@ -34,6 +37,21 @@ export default function AudioTranscriberPage() {
   const [transcription, setTranscription] = useState<TranscribeAudioOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [guestId, setGuestId] = useState<string | null>(null);
+
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!user) {
+        let storedId = localStorage.getItem('boomerhub_guest_id');
+        if (!storedId) {
+            storedId = uuidv4();
+            localStorage.setItem('boomerhub_guest_id', storedId);
+        }
+        setGuestId(storedId);
+    }
+  }, [user]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -54,14 +72,30 @@ export default function AudioTranscriberPage() {
     setError(null);
     setTranscription(null);
 
+    const id = user ? user.uid : guestId;
+    if (!id) {
+        setError("Could not identify user. Please refresh the page.");
+        setIsLoading(false);
+        return;
+    }
+
     try {
       const file = values.audioFile[0];
       const audioDataUri = await toBase64(file);
       
-      const result = await transcribeAudio({ audioDataUri });
+      const result = await transcribeAudio({ 
+        audioDataUri,
+        userId: id,
+        isGuest: !user 
+      });
       setTranscription(result);
     } catch (e: any) {
       console.error(e);
+      toast({
+        title: "Request Failed",
+        description: e.message || 'An error occurred during transcription. Please try again.',
+        variant: "destructive",
+      });
       setError('An error occurred during transcription. Please try again.');
     } finally {
       setIsLoading(false);
@@ -119,8 +153,6 @@ export default function AudioTranscriberPage() {
             <p className="mt-4 text-muted-foreground">Our AI is processing your audio... this may take a moment.</p>
           </div>
         )}
-
-        {error && <p className="text-destructive text-center">{error}</p>}
         
         {transcription && (
           <Card className="animate-in fade-in">

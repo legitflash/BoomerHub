@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { checkUsage, recordUsage } from '@/services/usage-service';
 
 const TranscribeAudioInputSchema = z.object({
   audioDataUri: z
@@ -17,6 +18,8 @@ const TranscribeAudioInputSchema = z.object({
     .describe(
       "An audio file, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+  userId: z.string().describe('The user ID or guest ID making the request.'),
+  isGuest: z.boolean().describe('Whether the user is a guest.'),
 });
 export type TranscribeAudioInput = z.infer<typeof TranscribeAudioInputSchema>;
 
@@ -26,12 +29,25 @@ const TranscribeAudioOutputSchema = z.object({
 export type TranscribeAudioOutput = z.infer<typeof TranscribeAudioOutputSchema>;
 
 export async function transcribeAudio(input: TranscribeAudioInput): Promise<TranscribeAudioOutput> {
-  return transcribeAudioFlow(input);
+  const { userId, isGuest, audioDataUri } = input;
+
+  const usage = await checkUsage(userId, isGuest);
+  if (!usage.hasRemaining) {
+      throw new Error(`Usage limit exceeded. You have ${usage.remainingCount} requests remaining.`);
+  }
+
+  const result = await transcribeAudioFlow({ audioDataUri });
+
+  await recordUsage(userId, isGuest);
+  
+  return result;
 }
+
+const promptInputSchema = TranscribeAudioInputSchema.pick({ audioDataUri: true });
 
 const prompt = ai.definePrompt({
   name: 'transcribeAudioPrompt',
-  input: {schema: TranscribeAudioInputSchema},
+  input: {schema: promptInputSchema},
   output: {schema: TranscribeAudioOutputSchema},
   prompt: `You are an expert audio transcriptionist with exceptional accuracy.
   
@@ -46,7 +62,7 @@ const prompt = ai.definePrompt({
 const transcribeAudioFlow = ai.defineFlow(
   {
     name: 'transcribeAudioFlow',
-    inputSchema: TranscribeAudioInputSchema,
+    inputSchema: promptInputSchema,
     outputSchema: TranscribeAudioOutputSchema,
   },
   async input => {
