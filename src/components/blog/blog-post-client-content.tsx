@@ -144,7 +144,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
                       <AvatarImage src={post.authorImage} alt={post.author} />
                       <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <span>{post.author}</span>
+                      <Link href={`/author/${post.authorSlug}`} className="hover:underline">{post.author}</Link>
                   </div>
                   <span>&middot;</span>
                   <span>{post.date}</span>
