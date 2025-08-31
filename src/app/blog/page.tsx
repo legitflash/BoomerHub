@@ -39,6 +39,11 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
     currentPage * POSTS_PER_PAGE
   );
 
+  const uniqueCategories = blogCategories.filter(
+    (category, index, self) =>
+      index === self.findIndex((c) => c.slug === category.slug)
+  );
+
   return (
     <div className="container py-12 md:py-16">
       <header className="text-center mb-12">
@@ -52,7 +57,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
       </header>
 
       <div className="mb-12 flex flex-wrap items-center justify-center gap-4">
-        {blogCategories.map(category => {
+        {uniqueCategories.map(category => {
           const Icon = iconMap[category.iconName];
           return (
             <Link 
