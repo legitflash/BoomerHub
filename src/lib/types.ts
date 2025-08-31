@@ -135,3 +135,8 @@ export type Notification = {
   createdAt: string;
   isRead: boolean;
 };
+
+export type Usage = {
+    count: number;
+    lastReset: any; // Firestore Timestamp
+};
