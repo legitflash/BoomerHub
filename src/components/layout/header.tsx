@@ -19,7 +19,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { aiToolsCategories, blogCategories as staticBlogCategories } from '@/lib/data';
+import { aiToolsCategories } from '@/lib/data';
 import { useState, useEffect } from 'react';
 import { getAllCategories } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
