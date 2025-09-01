@@ -40,6 +40,18 @@ export default function RootLayout({
           <Script id="monetag-vignette" strategy="afterInteractive">
             {`(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
           </Script>
+          <Script id="hiltop-video-slider" strategy="afterInteractive">
+            {`(function(ivgj){
+var d = document,
+    s = d.createElement('script'),
+    l = d.scripts[d.scripts.length - 1];
+s.settings = ivgj || {};
+s.src = "//handsome-storm.com/bRX/VIs.dSGrlF0eYYWkcX/legmw9puKZkUgl/k/PtTrY/2hMxz/QJzJNkT/k/tsN/jBYlzjNrDOMs2/MjA_";
+s.async = true;
+s.referrerPolicy = 'no-referrer-when-downgrade';
+l.parentNode.insertBefore(s, l);
+})({})`}
+          </Script>
       </body>
     </html>
   );
