@@ -1,6 +1,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import Script from 'next/script';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import SearchBar from '@/components/search/search-bar';
@@ -71,6 +72,12 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
           )
         })}
       </div>
+      
+      <div className="my-8 flex justify-center">
+        <Script id="monetag-blog-listing-banner">
+            {`(s=>{s.dataset.zone=9810543,s.src='https://vemtoutcheeg.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
+        </Script>
+      </div>
 
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {paginatedPosts.map((post) => (
@@ -115,5 +122,3 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
     </div>
   );
 }
-
-    
