@@ -122,7 +122,8 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
         if (error.name === 'AbortError') {
           return;
         }
-        console.error('Error sharing:', error);
+        // If an ad iframe blocks the API, use the fallback.
+        console.error('Error sharing, using fallback:', error);
         fallbackCopyLink();
       }
     } else {
