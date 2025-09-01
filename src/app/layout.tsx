@@ -25,6 +25,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <script src="https://couphaithuph.net/act/files/tag.min.js?z=9805952" data-cfasync="false" async></script>
       </head>
       <body className="font-body antialiased">
           <AuthProvider>
