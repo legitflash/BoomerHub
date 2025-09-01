@@ -37,7 +37,7 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
                   Insights for Growth.
                 </h1>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl mx-auto lg:mx-0">
-                  Explore our articles to master new skills in finance, tech, sports betting, and online business.
+                  Your all-in-one platform for insightful articles, powerful AI tools, and skill development.
                 </p>
               </div>
               <div className="w-full max-w-sm mx-auto lg:mx-0">
