@@ -35,7 +35,20 @@ export default function RootLayout({
             </div>
             <Toaster />
           </AuthProvider>
-          <Script id="monetag-vignette-ads" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))` }} />
+          <Script id="hilltop-ads" strategy="afterInteractive" dangerouslySetInnerHTML={{
+            __html: `
+              (function(pufpx){
+                var d = document,
+                    s = d.createElement('script'),
+                    l = d.scripts[d.scripts.length - 1];
+                s.settings = pufpx || {};
+                s.src = "//handsome-storm.com/bSX.VZsJdLGElm0hYdWMcC/Pe/m/9/u_Z/UllCkaPETUYX2_M/zsU/w/NajxMEtTNrjfY-zBNATiAs2iNaAl";
+                s.async = true;
+                s.referrerPolicy = 'no-referrer-when-downgrade';
+                l.parentNode.insertBefore(s, l);
+              })({})
+            `
+          }} />
       </body>
     </html>
   );
