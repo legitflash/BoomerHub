@@ -25,6 +25,7 @@ import { getAllCategories } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
+import { triggerPopunder } from '@/lib/utils';
 
 
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
@@ -50,6 +51,12 @@ export function Header() {
     await signOutUser();
     router.push('/');
   }
+  
+  const handleAIClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
+    e.preventDefault();
+    triggerPopunder();
+    router.push(slug);
+  };
   
   const uniqueCategories = blogCategories.filter(
     (category, index, self) =>
@@ -95,7 +102,7 @@ export function Header() {
                       <AccordionTrigger className="flex items-center gap-2"><Bot className="h-4 w-4" /> Boomerhub AI</AccordionTrigger>
                       <AccordionContent className="flex flex-col space-y-2 pl-4">
                           {aiToolsCategories.map((tool) => (
-                            <Link key={tool.slug} href={tool.slug} className="flex items-center gap-2">
+                            <Link key={tool.slug} href={tool.slug} onClick={(e) => handleAIClick(e, tool.slug)} className="flex items-center gap-2">
                             <tool.icon className="h-4 w-4" />
                             {tool.name}
                           </Link>

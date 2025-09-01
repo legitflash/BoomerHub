@@ -49,11 +49,7 @@ export default function RootLayout({
               })({})
             `
           }} />
-           <Script id="monetag-popunder" strategy="afterInteractive" dangerouslySetInnerHTML={{
-            __html: `
-              (s=>{s.dataset.zone='9805954',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))
-            `
-           }}/>
+           <Script id="monetag-vignette" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))` }}/>
       </body>
     </html>
   );

@@ -15,6 +15,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { getSavesForPost } from '@/services/saves-service';
 import { handleToggleSavePost } from '@/app/actions';
 import { getActiveAdvertisementsByPlacement } from '@/services/ad-service';
+import { triggerPopunder } from '@/lib/utils';
 
 function slugify(text: string) {
   return text
@@ -69,6 +70,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
   }, [post.slug, user]);
 
   const toggleSave = async () => {
+    triggerPopunder();
     if (!user) {
         toast({
             title: "Login Required",
@@ -107,6 +109,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
   };
 
   const handleShare = async () => {
+    triggerPopunder();
     if (navigator.share) {
       try {
         await navigator.share({
