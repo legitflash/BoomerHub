@@ -109,7 +109,6 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
   };
 
   const handleShare = async () => {
-    triggerPopunder();
     if (navigator.share) {
       try {
         await navigator.share({
