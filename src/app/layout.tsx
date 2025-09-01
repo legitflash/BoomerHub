@@ -35,6 +35,7 @@ export default function RootLayout({
             </div>
             <Toaster />
           </AuthProvider>
+          <Script id="monetag-vignette-ads" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))` }} />
       </body>
     </html>
   );
