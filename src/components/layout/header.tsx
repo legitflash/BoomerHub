@@ -25,7 +25,6 @@ import { getAllCategories } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
-import { triggerPopunder } from '@/lib/utils';
 
 
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
@@ -54,7 +53,6 @@ export function Header() {
   
   const handleAIClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
     e.preventDefault();
-    triggerPopunder();
     router.push(slug);
   };
   
