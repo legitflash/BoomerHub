@@ -50,6 +50,7 @@ export default function RootLayout({
             `
           }} />
            <Script id="monetag-vignette" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))` }}/>
+           <Script id="monetag-push" src="https://shoukigaigoors.net/act/files/tag.min.js?z=9805952" data-cfasync="false" async></Script>
       </body>
     </html>
   );
