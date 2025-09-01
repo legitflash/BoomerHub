@@ -37,11 +37,8 @@ export default function RootLayout({
             <Toaster />
           </AuthProvider>
           <Script id="monetag-push" strategy="afterInteractive" src="https://couphaithuph.net/act/files/tag.min.js?z=9805952" data-cfasync="false" async />
-          <Script id="monetag-vignette" strategy="afterInteractive">
-            {`(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
-          </Script>
-          <Script id="hiltop-video-slider" strategy="afterInteractive">
-            {`(function(ivgj){
+          <Script id="monetag-vignette" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}} />
+          <Script id="hiltop-video-slider" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `(function(ivgj){
 var d = document,
     s = d.createElement('script'),
     l = d.scripts[d.scripts.length - 1];
@@ -50,8 +47,7 @@ s.src = "//handsome-storm.com/bRX/VIs.dSGrlF0eYYWkcX/legmw9puKZkUgl/k/PtTrY/2hMx
 s.async = true;
 s.referrerPolicy = 'no-referrer-when-downgrade';
 l.parentNode.insertBefore(s, l);
-})({})`}
-          </Script>
+})({})`}} />
       </body>
     </html>
   );
