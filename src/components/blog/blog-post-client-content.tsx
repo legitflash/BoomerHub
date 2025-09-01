@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -180,6 +181,12 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
         </div>
         
         {adAfter && <AdBanner ad={adAfter} />}
+
+        <div className="my-8 flex justify-center">
+          <Script id="monetag-banner-article" strategy="lazyOnload">
+            {`(s=>{s.dataset.zone=9810519,s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
+          </Script>
+        </div>
 
         <div className="mt-12 border-t pt-8">
             <h3 className="text-lg font-semibold mb-4">READ MORE</h3>
