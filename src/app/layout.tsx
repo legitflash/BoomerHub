@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/hooks/use-auth';
 import Script from 'next/script';
+import AdScripts from './ad-scripts';
 
 
 export const metadata: Metadata = {
@@ -35,23 +36,7 @@ export default function RootLayout({
             </div>
             <Toaster />
           </AuthProvider>
-          <div dangerouslySetInnerHTML={{ __html: `
-            <script>(s=>{s.dataset.zone='9810543',s.src='https://vemtoutcheeg.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-          `}} />
-          <div dangerouslySetInnerHTML={{ __html: `
-            <script>
-            (function(lfrslz){
-            var d = document,
-                s = d.createElement('script'),
-                l = d.scripts[d.scripts.length - 1];
-            s.settings = lfrslz || {};
-            s.src = "\\/\\/coldquit.com\\/c\\/DJ9-6Jb.2c5\\/ltSfWQQ-9\\/NijcYAzNNTj-IZ4aMeSO0T2BNlj\\/MA2tM\\/j\\/gYys";
-            s.async = true;
-            s.referrerPolicy = 'no-referrer-when-downgrade';
-            l.parentNode.insertBefore(s, l);
-            })({})
-            </script>
-          `}} />
+          <AdScripts />
       </body>
     </html>
   );
