@@ -161,25 +161,6 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
         <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
             {articleBody}
         </div>
-        
-        <div 
-          className="my-8 p-4 border rounded-lg bg-muted/20 flex items-center justify-center text-center text-muted-foreground min-h-[100px] min-w-[300px]"
-          dangerouslySetInnerHTML={{ __html: `
-            <script>
-            (function(auvx){
-            var d = document,
-                s = d.createElement('script'),
-                l = d.scripts[d.scripts.length - 1];
-            s.settings = auvx || {};
-            s.src = "\\/\\/handsome-storm.com\\/b\\/XKV.sQd\\/GNln0xYIWGce\/VeTm\/9CudZIURl\/kaPST\/YR2AMYz\/UOwOOJTOUfteNUjCYuzqNnTiAg5xNkgA";
-            s.async = true;
-            s.referrerPolicy = 'no-referrer-when-downgrade';
-            l.parentNode.insertBefore(s, l);
-            })({})
-            </script>
-          ` }} 
-        />
-
 
         <div className="mt-12 border-t pt-8">
             <h3 className="text-lg font-semibold mb-4">READ MORE</h3>
