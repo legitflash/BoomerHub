@@ -150,8 +150,6 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
           crossOrigin="anonymous" 
         />
         
-        <AdsterraBanner />
-
         <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
             {articleBody}
         </div>
