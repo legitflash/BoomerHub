@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, DollarSign, Megaphone, BrainCircuit, Briefcase } from 'lucide-react';
+import { Badge } from '../ui/badge';
 
 interface BannerDetails {
   icon: React.ElementType;
@@ -70,7 +71,8 @@ const CategoryActionBanner = ({ category }: { category: string }) => {
 
   return (
     <div className="my-12">
-        <Card className={`${bgColor} ${textColor} overflow-hidden`}>
+        <Card className={`${bgColor} ${textColor} overflow-hidden relative`}>
+            <Badge variant="secondary" className="absolute top-2 right-2 opacity-80">Ad</Badge>
             <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
                 <div className="flex-shrink-0">
                     <div className="border-4 border-white/50 rounded-full p-4">
