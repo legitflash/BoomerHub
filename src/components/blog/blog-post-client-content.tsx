@@ -14,7 +14,7 @@ import type { Post, Advertisement } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 import { getSavesForPost } from '@/services/saves-service';
 import { handleToggleSavePost } from '@/app/actions';
-import { getActiveAdvertisementsByPlacement } from '@/services/ad-service';
+import Script from 'next/script';
 
 function slugify(text: string) {
   return text
@@ -28,11 +28,13 @@ function slugify(text: string) {
 }
 
 const AdBanner = ({ ad }: { ad: Advertisement }) => {
+    // This is now a simple banner ad placeholder.
     return (
         <div 
-            className="my-8 p-4 border rounded-lg bg-muted/20 flex items-center justify-center"
-            dangerouslySetInnerHTML={{ __html: ad.content }}
-        />
+            className="my-8 p-4 border rounded-lg bg-muted/20 flex items-center justify-center text-center text-muted-foreground"
+        >
+           <p>Advertisement</p>
+        </div>
     );
 };
 
@@ -44,9 +46,6 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
   const [saveCount, setSaveCount] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
 
-  const [adBefore, setAdBefore] = useState<Advertisement | null>(null);
-  const [adAfter, setAdAfter] = useState<Advertisement | null>(null);
-
   useEffect(() => {
     const fetchSaveStatus = async () => {
       const { count, isSaved: userHasSaved } = await getSavesForPost(post.slug, user?.uid);
@@ -54,18 +53,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
       setIsSaved(userHasSaved);
     };
 
-    const fetchAds = async () => {
-        const [beforeAds, afterAds] = await Promise.all([
-            getActiveAdvertisementsByPlacement('before-post-content'),
-            getActiveAdvertisementsByPlacement('after-post-content')
-        ]);
-        // Display one random ad for each placement if available
-        if (beforeAds.length > 0) setAdBefore(beforeAds[Math.floor(Math.random() * beforeAds.length)]);
-        if (afterAds.length > 0) setAdAfter(afterAds[Math.floor(Math.random() * afterAds.length)]);
-    };
-
     fetchSaveStatus();
-    fetchAds();
   }, [post.slug, user]);
 
   const toggleSave = async () => {
@@ -170,13 +158,27 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
           crossOrigin="anonymous" 
         />
 
-        {adBefore && <AdBanner ad={adBefore} />}
-
         <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
             {articleBody}
         </div>
         
-        {adAfter && <AdBanner ad={adAfter} />}
+        <div className="my-8">
+          <Script id="hitopads-banner-ad" strategy="lazyOnload">
+              {`
+                  (function(auvx){
+                  var d = document,
+                      s = d.createElement('script'),
+                      l = d.scripts[d.scripts.length - 1];
+                  s.settings = auvx || {};
+                  s.src = "\\/\\/handsome-storm.com\\/b\\/XKV.sQd\\/GNln0xYIWGce\\/VeTm\\/9CudZIURl\\/kaPST\\/YR2AMYz\\/UOwOOJTOUfteNUjCYuzqNnTiAg5xNkgA";
+                  s.async = true;
+                  s.referrerPolicy = 'no-referrer-when-downgrade';
+                  l.parentNode.insertBefore(s, l);
+                  })({})
+              `}
+          </Script>
+        </div>
+
 
         <div className="mt-12 border-t pt-8">
             <h3 className="text-lg font-semibold mb-4">READ MORE</h3>
