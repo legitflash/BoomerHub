@@ -34,19 +34,6 @@ export default function RootLayout({
             </div>
             <Toaster />
           </AuthProvider>
-          <Script id="adsterra-social-bar" src="//chickenadjacent.com/c7/ac/cf/c7accf076d6c5d479539d4b53ac9f961.js" strategy="lazyOnload"></Script>
-          <Script id="hitopads-vast" strategy="lazyOnload">
-          {`(function(fmllx){
-            var d = document,
-                s = d.createElement('script'),
-                l = d.scripts[d.scripts.length - 1];
-            s.settings = fmllx || {};
-            s.src = "//handsome-storm.com/bjX.VisedxGTl/0-YcWxcf/Jebmi9Ku/ZNUMlEknP/TiY/2TMzz-QpzyNlTEkQtJNnjnYgzENNDZMk2hMvAD";
-            s.async = true;
-            s.referrerPolicy = 'no-referrer-when-downgrade';
-            l.parentNode.insertBefore(s, l);
-            })({})`}
-          </Script>
       </body>
     </html>
   );
