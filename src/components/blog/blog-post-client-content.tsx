@@ -149,12 +149,12 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
           priority
           crossOrigin="anonymous" 
         />
+
+        <AdsterraBanner />
         
-        <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
+        <div className="prose prose-lg dark:prose-invert max-w-none mx-auto mt-8">
             {articleBody}
         </div>
-        
-        <AdsterraBanner />
 
         <div className="mt-12 border-t pt-8">
             <h3 className="text-lg font-semibold mb-4">READ MORE</h3>
@@ -169,7 +169,6 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
 
       </article>
 
-      {/* The custom banner is placed here, before related articles */}
       <div className="container max-w-4xl">
         <CategoryActionBanner category={post.category} />
       </div>
