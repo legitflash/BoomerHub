@@ -34,13 +34,6 @@ export default function RootLayout({
             </div>
             <Toaster />
           </AuthProvider>
-          <Script 
-            src="https://fpyf8.com/88/tag.min.js"
-            data-zone="167934"
-            data-cfasync="false"
-            strategy="lazyOnload"
-            async
-          />
       </body>
     </html>
   );
