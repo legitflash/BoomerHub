@@ -162,21 +162,23 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
             {articleBody}
         </div>
         
-        <div className="my-8">
-          <Script id="hitopads-banner-ad" strategy="lazyOnload">
-              {`
-                  (function(auvx){
-                  var d = document,
-                      s = d.createElement('script'),
-                      l = d.scripts[d.scripts.length - 1];
-                  s.settings = auvx || {};
-                  s.src = "\\/\\/handsome-storm.com\\/b\\/XKV.sQd\\/GNln0xYIWGce\\/VeTm\\/9CudZIURl\\/kaPST\\/YR2AMYz\\/UOwOOJTOUfteNUjCYuzqNnTiAg5xNkgA";
-                  s.async = true;
-                  s.referrerPolicy = 'no-referrer-when-downgrade';
-                  l.parentNode.insertBefore(s, l);
-                  })({})
-              `}
-          </Script>
+        <div className="my-8 flex justify-center">
+          <div dangerouslySetInnerHTML={{ __html: `
+            <div class="my-8 p-4 border rounded-lg bg-muted/20 flex items-center justify-center text-center text-muted-foreground min-h-[100px] min-w-[300px]">
+              <script>
+              (function(auvx){
+              var d = document,
+                  s = d.createElement('script'),
+                  l = d.scripts[d.scripts.length - 1];
+              s.settings = auvx || {};
+              s.src = "\\/\\/handsome-storm.com\\/b\\/XKV.sQd\\/GNln0xYIWGce\\/VeTm\\/9CudZIURl\\/kaPST\\/YR2AMYz\\/UOwOOJTOUfteNUjCYuzqNnTiAg5xNkgA";
+              s.async = true;
+              s.referrerPolicy = 'no-referrer-when-downgrade';
+              l.parentNode.insertBefore(s, l);
+              })({})
+              </script>
+            </div>
+          ` }} />
         </div>
 
 
