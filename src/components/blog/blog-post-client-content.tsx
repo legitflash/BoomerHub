@@ -15,6 +15,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { getSavesForPost } from '@/services/saves-service';
 import { handleToggleSavePost } from '@/app/actions';
 import Script from 'next/script';
+import CategoryActionBanner from './category-action-banner';
 
 function slugify(text: string) {
   return text
@@ -151,6 +152,10 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
         <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
             {articleBody}
         </div>
+        
+        {/* The new banner component is added here */}
+        <CategoryActionBanner category={post.category} />
+
 
         <div className="mt-12 border-t pt-8">
             <h3 className="text-lg font-semibold mb-4">READ MORE</h3>
