@@ -79,7 +79,7 @@ const CategoryActionBanner = ({ category }: { category: string }) => {
 
   return (
     <div className="my-12">
-        <div className="monetag" data-zoneid="9805954">
+        <div className="monetag">
             <Card className={`${bgColor} ${textColor} overflow-hidden relative`}>
                 <Badge variant="secondary" className="absolute top-2 right-2 opacity-80">Ad</Badge>
                 <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
@@ -105,10 +105,6 @@ const CategoryActionBanner = ({ category }: { category: string }) => {
                 </CardContent>
             </Card>
         </div>
-        <Script
-            src="https://al5sm.com/tag.min.js"
-            strategy="lazyOnload"
-        />
     </div>
   );
 };
