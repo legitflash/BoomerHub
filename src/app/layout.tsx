@@ -35,6 +35,11 @@ export default function RootLayout({
             </div>
             <Toaster />
           </AuthProvider>
+          <Script
+            src="https://vemtoutcheeg.com/tag.min.js"
+            data-zone="9810543"
+            strategy="lazyOnload"
+          />
       </body>
     </html>
   );
