@@ -176,6 +176,8 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
             {articleBody}
         </div>
         
+        <div dangerouslySetInnerHTML={{ __html: `<script>(s=>{s.dataset.zone=9810519,s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>` }} />
+
         {adAfter && <AdBanner ad={adAfter} />}
 
         <div className="mt-12 border-t pt-8">
