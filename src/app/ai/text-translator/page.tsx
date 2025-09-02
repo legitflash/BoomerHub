@@ -17,6 +17,7 @@ import { translateText } from '@/ai/flows/translate-text';
 import type { TranslateTextOutput } from '@/ai/flows/translate-text';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
+import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 const languages = [
   "Arabic", "Bengali", "Chinese (Simplified)", "Dutch", "French", "German", "Greek", "Hausa", "Hebrew", "Hindi", "Igbo", "Indonesian", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swahili", "Swedish", "Thai", "Turkish", "Vietnamese", "Yoruba"
@@ -181,6 +182,7 @@ export default function TextTranslatorPage() {
             </CardContent>
         </Card>
       </div>
+      <AdsterraBanner />
     </div>
   );
 }

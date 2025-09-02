@@ -23,6 +23,7 @@ import type { GenerateMatchAnalysisOutput } from '@/ai/flows/generate-match-anal
 import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
+import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 
 const formSchema = z.object({
@@ -343,6 +344,7 @@ export default function MatchPredictionPage() {
           </Card>
         )}
       </div>
+      <AdsterraBanner />
     </div>
   );
 }

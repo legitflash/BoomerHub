@@ -9,6 +9,7 @@ import { topCategories } from '@/lib/data';
 import { getAllPosts } from '@/services/post-service';
 import HeroSearch from '@/components/home/hero-search';
 import PaginationControls from '@/components/blog/pagination-controls';
+import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 const POSTS_PER_PAGE = 10;
 
@@ -70,6 +71,8 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
           ))}
         </div>
       </section>
+      
+      <AdsterraBanner />
 
       {/* Latest Blog Posts Section */}
       <section className="container px-4 md:px-6 pb-12 md:pb-24">

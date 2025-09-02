@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAllTeamMembers } from "@/services/team-service";
+import AdsterraBanner from "@/components/ads/adsterra-banner";
 
 export default async function AboutPage() {
   const teamMembers = await getAllTeamMembers();
@@ -39,6 +40,8 @@ export default async function AboutPage() {
           </p>
         </div>
       </section>
+
+      <AdsterraBanner />
 
       <section className="text-center">
          <h2 className="text-3xl font-bold tracking-tighter font-headline mb-8">Meet the Team</h2>

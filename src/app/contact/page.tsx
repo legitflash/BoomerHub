@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { handleCreateSubmission } from '../actions';
+import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 
 const formSchema = z.object({
@@ -185,6 +186,7 @@ export default function ContactPage() {
             </Card>
         </div>
       </div>
+      <AdsterraBanner />
     </div>
   );
 }

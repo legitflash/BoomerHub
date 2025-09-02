@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { handleCreateSubmission } from '../actions';
+import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 
 const formSchema = z.object({
@@ -79,6 +80,10 @@ export default function AdvertisePage() {
           Connect with a growing community of engaged readers interested in finance, technology, and online entrepreneurship.
         </p>
       </section>
+
+      <div className="my-8">
+        <AdsterraBanner />
+      </div>
 
       <div className="grid md:grid-cols-2 gap-12">
         <div className="space-y-6 prose prose-lg dark:prose-invert">

@@ -13,6 +13,7 @@ import type { Post, BlogCategory } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 import { handleIsFollowingCategory, handleToggleFollowCategory } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
+import AdsterraBanner from '../ads/adsterra-banner';
 
 
 interface BlogCategoryClientPageProps {
@@ -133,6 +134,8 @@ export default function BlogCategoryClientPage({ category, initialPosts }: BlogC
             />
         </div>
       </div>
+      
+      <AdsterraBanner />
       
       {filteredPosts.length > 0 ? (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

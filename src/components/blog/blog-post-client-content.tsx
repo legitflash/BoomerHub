@@ -16,6 +16,7 @@ import { getSavesForPost } from '@/services/saves-service';
 import { handleToggleSavePost } from '@/app/actions';
 import Script from 'next/script';
 import CategoryActionBanner from './category-action-banner';
+import AdsterraBanner from '../ads/adsterra-banner';
 
 function slugify(text: string) {
   return text
@@ -148,6 +149,8 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
           priority
           crossOrigin="anonymous" 
         />
+        
+        <AdsterraBanner />
 
         <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
             {articleBody}

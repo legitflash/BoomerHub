@@ -16,6 +16,7 @@ import { transcribeAudio } from '@/ai/flows/transcribe-audio';
 import type { TranscribeAudioOutput } from '@/ai/flows/transcribe-audio';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
+import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ACCEPTED_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3", "audio/flac", "audio/x-m4a"];
@@ -167,6 +168,7 @@ export default function AudioTranscriberPage() {
           </Card>
         )}
       </div>
+      <AdsterraBanner />
     </div>
   );
 }

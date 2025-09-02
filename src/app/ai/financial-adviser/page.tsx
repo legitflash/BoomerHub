@@ -16,6 +16,7 @@ import { generateFinancialAdvice } from '@/ai/flows/generate-financial-advice';
 import type { GenerateFinancialAdviceOutput } from '@/ai/flows/generate-financial-advice';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
+import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 const formSchema = z.object({
   query: z.string().min(20, { message: "Please describe your situation in at least 20 characters." }),
@@ -159,6 +160,7 @@ export default function FinancialAdviserPage() {
           </Card>
         )}
       </div>
+      <AdsterraBanner />
     </div>
   );
 }
