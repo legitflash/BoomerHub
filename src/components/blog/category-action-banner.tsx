@@ -4,7 +4,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Script from 'next/script';
-import { v4 as uuidv4 } from 'uuid';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ArrowRight, DollarSign, Megaphone, BrainCircuit, Briefcase } from 'lucide-react';
@@ -69,13 +68,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
 };
 
 const CategoryActionBanner = ({ category }: { category: string }) => {
-  const [uniqueId, setUniqueId] = useState('');
-
-  useEffect(() => {
-    // Generate a unique ID on the client side to avoid hydration mismatches
-    setUniqueId(`monetag-${uuidv4()}`);
-  }, []);
-
+  
   const details = bannerConfig[category] || bannerConfig.default;
   const { icon: Icon, title, description, buttonText, href, bgColor, textColor } = details;
 
@@ -83,15 +76,10 @@ const CategoryActionBanner = ({ category }: { category: string }) => {
   if (href === '/blog') {
       return null;
   }
-  
-  if (!uniqueId) {
-    // Don't render anything until the unique ID is generated on the client
-    return null;
-  }
 
   return (
     <div className="my-12">
-        <div id={uniqueId} className="monetag" data-zoneid="9805954">
+        <div className="monetag" data-zoneid="9805954">
             <Card className={`${bgColor} ${textColor} overflow-hidden relative`}>
                 <Badge variant="secondary" className="absolute top-2 right-2 opacity-80">Ad</Badge>
                 <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
@@ -118,7 +106,6 @@ const CategoryActionBanner = ({ category }: { category: string }) => {
             </Card>
         </div>
         <Script
-            id={`monetag-script-${uniqueId}`}
             src="https://al5sm.com/tag.min.js"
             strategy="lazyOnload"
         />
