@@ -154,9 +154,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
             {articleBody}
         </div>
         
-        {/* The new banner component is added here */}
-        <CategoryActionBanner category={post.category} />
-
+        <AdsterraBanner />
 
         <div className="mt-12 border-t pt-8">
             <h3 className="text-lg font-semibold mb-4">READ MORE</h3>
@@ -170,6 +168,11 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
         </div>
 
       </article>
+
+      {/* The custom banner is placed here, before related articles */}
+      <div className="container max-w-4xl">
+        <CategoryActionBanner category={post.category} />
+      </div>
 
       {relatedPosts.length > 0 && (
         <aside className="container max-w-4xl py-16">
