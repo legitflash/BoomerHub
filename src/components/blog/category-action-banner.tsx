@@ -26,7 +26,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
     href: "/blog/category/finance",
-    bgColor: "bg-blue-600",
+    bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
   'Social Media': {
@@ -35,7 +35,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
     href: "/blog/category/social-media",
-    bgColor: "bg-rose-500",
+    bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
   'AI/Tech': {
@@ -44,7 +44,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
     href: "/ai/match-prediction",
-    bgColor: "bg-indigo-600",
+    bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
   'Freelancing': {
@@ -53,7 +53,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
     href: "/blog/category/freelancing",
-    bgColor: "bg-green-600",
+    bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
   'default': {
@@ -62,8 +62,8 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
     href: "/blog",
-    bgColor: "bg-secondary",
-    textColor: "text-secondary-foreground"
+    bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
+    textColor: "text-white"
   }
 };
 
