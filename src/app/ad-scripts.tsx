@@ -1,4 +1,3 @@
-
 'use client';
 
 import Script from 'next/script';
@@ -9,14 +8,16 @@ export default function AdScripts() {
     // Hilltop Ads Script
     const s = document.createElement('script');
     s.settings = {};
-    s.src = "//coldquit.com/c/DJ9-6Jb.2c5/ltSfWQQ-9/NijcYAzNNTj-IZ4aMeSO0T2BNlj/MA2tM/j/gYys";
+    s.src = "//coldquit.com/cTD/9s6.bd2e5QlnSfWBQf9sN_jLYCzdNDTeAu3MOOSe0p2/NBjqMv1ZMUDhggwN";
     s.async = true;
     s.referrerPolicy = 'no-referrer-when-downgrade';
     document.body.appendChild(s);
 
     return () => {
       // Cleanup script on component unmount
-      document.body.removeChild(s);
+      if (document.body.contains(s)) {
+        document.body.removeChild(s);
+      }
     };
   }, []);
 
