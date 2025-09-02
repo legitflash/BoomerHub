@@ -27,16 +27,17 @@ function slugify(text: string) {
     .replace(/-+$/, ''); // Trim - from end of text
 }
 
-const AdBanner = ({ ad }: { ad: Advertisement }) => {
-    // This is now a simple banner ad placeholder.
+const AdBanner = () => {
     return (
-        <div 
-            className="my-8 p-4 border rounded-lg bg-muted/20 flex items-center justify-center text-center text-muted-foreground"
-        >
-           <p>Advertisement</p>
+        <div className="my-8 flex justify-center">
+            {/* This is a standard, safe way to place an ad. You can replace the content with your ad code. */}
+            <div style={{ width: '300px', height: '250px', border: '1px dashed #ccc', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f9f9f9' }}>
+                <span>300x250 Ad Placeholder</span>
+            </div>
         </div>
     );
 };
+
 
 export default function BlogPostContent({ post, relatedPosts }: { post: Post, relatedPosts: Post[] }) {
   const { toast } = useToast();
@@ -161,6 +162,9 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
         <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
             {articleBody}
         </div>
+
+        {/* Ad will be placed here */}
+        <AdBanner />
 
         <div className="mt-12 border-t pt-8">
             <h3 className="text-lg font-semibold mb-4">READ MORE</h3>
