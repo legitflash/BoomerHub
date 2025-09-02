@@ -27,6 +27,7 @@ if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
 
 export const ai = genkit({
   plugins: [googleAI({
+    apiKey: process.env.GEMINI_API_KEY,
     apiVersion: 'v1beta',
     auth: credentials ? new GoogleAuth({credentials, scopes: 'https://www.googleapis.com/auth/cloud-platform'}) : auth
   })],
