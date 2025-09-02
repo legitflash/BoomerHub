@@ -43,7 +43,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     title: "Step into the Future with AI",
     description: "Access cutting-edge AI tools that can revolutionize your workflow and creativity.",
     buttonText: "Explore AI Tools",
-    href: "#",
+    href: "/ai/match-prediction",
     bgColor: "bg-indigo-600",
     textColor: "text-white"
   },
@@ -72,39 +72,32 @@ const CategoryActionBanner = ({ category }: { category: string }) => {
   const details = bannerConfig[category] || bannerConfig.default;
   const { icon: Icon, title, description, buttonText, href, bgColor, textColor } = details;
 
-  // Don't render the ad for the default case
-  if (href === '/blog') {
-      return null;
-  }
-
   return (
     <div className="my-12">
-        <div className="monetag">
-            <Card className={`${bgColor} ${textColor} overflow-hidden relative`}>
-                <Badge variant="secondary" className="absolute top-2 right-2 opacity-80">Ad</Badge>
-                <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-                    <div className="flex-shrink-0">
-                        <div className="border-4 border-white/50 rounded-full p-4">
-                        <Icon className="h-12 w-12" />
-                        </div>
+        <Card className={`${bgColor} ${textColor} overflow-hidden relative`}>
+            <Badge variant="secondary" className="absolute top-2 right-2 opacity-80">Ad</Badge>
+            <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+                <div className="flex-shrink-0">
+                    <div className="border-4 border-white/50 rounded-full p-4">
+                    <Icon className="h-12 w-12" />
                     </div>
-                    <div className="flex-grow">
-                        <h3 className="text-2xl font-bold font-headline">{title}</h3>
-                        <p className="mt-1 opacity-90 max-w-xl">{description}</p>
-                    </div>
-                    <div className="flex-shrink-0">
-                        <Button 
-                            asChild 
-                            size="lg" 
-                            variant="secondary" 
-                            className="bg-white/90 text-black hover:bg-white"
-                        >
-                        <Link href={href}>{buttonText} <ArrowRight className="ml-2" /></Link>
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
+                </div>
+                <div className="flex-grow">
+                    <h3 className="text-2xl font-bold font-headline">{title}</h3>
+                    <p className="mt-1 opacity-90 max-w-xl">{description}</p>
+                </div>
+                <div className="flex-shrink-0">
+                    <Button 
+                        asChild 
+                        size="lg" 
+                        variant="secondary" 
+                        className="bg-white/90 text-black hover:bg-white"
+                    >
+                    <Link href={href}>{buttonText} <ArrowRight className="ml-2" /></Link>
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
     </div>
   );
 };
