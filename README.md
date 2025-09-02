@@ -1,3 +1,6 @@
+git add .
+git commit -m "Updated ad scripts and implemented custom banners"
+git push
 # BoomerHub
 
 This is a Next.js project built with Firebase Studio. It's a full-featured blog and content platform with AI-powered tools, user authentication, and an admin dashboard.
