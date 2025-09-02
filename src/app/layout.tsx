@@ -46,6 +46,7 @@ export default function RootLayout({
               l.parentNode.insertBefore(s, l);
               })({}) `}
           </Script>
+          <Script id="adsterra-social-bar" src="//chickenadjacent.com/c7/ac/cf/c7accf076d6c5d479539d4b53ac9f961.js" strategy="lazyOnload"></Script>
       </body>
     </html>
   );
