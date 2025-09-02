@@ -29,7 +29,7 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
     <>
     <div className="flex flex-col gap-16 md:gap-24">
       {/* Hero Section */}
-      <section className="pt-12 md:pt-24">
+      <section className="pt-12 md:pt-24" id="hero-search">
         <div className="container px-4 md:px-6">
           <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
             <div className="flex flex-col justify-center space-y-4 text-center lg:text-left">
