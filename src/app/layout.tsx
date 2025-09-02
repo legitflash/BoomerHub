@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/hooks/use-auth';
+import Script from 'next/script';
 
 
 export const metadata: Metadata = {
@@ -23,6 +24,20 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <Script id="hitopads-ad" strategy="beforeInteractive">
+          {`
+            (function(auvx){
+              var d = document,
+                  s = d.createElement('script'),
+                  l = d.scripts[d.scripts.length - 1];
+              s.settings = auvx || {};
+              s.src = "\\/\\/handsome-storm.com\\/b\\/XKV.sQd\\/GNln0xYIWGce\\/VeTm\\/9CudZIURl\\/kaPST\\/YR2AMYz\\/UOwOOJTOUfteNUjCYuzqNnTiAg5xNkgA";
+              s.async = true;
+              s.referrerPolicy = 'no-referrer-when-downgrade';
+              l.parentNode.insertBefore(s, l);
+            })({})
+          `}
+        </Script>
       </head>
       <body className="font-body antialiased">
           <AuthProvider>
