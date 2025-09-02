@@ -19,13 +19,15 @@ interface BannerDetails {
   textColor: string;
 }
 
+const adUrl = "https://coldquit.com/b.3CVp0NPX3Np/v_bEmJV_JiZSD/0r2EN/juMl1YMUDmcE5/LMTpYK2rM/zkUUw/OxDsAG";
+
 const bannerConfig: { [key: string]: BannerDetails } = {
   'Finance': {
     icon: DollarSign,
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: "/blog/category/finance",
+    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
@@ -34,7 +36,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: "/blog/category/social-media",
+    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
@@ -43,7 +45,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: "/ai/match-prediction",
+    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
@@ -52,7 +54,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: "/blog/category/freelancing",
+    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
@@ -61,7 +63,7 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: "/blog",
+    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   }

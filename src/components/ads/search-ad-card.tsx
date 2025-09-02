@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const adUrl = "https://your-smart-ad-link.com"; // Replace with your actual smart link
+const adUrl = "https://coldquit.com/b.3CVp0NPX3Np/v_bEmJV_JiZSD/0r2EN/juMl1YMUDmcE5/LMTpYK2rM/zkUUw/OxDsAG"; 
 
 const adCreatives = [
   {
