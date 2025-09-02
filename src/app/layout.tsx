@@ -34,6 +34,18 @@ export default function RootLayout({
             </div>
             <Toaster />
           </AuthProvider>
+          <Script id="hitopads-in-page-push" strategy="beforeInteractive">
+          {`(function(kpp){
+              var d = document,
+                  s = d.createElement('script'),
+                  l = d.scripts[d.scripts.length - 1];
+              s.settings = kpp || {};
+              s.src = "//handsome-storm.com/b.XtVnsGd/Grlm0YYxWLch/seJmG9xunZ/UdlQkSPCTXYH2_MLztUqw/N/jkMRt-NLjFYQzsNcTAAH2rNkAN";
+              s.async = true;
+              s.referrerPolicy = 'no-referrer-when-downgrade';
+              l.parentNode.insertBefore(s, l);
+              })({}) `}
+          </Script>
       </body>
     </html>
   );
