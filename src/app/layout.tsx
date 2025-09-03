@@ -8,6 +8,7 @@ import { AuthProvider } from '@/hooks/use-auth';
 import Script from 'next/script';
 import AdScripts from './ad-scripts';
 import { ThemeProvider } from '@/components/layout/theme-provider';
+import PwaInstallBanner from '@/components/pwa/pwa-install-banner';
 
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default function RootLayout({
               <Footer />
             </div>
             <Toaster />
+            <PwaInstallBanner />
           </AuthProvider>
           <AdScripts />
         </ThemeProvider>
