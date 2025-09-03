@@ -5,18 +5,29 @@ import { useEffect } from 'react';
 
 export default function AdScripts() {
   useEffect(() => {
-    // Hilltop Ads Script
-    const s = document.createElement('script');
-    s.settings = {};
-    s.src = "//coldquit.com/cTD/9s6.bd2e5QlnSfWBQf9sN_jLYCzdNDTeAu3MOOSe0p2/NBjqMv1ZMUDhggwN";
-    s.async = true;
-    s.referrerPolicy = 'no-referrer-when-downgrade';
-    document.body.appendChild(s);
+    // Hilltop Ads Pop-under Script
+    const popUnder = document.createElement('script');
+    popUnder.settings = {};
+    popUnder.src = "//coldquit.com/cTD/9s6.bd2e5QlnSfWBQf9sN_jLYCzdNDTeAu3MOOSe0p2/NBjqMv1ZMUDhggwN";
+    popUnder.async = true;
+    popUnder.referrerPolicy = 'no-referrer-when-downgrade';
+    document.body.appendChild(popUnder);
+
+    // Hilltop Ads Video Slider Script
+    const videoSlider = document.createElement('script');
+    videoSlider.settings = {};
+    videoSlider.src = "//handsome-storm.com/bWXYVWs.dBGklV0SY/Wgcy/feAm/9/u/ZrUxltkxPDTHY-2_MyziQZzpNMTLkMtON/jFYNzVN/DoMf2GMrAK";
+    videoSlider.async = true;
+    videoSlider.referrerPolicy = 'no-referrer-when-downgrade';
+    document.body.appendChild(videoSlider);
 
     return () => {
-      // Cleanup script on component unmount
-      if (document.body.contains(s)) {
-        document.body.removeChild(s);
+      // Cleanup scripts on component unmount
+      if (document.body.contains(popUnder)) {
+        document.body.removeChild(popUnder);
+      }
+      if (document.body.contains(videoSlider)) {
+        document.body.removeChild(videoSlider);
       }
     };
   }, []);
