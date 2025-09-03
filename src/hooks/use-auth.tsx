@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setIsLoading(true);
-      if (firebaseUser && firebaseUser.emailVerified) {
+      if (firebaseUser) {
         // Check for role in Firestore
         const userDocRef = doc(db, 'users', firebaseUser.uid);
         const userDoc = await getDoc(userDocRef);
@@ -102,12 +102,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         createdAt: new Date(),
         role: 'member' // Default role
       }, { merge: true });
-
-      // Send verification email
-      await sendEmailVerification(firebaseUser);
-      
-      // Sign the user out to force email verification
-      await signOut(auth);
     }
     
     return userCredential;
@@ -115,16 +109,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signIn = async (email: string, pass: string) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-    const firebaseUser = userCredential.user;
-
-    if (!firebaseUser.emailVerified) {
-      await signOut(auth);
-      // Throw a specific error for unverified email
-      const error: any = new Error("Email not verified");
-      error.code = "auth/email-not-verified";
-      throw error;
-    }
-    
     return userCredential;
   };
 
