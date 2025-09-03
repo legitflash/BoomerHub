@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Languages } from "lucide-react";
+import { Loader2, Languages, ArrowRight } from "lucide-react";
 import { translateText } from '@/ai/flows/translate-text';
 import type { TranslateTextOutput } from '@/ai/flows/translate-text';
 import { useAuth } from '@/hooks/use-auth';
@@ -21,6 +21,11 @@ import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
 import { GUEST_LIMIT, USER_LIMIT } from '@/lib/data';
+
+const adLinks = [
+  "https://otieu.com/4/9697212", // Monetag
+  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
+];
 
 const languages = [
   "Arabic", "Bengali", "Chinese (Simplified)", "Dutch", "French", "German", "Greek", "Hausa", "Hebrew", "Hindi", "Igbo", "Indonesian", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swahili", "Swedish", "Thai", "Turkish", "Vietnamese", "Yoruba"
@@ -39,6 +44,7 @@ export default function TextTranslatorPage() {
   const [error, setError] = useState<string | null>(null);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
+  const [adUrl, setAdUrl] = useState('');
 
   const { user } = useAuth();
   const { toast } = useToast();
@@ -50,6 +56,12 @@ export default function TextTranslatorPage() {
       targetLanguage: '',
     },
   });
+
+  useEffect(() => {
+    // This runs only on the client, after hydration, to prevent mismatch
+    const randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
+    setAdUrl(randomLink);
+  }, []);
   
   const updateUsage = async () => {
     const id = user ? user.uid : guestId;
@@ -133,6 +145,8 @@ export default function TextTranslatorPage() {
     )
   }
 
+  const hasUsage = usage ? usage.hasRemaining : true;
+
   return (
     <div className="container py-12 md:py-16">
       <header className="text-center mb-12">
@@ -192,9 +206,18 @@ export default function TextTranslatorPage() {
                         </FormItem>
                     )}
                     />
-                <Button type="submit" className="w-full" disabled={isLoading || (usage && !usage.hasRemaining)}>
-                  {isLoading ? <Loader2 className="animate-spin" /> : 'Translate'}
-                </Button>
+                {hasUsage ? (
+                  <Button type="submit" className="w-full" disabled={isLoading || !hasUsage}>
+                    {isLoading ? <Loader2 className="animate-spin" /> : 'Translate'}
+                  </Button>
+                ) : (
+                  <Button asChild className="w-full" variant="secondary">
+                     <Link href={adUrl} target="_blank" rel="noopener noreferrer">
+                      Usage Limit Reached. Click to continue.
+                      <ArrowRight />
+                    </Link>
+                  </Button>
+                )}
                 {renderUsageInfo()}
               </form>
             </Form>

@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, FileMusic, AudioLines } from "lucide-react";
+import { Loader2, FileMusic, AudioLines, ArrowRight } from "lucide-react";
 import { transcribeAudio } from '@/ai/flows/transcribe-audio';
 import type { TranscribeAudioOutput } from '@/ai/flows/transcribe-audio';
 import { useAuth } from '@/hooks/use-auth';
@@ -23,6 +23,11 @@ import { GUEST_LIMIT, USER_LIMIT } from '@/lib/data';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ACCEPTED_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3", "audio/flac", "audio/x-m4a"];
+
+const adLinks = [
+  "https://otieu.com/4/9697212", // Monetag
+  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
+];
 
 const formSchema = z.object({
   audioFile: z
@@ -43,6 +48,7 @@ export default function AudioTranscriberPage() {
   const [error, setError] = useState<string | null>(null);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
+  const [adUrl, setAdUrl] = useState('');
 
   const { user } = useAuth();
   const { toast } = useToast();
@@ -50,6 +56,12 @@ export default function AudioTranscriberPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
+
+  useEffect(() => {
+    // This runs only on the client, after hydration, to prevent mismatch
+    const randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
+    setAdUrl(randomLink);
+  }, []);
   
   const fileRef = form.register("audioFile");
   
@@ -146,6 +158,8 @@ export default function AudioTranscriberPage() {
     )
   }
 
+  const hasUsage = usage ? usage.hasRemaining : true;
+
   return (
     <div className="container py-12 md:py-16">
       <header className="text-center mb-12">
@@ -162,7 +176,7 @@ export default function AudioTranscriberPage() {
         <Card>
           <CardHeader>
             <CardTitle>Upload Audio</CardTitle>
-            <CardDescription>Select an audio file to transcribe. For songs, the AI will try to identify lyrics and structure.</CardDescription>
+            <CardDescription>Convert both songs and audio files to text. For music, the AI will try to identify lyrics and structure like [Chorus] or [Verse].</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -183,9 +197,18 @@ export default function AudioTranscriberPage() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={isLoading || (usage && !usage.hasRemaining)}>
-                  {isLoading ? <Loader2 className="animate-spin" /> : 'Transcribe Audio'}
-                </Button>
+                 {hasUsage ? (
+                  <Button type="submit" className="w-full" disabled={isLoading || !hasUsage}>
+                    {isLoading ? <Loader2 className="animate-spin" /> : 'Transcribe Audio'}
+                  </Button>
+                ) : (
+                  <Button asChild className="w-full" variant="secondary">
+                    <Link href={adUrl} target="_blank" rel="noopener noreferrer">
+                      Usage Limit Reached. Click to continue.
+                      <ArrowRight />
+                    </Link>
+                  </Button>
+                )}
                 {renderUsageInfo()}
               </form>
             </Form>

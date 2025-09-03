@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, PiggyBank } from "lucide-react";
+import { Loader2, PiggyBank, ArrowRight } from "lucide-react";
 import { generateFinancialAdvice } from '@/ai/flows/generate-financial-advice';
 import type { GenerateFinancialAdviceOutput } from '@/ai/flows/generate-financial-advice';
 import { useAuth } from '@/hooks/use-auth';
@@ -20,6 +20,11 @@ import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
 import { GUEST_LIMIT, USER_LIMIT } from '@/lib/data';
+
+const adLinks = [
+  "https://otieu.com/4/9697212", // Monetag
+  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
+];
 
 const formSchema = z.object({
   query: z.string().min(20, { message: "Please describe your situation in at least 20 characters." }),
@@ -33,6 +38,7 @@ export default function FinancialAdviserPage() {
   const [error, setError] = useState<string | null>(null);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
+  const [adUrl, setAdUrl] = useState('');
 
   const { user } = useAuth();
   const { toast } = useToast();
@@ -43,6 +49,12 @@ export default function FinancialAdviserPage() {
       query: '',
     },
   });
+
+  useEffect(() => {
+    // This runs only on the client, after hydration, to prevent mismatch
+    const randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
+    setAdUrl(randomLink);
+  }, []);
   
   const updateUsage = async () => {
     const id = user ? user.uid : guestId;
@@ -126,6 +138,8 @@ export default function FinancialAdviserPage() {
     )
   }
 
+  const hasUsage = usage ? usage.hasRemaining : true;
+
   return (
     <div className="container py-12 md:py-16">
       <header className="text-center mb-12">
@@ -165,9 +179,18 @@ export default function FinancialAdviserPage() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={isLoading || (usage && !usage.hasRemaining)}>
-                  {isLoading ? <Loader2 className="animate-spin" /> : 'Get Advice'}
-                </Button>
+                {hasUsage ? (
+                  <Button type="submit" className="w-full" disabled={isLoading || !hasUsage}>
+                    {isLoading ? <Loader2 className="animate-spin" /> : 'Get Advice'}
+                  </Button>
+                ) : (
+                  <Button asChild className="w-full" variant="secondary">
+                    <Link href={adUrl} target="_blank" rel="noopener noreferrer">
+                      Usage Limit Reached. Click to continue.
+                      <ArrowRight />
+                    </Link>
+                  </Button>
+                )}
                 {renderUsageInfo()}
               </form>
             </Form>

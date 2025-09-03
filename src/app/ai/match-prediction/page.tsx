@@ -19,7 +19,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Shield, Users } from 'lucide-react';
+import { Loader2, Shield, Users, ArrowRight } from 'lucide-react';
 import type { GenerateMatchAnalysisOutput } from '@/ai/flows/generate-match-analysis';
 import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 import { useAuth } from '@/hooks/use-auth';
@@ -28,6 +28,11 @@ import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
 import { GUEST_LIMIT, USER_LIMIT } from '@/lib/data';
 
+
+const adLinks = [
+  "https://otieu.com/4/9697212", // Monetag
+  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
+];
 
 const formSchema = z.object({
   country: z.string().min(1, { message: "Please select a country." }),
@@ -101,6 +106,7 @@ export default function MatchPredictionPage() {
   const [error, setError] = useState<string | null>(null);
   const [guestId, setGuestId] = useState<string | null>(null);
   const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
+  const [adUrl, setAdUrl] = useState('');
   
   const { user } = useAuth();
   const { toast } = useToast();
@@ -114,6 +120,12 @@ export default function MatchPredictionPage() {
       awayTeam: '',
     },
   });
+
+  useEffect(() => {
+    // This runs only on the client, after hydration, to prevent mismatch
+    const randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
+    setAdUrl(randomLink);
+  }, []);
 
   const updateUsage = async () => {
     const id = user ? user.uid : guestId;
@@ -205,6 +217,8 @@ export default function MatchPredictionPage() {
       </p>
     )
   }
+
+  const hasUsage = usage ? usage.hasRemaining : true;
 
 
   return (
@@ -342,9 +356,18 @@ export default function MatchPredictionPage() {
                         </FormItem>
                       )}
                     />
-                  <Button type="submit" className="w-full" disabled={isLoading || (usage && !usage.hasRemaining)}>
-                    {isLoading ? <Loader2 className="animate-spin" /> : 'Generate Prediction'}
-                  </Button>
+                  {hasUsage ? (
+                    <Button type="submit" className="w-full" disabled={isLoading || !hasUsage}>
+                      {isLoading ? <Loader2 className="animate-spin" /> : 'Generate Prediction'}
+                    </Button>
+                  ) : (
+                    <Button asChild className="w-full" variant="secondary">
+                       <Link href={adUrl} target="_blank" rel="noopener noreferrer">
+                        Usage Limit Reached. Click to continue.
+                        <ArrowRight />
+                      </Link>
+                    </Button>
+                  )}
                   {renderUsageInfo()}
                 </form>
              </Form>
