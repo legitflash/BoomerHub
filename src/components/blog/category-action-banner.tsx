@@ -20,7 +20,7 @@ interface BannerDetails {
 
 const adLinks = [
   "https://otieu.com/4/9697212", // Monetag
-  "https://chickenadjacent.com/k0y10hdi?key=73b2c1f5ef721895cb69ccd6ad18b759" // Adsterra
+  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
 ]; 
 
 const bannerConfig: { [key: string]: Omit<BannerDetails, 'href'> } = {
