@@ -56,7 +56,7 @@ const prompt = ai.definePrompt({
   Your response must be in the requested JSON format containing only the transcription.
 
   Audio: {{media url=audioDataUri}}`,
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-1.5-pro-latest',
 });
 
 const transcribeAudioFlow = ai.defineFlow(
