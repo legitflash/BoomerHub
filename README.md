@@ -1,5 +1,3 @@
-git add .
-git commit -m "Updated ad scripts and implemented custom banners"
 git push
 # BoomerHub
 
