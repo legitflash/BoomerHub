@@ -23,7 +23,7 @@ import type { Advertisement } from '@/lib/types';
 const formSchema = z.object({
   title: z.string().min(3, { message: "Title must be at least 3 characters long." }),
   content: z.string().min(10, { message: "Ad content/code must be at least 10 characters long." }),
-  placement: z.enum(['before-post-content', 'after-post-content']),
+  placement: z.enum(['before-post-content', 'after-post-content', 'header', 'footer', 'blog-feed', 'sidebar']),
   isActive: z.boolean().default(true),
 });
 
@@ -115,6 +115,10 @@ export default function CreateAdPage() {
                                                 <SelectContent>
                                                     <SelectItem value="before-post-content">Before Post Content</SelectItem>
                                                     <SelectItem value="after-post-content">After Post Content</SelectItem>
+                                                    <SelectItem value="header">Header</SelectItem>
+                                                    <SelectItem value="footer">Footer</SelectItem>
+                                                    <SelectItem value="blog-feed">Blog Feed</SelectItem>
+                                                    <SelectItem value="sidebar">Sidebar</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             <FormDescription>Choose where this ad will be displayed.</FormDescription>

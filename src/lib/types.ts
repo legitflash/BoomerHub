@@ -115,7 +115,7 @@ export type Advertisement = {
     id: string;
     title: string;
     content: string;
-    placement: 'before-post-content' | 'after-post-content';
+    placement: 'before-post-content' | 'after-post-content' | 'header' | 'footer' | 'blog-feed' | 'sidebar';
     isActive: boolean;
     createdAt?: string;
 };

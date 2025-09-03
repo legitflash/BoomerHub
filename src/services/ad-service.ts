@@ -50,7 +50,7 @@ export async function getAllAdvertisements(): Promise<Advertisement[]> {
 export async function getActiveAdvertisementsByPlacement(placement: Advertisement['placement']): Promise<Advertisement[]> {
     try {
         const adsCollection = collection(db, 'advertisements');
-        const q = query(adsCollection, where('placement', '==', placement), where('isActive', '==', true));
+        const q = query(adsCollection, where('placement', '==', placement), where('isActive', '==', true), orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
 
         const ads: Advertisement[] = querySnapshot.docs.map(doc => {
