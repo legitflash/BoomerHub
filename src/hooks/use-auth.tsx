@@ -2,7 +2,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, type User as FirebaseUser } from 'firebase/auth';
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, type User as FirebaseUser, sendEmailVerification } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setIsLoading(true);
-      if (firebaseUser) {
+      if (firebaseUser && firebaseUser.emailVerified) {
         // Check for role in Firestore
         const userDocRef = doc(db, 'users', firebaseUser.uid);
         const userDoc = await getDoc(userDocRef);
@@ -87,27 +87,45 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signUp = async (email: string, pass: string, displayName: string) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    const firebaseUser = userCredential.user;
     
     // After creating the user, update their profile with the display name
-    if (userCredential.user) {
-      await updateProfile(userCredential.user, {
+    if (firebaseUser) {
+      await updateProfile(firebaseUser, {
         displayName: displayName
       });
       // Also, save the user info to Firestore for role management
-      const userDocRef = doc(db, 'users', userCredential.user.uid);
+      const userDocRef = doc(db, 'users', firebaseUser.uid);
       await setDoc(userDocRef, {
         email: email,
         displayName: displayName,
         createdAt: new Date(),
         role: 'member' // Default role
       }, { merge: true });
+
+      // Send verification email
+      await sendEmailVerification(firebaseUser);
+      
+      // Sign the user out to force email verification
+      await signOut(auth);
     }
     
     return userCredential;
   };
 
-  const signIn = (email: string, pass: string) => {
-    return signInWithEmailAndPassword(auth, email, pass);
+  const signIn = async (email: string, pass: string) => {
+    const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+    const firebaseUser = userCredential.user;
+
+    if (!firebaseUser.emailVerified) {
+      await signOut(auth);
+      // Throw a specific error for unverified email
+      const error: any = new Error("Email not verified");
+      error.code = "auth/email-not-verified";
+      throw error;
+    }
+    
+    return userCredential;
   };
 
   const signOutUser = () => {

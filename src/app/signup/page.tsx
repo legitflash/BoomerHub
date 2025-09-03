@@ -48,10 +48,10 @@ export default function SignUpPage() {
             await signUp(values.email, values.password, values.displayName);
             toast({
                 title: "Account Created!",
-                description: "You have successfully signed up. Welcome!",
+                description: "A verification email has been sent to your inbox. Please verify your email before signing in.",
                 variant: "success",
             });
-            router.push('/');
+            router.push('/login');
         } catch (error: any) {
             let errorMessage = "An unexpected error occurred. Please try again.";
             if (error.code === 'auth/email-already-in-use') {

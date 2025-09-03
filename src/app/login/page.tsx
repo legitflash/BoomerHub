@@ -48,6 +48,9 @@ export default function LoginPage() {
       let errorMessage = 'An unexpected error occurred. Please try again.';
       // Handle specific Firebase error codes
       switch (error.code) {
+        case 'auth/email-not-verified':
+            errorMessage = 'Please verify your email address before signing in. Check your inbox for a verification link.';
+            break;
         case 'auth/user-not-found':
         case 'auth/wrong-password':
         case 'auth/invalid-credential':
