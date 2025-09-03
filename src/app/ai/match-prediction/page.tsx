@@ -170,12 +170,22 @@ export default function MatchPredictionPage() {
       updateUsage();
     } catch (e: any) {
       console.error(e);
-      toast({
-        title: "Prediction Failed",
-        description: e.message || 'An error occurred while generating the analysis. Please try again.',
-        variant: "destructive",
-      });
-      setError(e.message || 'An error occurred while generating the analysis. Please try again.');
+      const errorMessage = e.message || 'An error occurred while generating the analysis. Please try again.';
+       if (errorMessage.includes('429')) {
+           toast({
+            title: "Rate Limit Exceeded",
+            description: "You've made too many requests. Please wait a moment and try again.",
+            variant: "destructive",
+          });
+          setError("You've made too many requests. Please wait a moment and try again.");
+      } else {
+          toast({
+            title: "Prediction Failed",
+            description: errorMessage,
+            variant: "destructive",
+          });
+          setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }

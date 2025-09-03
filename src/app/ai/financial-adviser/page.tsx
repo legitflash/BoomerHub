@@ -90,12 +90,22 @@ export default function FinancialAdviserPage() {
       updateUsage();
     } catch (e: any) {
       console.error(e);
-      toast({
-        title: "Request Failed",
-        description: e.message || 'An error occurred while generating the advice. Please try again.',
-        variant: "destructive",
-      });
-      setError(e.message || 'An error occurred while generating advice. Please try again.');
+      const errorMessage = e.message || 'An error occurred while generating advice. Please try again.';
+      if (errorMessage.includes('429')) {
+           toast({
+            title: "Rate Limit Exceeded",
+            description: "You've made too many requests. Please wait a moment and try again.",
+            variant: "destructive",
+          });
+          setError("You've made too many requests. Please wait a moment and try again.");
+      } else {
+          toast({
+            title: "Request Failed",
+            description: errorMessage,
+            variant: "destructive",
+          });
+          setError(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
