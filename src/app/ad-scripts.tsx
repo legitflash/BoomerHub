@@ -8,8 +8,8 @@ export default function AdScripts() {
   useEffect(() => {
     // Hilltop Ads Pop-under Script
     const popUnder = document.createElement('script');
-    popUnder.settings = {};
-    popUnder.src = "//coldquit.com/cND/9s6.bj2u5XlxSeWpQp9iNbjDYgzRNXTtA_3_O/S/0K2/NXjtMz1/MlDRg_wl";
+    (popUnder as any).settings = {};
+    popUnder.src = "//handsome-storm.com/bUXiV.sNdRG/ll0jYRWQcc/-eYmH9QuZZXUll/kiPqTtY2AMGzsQHzTNAT-kKtiN/jrYzzuNvDuM/2qMEAM";
     popUnder.async = true;
     popUnder.referrerPolicy = 'no-referrer-when-downgrade';
     document.body.appendChild(popUnder);
