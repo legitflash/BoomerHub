@@ -103,15 +103,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         role: 'member' // Default role
       }, { merge: true });
 
-      // Action code settings for the verification email
-      const actionCodeSettings = {
-        // URL you want to redirect back to. The domain name must be authorized.
-        url: `${window.location.origin}/login`,
-        handleCodeInApp: true, // This must be true
-      };
-
       // Send verification email
-      await sendEmailVerification(firebaseUser, actionCodeSettings);
+      await sendEmailVerification(firebaseUser);
       
       // Sign the user out to force email verification
       await signOut(auth);
