@@ -2,9 +2,9 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, type User as FirebaseUser } from 'firebase/auth';
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, type User as FirebaseUser } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 // Define the shape of the user object, extending Firebase's User type
 export interface User extends FirebaseUser {
@@ -18,7 +18,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isEditor: boolean;
   isLoading: boolean;
-  signUp: (email: string, pass: string) => Promise<any>;
+  signUp: (email: string, pass: string, displayName: string) => Promise<any>;
   signIn: (email: string, pass: string) => Promise<any>;
   signOutUser: () => Promise<void>;
 }
@@ -85,8 +85,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const signUp = (email: string, pass: string) => {
-    return createUserWithEmailAndPassword(auth, email, pass);
+  const signUp = async (email: string, pass: string, displayName: string) => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    
+    // After creating the user, update their profile with the display name
+    if (userCredential.user) {
+      await updateProfile(userCredential.user, {
+        displayName: displayName
+      });
+      // Also, save the user info to Firestore for role management
+      const userDocRef = doc(db, 'users', userCredential.user.uid);
+      await setDoc(userDocRef, {
+        email: email,
+        displayName: displayName,
+        createdAt: new Date(),
+        role: 'member' // Default role
+      }, { merge: true });
+    }
+    
+    return userCredential;
   };
 
   const signIn = (email: string, pass: string) => {

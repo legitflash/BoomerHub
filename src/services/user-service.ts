@@ -3,6 +3,8 @@
 
 import { db } from '@/lib/firebase';
 import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
+import { updateProfile } from 'firebase/auth';
 
 // This is a simplified representation of a user in your 'users' collection
 interface UserRoleInfo {

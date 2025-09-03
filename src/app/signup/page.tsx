@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 
 const formSchema = z.object({
+    displayName: z.string().min(3, { message: "Display name must be at least 3 characters." }),
     email: z.string().email({ message: "Please enter a valid email." }),
     password: z.string().min(6, { message: "Password must be at least 6 characters long." }),
     confirmPassword: z.string()
@@ -35,6 +36,7 @@ export default function SignUpPage() {
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            displayName: '',
             email: '',
             password: '',
             confirmPassword: '',
@@ -43,7 +45,7 @@ export default function SignUpPage() {
 
     async function onSubmit(values: FormValues) {
         try {
-            await signUp(values.email, values.password);
+            await signUp(values.email, values.password, values.displayName);
             toast({
                 title: "Account Created!",
                 description: "You have successfully signed up. Welcome!",
@@ -77,6 +79,19 @@ export default function SignUpPage() {
                     <CardContent>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                 <FormField
+                                    control={form.control}
+                                    name="displayName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Display Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Your Name" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="email"

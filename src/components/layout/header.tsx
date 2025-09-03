@@ -148,9 +148,9 @@ export function Header() {
                   <Avatar className="h-10 w-10">
                     {user ? (
                         <>
-                            <AvatarImage src={user.photoURL || undefined} alt={user.email || 'User'} />
+                            <AvatarImage src={user.photoURL || undefined} alt={user.displayName || user.email || 'User'} />
                             <AvatarFallback>
-                              {user.email ? user.email.charAt(0).toUpperCase() : <User />}
+                              {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email ? user.email.charAt(0).toUpperCase() : <User />}
                             </AvatarFallback>
                         </>
                     ) : (
