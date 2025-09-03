@@ -14,6 +14,7 @@ import { createSubmission } from '@/services/submission-service';
 import { deleteAdvertisement, updateAdvertisement } from '@/services/ad-service';
 import { findUserByEmail, updateUserRole } from '@/services/user-service';
 import { getNotificationsForUser, isFollowingCategory, toggleFollowCategory, clearAllNotificationsForUser } from '@/services/notification-service';
+import { checkUsage } from '@/services/usage-service';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
   try {
@@ -327,4 +328,10 @@ export async function handleUnsaveAllPosts(userId: string): Promise<{ success: b
         console.error("Error unsaving all posts:", error);
         return { success: false };
     }
+}
+
+
+// --- AI Usage Action ---
+export async function handleCheckUsage(userId: string, isGuest: boolean) {
+    return checkUsage(userId, isGuest);
 }

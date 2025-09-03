@@ -8,6 +8,7 @@ import * as z from 'zod';
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { v4 as uuidv4 } from 'uuid';
+import Link from 'next/link';
 
 
 import { cn } from "@/lib/utils"
@@ -24,6 +25,8 @@ import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+import { handleCheckUsage } from '@/app/actions';
+import { GUEST_LIMIT, USER_LIMIT } from '@/services/usage-service';
 
 
 const formSchema = z.object({
@@ -97,9 +100,28 @@ export default function MatchPredictionPage() {
   const [analysis, setAnalysis] = useState<GenerateMatchAnalysisOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [guestId, setGuestId] = useState<string | null>(null);
+  const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
   
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      country: '',
+      league: '',
+      homeTeam: '',
+      awayTeam: '',
+    },
+  });
+
+  const updateUsage = async () => {
+    const id = user ? user.uid : guestId;
+    if (id) {
+        const usageInfo = await handleCheckUsage(id, !user);
+        setUsage(usageInfo);
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -112,15 +134,10 @@ export default function MatchPredictionPage() {
     }
   }, [user]);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      country: '',
-      league: '',
-      homeTeam: '',
-      awayTeam: '',
-    },
-  });
+  useEffect(() => {
+    updateUsage();
+  }, [user, guestId]);
+
 
   const handleCountryChange = (country: string) => {
     form.setValue('country', country);
@@ -150,6 +167,7 @@ export default function MatchPredictionPage() {
         isGuest: !user,
       });
       setAnalysis(result);
+      updateUsage();
     } catch (e: any) {
       console.error(e);
       toast({
@@ -161,6 +179,21 @@ export default function MatchPredictionPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  const renderUsageInfo = () => {
+    if (!usage) return null;
+    const limit = user ? USER_LIMIT : GUEST_LIMIT;
+    
+    if (user) {
+        return <p className="text-sm text-muted-foreground text-center mt-2">You have {usage.remainingCount} of {limit} daily requests remaining.</p>
+    }
+    
+    return (
+      <p className="text-sm text-muted-foreground text-center mt-2">
+        You have {usage.remainingCount} of {limit} free requests. <Link href="/signup" className="underline text-primary">Sign up</Link> for {USER_LIMIT} daily requests.
+      </p>
+    )
   }
 
 
@@ -299,9 +332,10 @@ export default function MatchPredictionPage() {
                         </FormItem>
                       )}
                     />
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full" disabled={isLoading || (usage && !usage.hasRemaining)}>
                     {isLoading ? <Loader2 className="animate-spin" /> : 'Generate Prediction'}
                   </Button>
+                  {renderUsageInfo()}
                 </form>
              </Form>
           </CardContent>

@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { v4 as uuidv4 } from 'uuid';
+import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -18,6 +19,8 @@ import type { TranslateTextOutput } from '@/ai/flows/translate-text';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+import { handleCheckUsage } from '@/app/actions';
+import { GUEST_LIMIT, USER_LIMIT } from '@/services/usage-service';
 
 const languages = [
   "Arabic", "Bengali", "Chinese (Simplified)", "Dutch", "French", "German", "Greek", "Hausa", "Hebrew", "Hindi", "Igbo", "Indonesian", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swahili", "Swedish", "Thai", "Turkish", "Vietnamese", "Yoruba"
@@ -35,9 +38,26 @@ export default function TextTranslatorPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [guestId, setGuestId] = useState<string | null>(null);
+  const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
 
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      text: '',
+      targetLanguage: '',
+    },
+  });
+  
+  const updateUsage = async () => {
+    const id = user ? user.uid : guestId;
+    if (id) {
+        const usageInfo = await handleCheckUsage(id, !user);
+        setUsage(usageInfo);
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -50,14 +70,10 @@ export default function TextTranslatorPage() {
     }
   }, [user]);
 
+  useEffect(() => {
+    updateUsage();
+  }, [user, guestId]);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      text: '',
-      targetLanguage: '',
-    },
-  });
 
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
@@ -78,6 +94,7 @@ export default function TextTranslatorPage() {
         isGuest: !user
       });
       setTranslation(result);
+      updateUsage();
     } catch (e: any) {
       console.error(e);
       toast({
@@ -89,6 +106,21 @@ export default function TextTranslatorPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+  
+  const renderUsageInfo = () => {
+    if (!usage) return null;
+    const limit = user ? USER_LIMIT : GUEST_LIMIT;
+    
+    if (user) {
+        return <p className="text-sm text-muted-foreground text-center mt-2">You have {usage.remainingCount} of {limit} daily requests remaining.</p>
+    }
+    
+    return (
+      <p className="text-sm text-muted-foreground text-center mt-2">
+        You have {usage.remainingCount} of {limit} free requests. <Link href="/signup" className="underline text-primary">Sign up</Link> for {USER_LIMIT} daily requests.
+      </p>
+    )
   }
 
   return (
@@ -150,9 +182,10 @@ export default function TextTranslatorPage() {
                         </FormItem>
                     )}
                     />
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full" disabled={isLoading || (usage && !usage.hasRemaining)}>
                   {isLoading ? <Loader2 className="animate-spin" /> : 'Translate'}
                 </Button>
+                {renderUsageInfo()}
               </form>
             </Form>
           </CardContent>

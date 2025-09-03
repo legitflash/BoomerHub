@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { v4 as uuidv4 } from 'uuid';
+import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -17,6 +18,8 @@ import type { TranscribeAudioOutput } from '@/ai/flows/transcribe-audio';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+import { handleCheckUsage } from '@/app/actions';
+import { GUEST_LIMIT, USER_LIMIT } from '@/services/usage-service';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ACCEPTED_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3", "audio/flac", "audio/x-m4a"];
@@ -39,9 +42,24 @@ export default function AudioTranscriberPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [guestId, setGuestId] = useState<string | null>(null);
+  const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
 
   const { user } = useAuth();
   const { toast } = useToast();
+  
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+  });
+  
+  const fileRef = form.register("audioFile");
+  
+  const updateUsage = async () => {
+    const id = user ? user.uid : guestId;
+    if (id) {
+        const usageInfo = await handleCheckUsage(id, !user);
+        setUsage(usageInfo);
+    }
+  };
 
   useEffect(() => {
     if (!user) {
@@ -54,11 +72,10 @@ export default function AudioTranscriberPage() {
     }
   }, [user]);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-  });
+  useEffect(() => {
+    updateUsage();
+  }, [user, guestId]);
 
-  const fileRef = form.register("audioFile");
 
   const toBase64 = (file: File): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -90,6 +107,7 @@ export default function AudioTranscriberPage() {
         isGuest: !user 
       });
       setTranscription(result);
+      updateUsage();
     } catch (e: any) {
       console.error(e);
       toast({
@@ -101,6 +119,21 @@ export default function AudioTranscriberPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+  
+  const renderUsageInfo = () => {
+    if (!usage) return null;
+    const limit = user ? USER_LIMIT : GUEST_LIMIT;
+    
+    if (user) {
+        return <p className="text-sm text-muted-foreground text-center mt-2">You have {usage.remainingCount} of {limit} daily requests remaining.</p>
+    }
+    
+    return (
+      <p className="text-sm text-muted-foreground text-center mt-2">
+        You have {usage.remainingCount} of {limit} free requests. <Link href="/signup" className="underline text-primary">Sign up</Link> for {USER_LIMIT} daily requests.
+      </p>
+    )
   }
 
   return (
@@ -140,9 +173,10 @@ export default function AudioTranscriberPage() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full" disabled={isLoading || (usage && !usage.hasRemaining)}>
                   {isLoading ? <Loader2 className="animate-spin" /> : 'Transcribe Audio'}
                 </Button>
+                {renderUsageInfo()}
               </form>
             </Form>
           </CardContent>
