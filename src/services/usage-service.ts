@@ -7,7 +7,7 @@ import type { Usage } from '@/lib/types';
 import { isSameDay } from 'date-fns';
 
 const GUEST_LIMIT = 5;
-const USER_LIMIT = 15;
+const USER_LIMIT = 10;
 
 /**
  * Records a usage instance for a user or guest.

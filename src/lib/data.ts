@@ -3,7 +3,7 @@ import type { Prediction, TopCategory, BlogCategory, TeamMember } from './types'
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Bot, AudioLines, PiggyBank, Search, Plane, Languages } from 'lucide-react';
 
 export const GUEST_LIMIT = 5;
-export const USER_LIMIT = 15;
+export const USER_LIMIT = 10;
 
 export const topCategories: TopCategory[] = [
   { name: 'Forex', icon: LineChart, slug: 'finance' },
