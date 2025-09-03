@@ -20,7 +20,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
-import { GUEST_LIMIT, USER_LIMIT } from '@/services/usage-service';
+import { GUEST_LIMIT, USER_LIMIT } from '@/lib/data';
 
 const languages = [
   "Arabic", "Bengali", "Chinese (Simplified)", "Dutch", "French", "German", "Greek", "Hausa", "Hebrew", "Hindi", "Igbo", "Indonesian", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swahili", "Swedish", "Thai", "Turkish", "Vietnamese", "Yoruba"

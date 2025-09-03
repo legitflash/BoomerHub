@@ -19,7 +19,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
-import { GUEST_LIMIT, USER_LIMIT } from '@/services/usage-service';
+import { GUEST_LIMIT, USER_LIMIT } from '@/lib/data';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 const ACCEPTED_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3", "audio/flac", "audio/x-m4a"];
