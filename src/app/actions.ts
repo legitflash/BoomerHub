@@ -9,11 +9,11 @@ import { deletePage, getPageBySlug } from '@/services/page-service';
 import type { TeamMember, Post, BlogCategory, Submission, Prediction, Advertisement, Notification } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
 import { deletePrediction, updatePrediction } from '@/services/prediction-service';
-import { getSavesForPost, toggleSavePost, getSavedPostsForUser } from '@/services/saves-service';
+import { getSavesForPost, toggleSavePost, getSavedPostsForUser, unsaveAllPostsForUser } from '@/services/saves-service';
 import { createSubmission } from '@/services/submission-service';
 import { deleteAdvertisement, updateAdvertisement } from '@/services/ad-service';
 import { findUserByEmail, updateUserRole } from '@/services/user-service';
-import { getNotificationsForUser, isFollowingCategory, toggleFollowCategory } from '@/services/notification-service';
+import { getNotificationsForUser, isFollowingCategory, toggleFollowCategory, clearAllNotificationsForUser } from '@/services/notification-service';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
   try {
@@ -296,4 +296,34 @@ export async function handleToggleFollowCategory(userId: string, categorySlug: s
 export async function handleGetNotifications(userId: string): Promise<Notification[]> {
     if (!userId) return [];
     return getNotificationsForUser(userId);
+}
+
+
+// --- Profile Page Actions ---
+export async function handleClearAllNotifications(userId: string): Promise<{ success: boolean }> {
+    if (!userId) {
+        throw new Error("User ID is required.");
+    }
+    try {
+        await clearAllNotificationsForUser(userId);
+        revalidatePath('/profile');
+        return { success: true };
+    } catch (error) {
+        console.error("Error clearing notifications:", error);
+        return { success: false };
+    }
+}
+
+export async function handleUnsaveAllPosts(userId: string): Promise<{ success: boolean }> {
+    if (!userId) {
+        throw new Error("User ID is required.");
+    }
+    try {
+        await unsaveAllPostsForUser(userId);
+        revalidatePath('/profile');
+        return { success: true };
+    } catch (error) {
+        console.error("Error unsaving all posts:", error);
+        return { success: false };
+    }
 }

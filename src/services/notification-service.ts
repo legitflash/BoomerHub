@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, addDoc, serverTimestamp, writeBatch, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, addDoc, serverTimestamp, writeBatch, orderBy, deleteDoc } from 'firebase/firestore';
 import type { CategoryFollow, Notification } from '@/lib/types';
 import { getPostById } from './post-service';
 
@@ -65,20 +65,20 @@ export async function createNotificationForFollowers(categorySlug: string, postI
         // 2. Create a notification for each follower
         const notificationsCollection = collection(db, 'notifications');
         const batch = writeBatch(db);
+        const post = await getPostById(postId);
+
+        if (!post) {
+            console.error(`Post with ID ${postId} not found. Cannot create notifications.`);
+            return;
+        }
 
         followerIds.forEach(userId => {
-            const newNotifRef = addDoc(notificationsCollection, {
-                userId,
-                postId,
-                postTitle,
-                categorySlug,
-                createdAt: serverTimestamp(),
-                isRead: false,
-            }).ref;
+            const newNotifRef = addDoc(notificationsCollection, {}).ref; // Create a ref with a new ID
             batch.set(newNotifRef, {
                 userId,
                 postId,
                 postTitle,
+                postSlug: post.slug,
                 categorySlug,
                 createdAt: serverTimestamp(),
                 isRead: false,
@@ -92,33 +92,54 @@ export async function createNotificationForFollowers(categorySlug: string, postI
     }
 }
 
+
 export async function getNotificationsForUser(userId: string): Promise<Notification[]> {
     try {
         const notificationsCollection = collection(db, 'notifications');
         const q = query(notificationsCollection, where('userId', '==', userId), orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
 
-        const notifications = await Promise.all(
-            querySnapshot.docs.map(async (doc) => {
-                const data = doc.data();
-                const post = await getPostById(data.postId); // Fetch post to get the slug
-
-                return {
-                    id: doc.id,
-                    userId: data.userId,
-                    postId: data.postId,
-                    postTitle: data.postTitle,
-                    categorySlug: data.categorySlug,
-                    isRead: data.isRead,
-                    createdAt: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) || 'N/A',
-                    postSlug: post?.slug // Add slug to notification object
-                } as Notification & { postSlug?: string };
-            })
-        );
+        const notifications: Notification[] = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                userId: data.userId,
+                postId: data.postId,
+                postTitle: data.postTitle,
+                categorySlug: data.categorySlug,
+                isRead: data.isRead,
+                createdAt: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) || 'N/A',
+                postSlug: data.postSlug
+            } as Notification;
+        });
         
-        return notifications.filter(n => n.postSlug) as Notification[];
+        return notifications;
     } catch (error) {
         console.error("Error getting notifications for user:", error);
         return [];
+    }
+}
+
+
+export async function clearAllNotificationsForUser(userId: string): Promise<void> {
+    try {
+        const notificationsCollection = collection(db, 'notifications');
+        const q = query(notificationsCollection, where('userId', '==', userId));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            return;
+        }
+
+        const batch = writeBatch(db);
+        snapshot.docs.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+        console.log(`Cleared ${snapshot.size} notifications for user ${userId}.`);
+    } catch (error) {
+        console.error("Error clearing notifications:", error);
+        throw new Error("Could not clear notifications.");
     }
 }

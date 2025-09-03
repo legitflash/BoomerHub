@@ -2,7 +2,7 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs, doc, deleteDoc, setDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, deleteDoc, setDoc, writeBatch } from 'firebase/firestore';
 import type { Post } from '@/lib/types';
 import { getPostBySlug } from './post-service';
 
@@ -68,4 +68,28 @@ export async function getSavedPostsForUser(userId: string): Promise<Post[]> {
     console.error('Error fetching saved posts:', error);
     return [];
   }
+}
+
+
+export async function unsaveAllPostsForUser(userId: string): Promise<void> {
+    try {
+        const savesCollection = collection(db, 'saves');
+        const q = query(savesCollection, where('userId', '==', userId));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            return;
+        }
+
+        const batch = writeBatch(db);
+        snapshot.docs.forEach(doc => {
+            batch.delete(doc.ref);
+        });
+
+        await batch.commit();
+        console.log(`Unsaved ${snapshot.size} posts for user ${userId}.`);
+    } catch (error) {
+        console.error("Error unsaving all posts:", error);
+        throw new Error("Could not unsave all posts.");
+    }
 }
