@@ -8,7 +8,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const adUrl = "https://coldquit.com/b.3CVp0NPX3Np/v_bEmJV_JiZSD/0r2EN/juMl1YMUDmcE5/LMTpYK2rM/zkUUw/OxDsAG"; 
+const adLinks = [
+  "https://otieu.com/4/9697212", // Monetag
+  "https://chickenadjacent.com/k0y10hdi?key=73b2c1f5ef721895cb69ccd6ad18b759" // Adsterra
+]; 
 
 const adCreatives = [
   {
@@ -34,14 +37,17 @@ const adCreatives = [
 
 export default function SearchAdCard() {
   const [ad, setAd] = useState<{ title: string; description: string; image: string; dataAiHint: string; } | null>(null);
+  const [adUrl, setAdUrl] = useState<string>('');
   
   useEffect(() => {
     // This runs only on the client, after hydration, to prevent mismatch
     const randomAd = adCreatives[Math.floor(Math.random() * adCreatives.length)];
+    const randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
     setAd(randomAd);
+    setAdUrl(randomLink);
   }, []);
 
-  if (!ad) {
+  if (!ad || !adUrl) {
     // Show a skeleton loader while the ad is being selected on the client
     return (
         <Card>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Script from 'next/script';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, DollarSign, Megaphone, BrainCircuit, Briefcase } from 'lucide-react';
+import { ArrowRight, DollarSign, Megaphone, BrainCircuit, Briefcase, Loader2 } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
 interface BannerDetails {
@@ -14,20 +14,21 @@ interface BannerDetails {
   title: string;
   description: string;
   buttonText: string;
-  href: string;
   bgColor: string;
   textColor: string;
 }
 
-const adUrl = "https://coldquit.com/b.3CVp0NPX3Np/v_bEmJV_JiZSD/0r2EN/juMl1YMUDmcE5/LMTpYK2rM/zkUUw/OxDsAG";
+const adLinks = [
+  "https://otieu.com/4/9697212", // Monetag
+  "https://chickenadjacent.com/k0y10hdi?key=73b2c1f5ef721895cb69ccd6ad18b759" // Adsterra
+]; 
 
-const bannerConfig: { [key: string]: BannerDetails } = {
+const bannerConfig: { [key: string]: Omit<BannerDetails, 'href'> } = {
   'Finance': {
     icon: DollarSign,
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
@@ -36,7 +37,6 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
@@ -45,7 +45,6 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
@@ -54,7 +53,6 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   },
@@ -63,16 +61,34 @@ const bannerConfig: { [key: string]: BannerDetails } = {
     title: "Make Money Online",
     description: "Up to $100 daily.",
     buttonText: "Start Earning",
-    href: adUrl,
     bgColor: "bg-gradient-to-r from-blue-500 to-green-500",
     textColor: "text-white"
   }
 };
 
 const CategoryActionBanner = ({ category }: { category: string }) => {
+  const [adUrl, setAdUrl] = useState<string>('');
+
+  useEffect(() => {
+    // Randomly select an ad link on the client side to prevent hydration mismatch
+    const randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
+    setAdUrl(randomLink);
+  }, []);
   
   const details = bannerConfig[category] || bannerConfig.default;
-  const { icon: Icon, title, description, buttonText, href, bgColor, textColor } = details;
+  const { icon: Icon, title, description, buttonText, bgColor, textColor } = details;
+
+  if (!adUrl) {
+    return (
+        <div className="my-12">
+            <Card className="bg-muted overflow-hidden relative animate-pulse">
+                 <CardContent className="p-8 h-[150px] flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 text-muted-foreground" />
+                 </CardContent>
+            </Card>
+        </div>
+    )
+  }
 
   return (
     <div className="my-12">
@@ -95,7 +111,7 @@ const CategoryActionBanner = ({ category }: { category: string }) => {
                         variant="secondary" 
                         className="bg-white/90 text-black hover:bg-white"
                     >
-                    <Link href={href}>{buttonText} <ArrowRight className="ml-2" /></Link>
+                    <Link href={adUrl} target="_blank" rel="noopener noreferrer">{buttonText} <ArrowRight className="ml-2" /></Link>
                     </Button>
                 </div>
             </CardContent>
