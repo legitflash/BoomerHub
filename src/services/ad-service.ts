@@ -83,7 +83,11 @@ export async function getAdvertisementById(id: string): Promise<Advertisement | 
     const data = docSnap.data();
     return {
         id: docSnap.id,
-        ...data
+        title: data.title,
+        content: data.content,
+        placement: data.placement,
+        isActive: data.isActive,
+        createdAt: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || 'N/A',
     } as Advertisement;
   } catch (error) {
     console.error("Error getting advertisement by ID:", error);
