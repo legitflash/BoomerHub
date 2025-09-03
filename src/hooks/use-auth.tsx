@@ -2,7 +2,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, type User as FirebaseUser, sendEmailVerification } from 'firebase/auth';
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, type User as FirebaseUser, sendEmailVerification, sendPasswordResetEmail } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
@@ -21,6 +21,7 @@ interface AuthContextType {
   signUp: (email: string, pass: string, displayName: string) => Promise<any>;
   signIn: (email: string, pass: string) => Promise<any>;
   signOutUser: () => Promise<void>;
+  sendPasswordReset: (email: string) => Promise<void>;
 }
 
 // Create the context with a default value
@@ -32,6 +33,7 @@ const AuthContext = createContext<AuthContextType>({
   signUp: async () => {},
   signIn: async () => {},
   signOutUser: async () => {},
+  sendPasswordReset: async () => {},
 });
 
 // Custom hook to use the auth context
@@ -115,6 +117,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signOutUser = () => {
     return signOut(auth);
   };
+  
+  const sendPasswordReset = (email: string) => {
+    return sendPasswordResetEmail(auth, email);
+  }
 
   const value = {
     user,
@@ -124,6 +130,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signUp,
     signIn,
     signOutUser,
+    sendPasswordReset,
   };
 
   return (

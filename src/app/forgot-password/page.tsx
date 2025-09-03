@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -6,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LogIn } from 'lucide-react';
+import { KeyRound } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,52 +16,50 @@ import { useAuth } from '@/hooks/use-auth';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
-  password: z.string().min(1, { message: 'Password is required.' }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { signIn, isLoading } = useAuth();
+  const { sendPasswordReset, isLoading } = useAuth();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
-      password: '',
     },
   });
 
   async function onSubmit(values: FormValues) {
     try {
-      await signIn(values.email, values.password);
+      await sendPasswordReset(values.email);
       toast({
-        title: 'Login Successful!',
-        description: "Welcome back! You've been signed in.",
+        title: 'Password Reset Email Sent',
+        description: "Please check your inbox for instructions to reset your password.",
         variant: 'success',
       });
-      router.replace('/'); // Redirect to homepage after successful login
+      router.push('/login');
     } catch (error: any) {
       let errorMessage = 'An unexpected error occurred. Please try again.';
-      // Handle specific Firebase error codes
-      switch (error.code) {
-        case 'auth/user-not-found':
-        case 'auth/wrong-password':
-        case 'auth/invalid-credential':
-          errorMessage = 'Invalid email or password. Please try again.';
-          break;
-        case 'auth/too-many-requests':
-          errorMessage = 'Too many login attempts. Please try again later.';
-          break;
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
+          // We don't want to reveal if an email exists or not
+          errorMessage = 'If an account exists for this email, a reset link has been sent.';
+           toast({
+            title: 'Check Your Email',
+            description: errorMessage,
+            variant: 'success',
+          });
+          form.reset();
+          return;
       }
       toast({
-        title: 'Login Failed',
+        title: 'Request Failed',
         description: errorMessage,
         variant: 'destructive',
       });
-      console.error('Login error:', error);
+      console.error('Password reset error:', error);
     }
   }
 
@@ -71,8 +68,10 @@ export default function LoginPage() {
       <div className="mx-auto w-full max-w-md">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold tracking-tight">Welcome Back!</CardTitle>
-            <CardDescription>Sign in to your account to continue.</CardDescription>
+            <CardTitle className="text-2xl font-bold tracking-tight">Forgot Your Password?</CardTitle>
+            <CardDescription>
+                No problem. Enter your email and we'll send you a reset link.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -90,34 +89,16 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex justify-between">
-                         <FormLabel>Password</FormLabel>
-                         <Link href="/forgot-password" className="text-sm font-medium text-primary hover:underline">
-                            Forgot Password?
-                         </Link>
-                      </div>
-                      <FormControl>
-                        <Input type="password" placeholder="••••••••" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Signing In...' : 'Sign In'}
-                  <LogIn className="ml-2" />
+                  {isLoading ? 'Sending Link...' : 'Send Reset Link'}
+                  <KeyRound className="ml-2" />
                 </Button>
               </form>
             </Form>
             <div className="mt-6 text-center text-sm">
-              Don't have an account?{' '}
-              <Link href="/signup" className="font-semibold text-primary hover:underline">
-                Sign Up
+              Remembered your password?{' '}
+              <Link href="/login" className="font-semibold text-primary hover:underline">
+                Sign In
               </Link>
             </div>
           </CardContent>
