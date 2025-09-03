@@ -8,7 +8,7 @@ export default function AdScripts() {
     // Hilltop Ads Pop-under Script
     const popUnder = document.createElement('script');
     popUnder.settings = {};
-    popUnder.src = "//coldquit.com/cTD/9s6.bd2e5QlnSfWBQf9sN_jLYCzdNDTeAu3MOOSe0p2/NBjqMv1ZMUDhggwN";
+    popUnder.src = "//coldquit.com/cND/9s6.bj2u5XlxSeWpQp9iNbjDYgzRNXTtA_3_O/S/0K2/NXjtMz1/MlDRg_wl";
     popUnder.async = true;
     popUnder.referrerPolicy = 'no-referrer-when-downgrade';
     document.body.appendChild(popUnder);
