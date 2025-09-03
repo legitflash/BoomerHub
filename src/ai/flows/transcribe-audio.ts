@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview An AI flow to transcribe audio files.
+ * @fileOverview An AI flow to transcribe song lyrics from audio files.
  *
  * - transcribeAudio - A function that handles the audio transcription.
  * - TranscribeAudioInput - The input type for the transcribeAudio function.
@@ -24,7 +24,7 @@ const TranscribeAudioInputSchema = z.object({
 export type TranscribeAudioInput = z.infer<typeof TranscribeAudioInputSchema>;
 
 const TranscribeAudioOutputSchema = z.object({
-  transcription: z.string().describe('The full text transcription of the audio. If it is a song, include musical structure like [Chorus] and [Verse].'),
+  transcription: z.string().describe('The full text transcription of the song lyrics, including song structure labels like [Chorus] and [Verse].'),
 });
 export type TranscribeAudioOutput = z.infer<typeof TranscribeAudioOutputSchema>;
 
@@ -49,10 +49,10 @@ const prompt = ai.definePrompt({
   name: 'transcribeAudioPrompt',
   input: {schema: promptInputSchema},
   output: {schema: TranscribeAudioOutputSchema},
-  prompt: `You are an expert audio transcriptionist with exceptional accuracy.
-  
-  Provide a full, highly accurate transcription of the following audio file in English. If it is a song, identify and label the different sections like [Intro], [Verse], [Chorus], [Bridge], [Outro], etc.
+  prompt: `You are an expert audio transcriptionist specializing in music. Your task is to listen to the following audio file and transcribe the lyrics with exceptional accuracy.
 
+  Identify and label the different sections of the song, such as [Intro], [Verse], [Chorus], [Bridge], [Outro], etc.
+  
   Your response must be in the requested JSON format containing only the transcription.
 
   Audio: {{media url=audioDataUri}}`,

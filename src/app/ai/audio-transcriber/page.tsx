@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, AudioLines, FileMusic } from "lucide-react";
+import { Loader2, FileMusic } from "lucide-react";
 import { transcribeAudio } from '@/ai/flows/transcribe-audio';
 import type { TranscribeAudioOutput } from '@/ai/flows/transcribe-audio';
 import { useAuth } from '@/hooks/use-auth';
@@ -107,7 +107,7 @@ export default function AudioTranscriberPage() {
         isGuest: !user 
       });
       setTranscription(result);
-      updateUsage();
+      await updateUsage();
     } catch (e: any) {
       console.error(e);
       toast({
@@ -140,19 +140,19 @@ export default function AudioTranscriberPage() {
     <div className="container py-12 md:py-16">
       <header className="text-center mb-12">
          <div className="inline-block bg-primary/10 p-4 rounded-lg mb-4">
-            <AudioLines className="h-10 w-10 text-primary" />
+            <FileMusic className="h-10 w-10 text-primary" />
         </div>
-        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">AI Audio Transcriber</h1>
+        <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">AI Song Lyrics Transcriber</h1>
         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
-          Upload an audio file to get a highly accurate transcription in English.
+          Upload a song to get its lyrics, including chorus, verses, and bridge.
         </p>
       </header>
 
       <div className="max-w-2xl mx-auto space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle>Upload Audio</CardTitle>
-            <CardDescription>Select an audio file to transcribe. Max size: 50MB.</CardDescription>
+            <CardTitle>Upload Song</CardTitle>
+            <CardDescription>Select an audio file to get its lyrics. Max size: 50MB.</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -174,7 +174,7 @@ export default function AudioTranscriberPage() {
                   )}
                 />
                 <Button type="submit" className="w-full" disabled={isLoading || (usage && !usage.hasRemaining)}>
-                  {isLoading ? <Loader2 className="animate-spin" /> : 'Transcribe Audio'}
+                  {isLoading ? <Loader2 className="animate-spin" /> : 'Get Lyrics'}
                 </Button>
                 {renderUsageInfo()}
               </form>
@@ -185,14 +185,14 @@ export default function AudioTranscriberPage() {
         {isLoading && (
           <div className="text-center p-8">
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-            <p className="mt-4 text-muted-foreground">Our AI is processing your audio... this may take a moment.</p>
+            <p className="mt-4 text-muted-foreground">Our AI is listening to your song... this may take a moment.</p>
           </div>
         )}
         
         {transcription && (
           <Card className="animate-in fade-in">
             <CardHeader>
-              <CardTitle>Transcription Result</CardTitle>
+              <CardTitle>Lyrics</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
