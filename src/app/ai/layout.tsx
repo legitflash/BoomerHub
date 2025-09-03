@@ -12,7 +12,7 @@ export default function AiToolsLayout({
       <Script
         id="adsterra-social-bar"
         strategy="afterInteractive"
-        src="//chickenadjacent.com/c7/ac/cf/c7accf076d6c5d479539d4b53ac9f961.js"
+        src="//chickenadjacent.com/f4/bf/1b/f4bf1ba199807a6dcc09287c2ec74dd5.js"
       />
     </>
   );
