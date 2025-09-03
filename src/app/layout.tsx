@@ -13,6 +13,13 @@ import { ThemeProvider } from '@/components/layout/theme-provider';
 export const metadata: Metadata = {
   title: 'BoomerHub',
   description: 'Learn Skills. Earn Income. Get Certified.',
+  manifest: '/manifest.json',
+  themeColor: '#2563eb',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'BoomerHub',
+  },
 };
 
 export default function RootLayout({
