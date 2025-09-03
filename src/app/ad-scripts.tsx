@@ -27,6 +27,10 @@ export default function AdScripts() {
       <Script id="monetag-script">
         {`(s=>{s.dataset.zone='9810543',s.src='https://vemtoutcheeg.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
       </Script>
+       {/* Monetag Interstitial Ad Script */}
+      <Script id="monetag-interstitial-script">
+        {`(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
+      </Script>
     </>
   );
 }
