@@ -7,6 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/hooks/use-auth';
 import Script from 'next/script';
 import AdScripts from './ad-scripts';
+import { ThemeProvider } from '@/components/layout/theme-provider';
 
 
 export const metadata: Metadata = {
@@ -28,6 +29,12 @@ export default function RootLayout({
         
       </head>
       <body className="font-body antialiased">
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
           <AuthProvider>
             <div className="relative flex min-h-screen flex-col">
               <Header />
@@ -37,6 +44,7 @@ export default function RootLayout({
             <Toaster />
           </AuthProvider>
           <AdScripts />
+        </ThemeProvider>
       </body>
     </html>
   );

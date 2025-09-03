@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, Bot, Shield, User, LogOut, Bookmark, LogIn, UserPlus, Edit } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, Bot, Shield, User, LogOut, Bookmark, LogIn, UserPlus, Edit, Moon, Sun } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
@@ -25,6 +25,7 @@ import { getAllCategories } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 
 
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
@@ -37,6 +38,7 @@ export function Header() {
   const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
   const { user, isAdmin, isEditor, signOutUser } = useAuth();
   const router = useRouter();
+  const { setTheme, theme } = useTheme();
 
   useEffect(() => {
     async function fetchCategories() {
@@ -132,8 +134,14 @@ export function Header() {
             </Link>
         </div>
         
-        {/* Right Side: Profile Icon */}
+        {/* Right Side: Profile Icon & Theme Toggle */}
         <div className="flex items-center">
+            <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span className="sr-only">Toggle theme</span>
+            </Button>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
