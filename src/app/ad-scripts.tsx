@@ -1,3 +1,4 @@
+
 'use client';
 
 import Script from 'next/script';
@@ -13,14 +14,6 @@ export default function AdScripts() {
     popUnder.referrerPolicy = 'no-referrer-when-downgrade';
     document.body.appendChild(popUnder);
 
-    // Hilltop Ads Video Slider Script
-    const videoSlider = document.createElement('script');
-    videoSlider.settings = {};
-    videoSlider.src = "//handsome-storm.com/bWXYVWs.dBGklV0SY/Wgcy/feAm/9/u/ZrUxltkxPDTHY-2_MyziQZzpNMTLkMtON/jFYNzVN/DoMf2GMrAK";
-    videoSlider.async = true;
-    videoSlider.referrerPolicy = 'no-referrer-when-downgrade';
-    document.body.appendChild(videoSlider);
-
     // Adsterra Social Bar Script
     const socialBar = document.createElement('script');
     socialBar.type = 'text/javascript';
@@ -31,9 +24,6 @@ export default function AdScripts() {
       // Cleanup scripts on component unmount
       if (document.body.contains(popUnder)) {
         document.body.removeChild(popUnder);
-      }
-      if (document.body.contains(videoSlider)) {
-        document.body.removeChild(videoSlider);
       }
       if (document.body.contains(socialBar)) {
         document.body.removeChild(socialBar);
