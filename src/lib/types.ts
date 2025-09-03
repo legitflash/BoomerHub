@@ -14,6 +14,7 @@ export type Post = {
   authorSlug: string;
   authorImage?: string;
   date: string;
+  keywords?: string;
 };
 
 export type Page = {

@@ -22,6 +22,9 @@ export async function generateMetadata(
     }
   }
 
+  // Use custom keywords if available, otherwise fall back to category
+  const keywords = post.keywords ? post.keywords.split(',').map(k => k.trim()) : [post.category];
+
   // Optionally, you can add more metadata here
   const previousImages = (await parent).openGraph?.images || []
 
@@ -29,7 +32,7 @@ export async function generateMetadata(
     title: post.title,
     description: post.description,
     authors: [{ name: post.author }],
-    keywords: post.category.split(',').map(k => k.trim()),
+    keywords: keywords,
     openGraph: {
       title: post.title,
       description: post.description,

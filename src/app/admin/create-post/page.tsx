@@ -10,7 +10,7 @@ import { useState, useEffect } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -29,6 +29,7 @@ const formSchema = z.object({
   image: z.string().url({ message: "Please enter a valid image URL." }),
   content: z.string().min(100, { message: "Content must be at least 100 characters long. Use HTML for formatting." }),
   author: z.string().min(1, { message: "Please select an author." }),
+  keywords: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -49,6 +50,7 @@ export default function CreatePostPage() {
             image: '',
             content: '',
             author: '',
+            keywords: '',
         }
     });
     
@@ -190,6 +192,22 @@ export default function CreatePostPage() {
                                                 <Input placeholder="https://example.com/image.jpg" {...field} />
                                             </FormControl>
                                              <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="keywords"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Keywords</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="e.g., forex, trading, finance" {...field} />
+                                            </FormControl>
+                                            <FormDescription>
+                                                Enter comma-separated keywords for better SEO. If empty, category will be used.
+                                            </FormDescription>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />

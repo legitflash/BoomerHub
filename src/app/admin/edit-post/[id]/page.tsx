@@ -10,7 +10,7 @@ import { useRouter, useParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -31,6 +31,7 @@ const formSchema = z.object({
   image: z.string().url({ message: "Please enter a valid image URL." }),
   content: z.string().min(100, { message: "Content must be at least 100 characters long. Use HTML for formatting." }),
   author: z.string().min(1, { message: "Please select an author." }),
+  keywords: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -76,7 +77,10 @@ export default function EditPostPage() {
                         }
                     }
                     setPost(fetchedPost);
-                    form.reset(fetchedPost);
+                    form.reset({
+                        ...fetchedPost,
+                        keywords: fetchedPost.keywords || '',
+                    });
                 } else {
                     toast({ title: "Post not found", variant: "destructive" });
                     router.push('/admin');
@@ -100,7 +104,9 @@ export default function EditPostPage() {
             formData.append('id', id);
             formData.append('slug', post.slug);
             Object.entries(values).forEach(([key, value]) => {
-                formData.append(key, value);
+                 if (value !== undefined) {
+                    formData.append(key, value as string);
+                }
             });
 
             await handleUpdatePost(formData);
@@ -137,6 +143,7 @@ export default function EditPostPage() {
                                 <Skeleton className="h-10 w-full" />
                                 <Skeleton className="h-10 w-full" />
                             </div>
+                             <Skeleton className="h-10 w-full" />
                              <Skeleton className="h-10 w-full" />
                             <Skeleton className="h-24 w-full" />
                             <Skeleton className="h-48 w-full" />
@@ -244,6 +251,22 @@ export default function EditPostPage() {
                                                 <Input placeholder="https://example.com/image.jpg" {...field} />
                                             </FormControl>
                                              <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="keywords"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Keywords</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="e.g., forex, trading, finance" {...field} />
+                                            </FormControl>
+                                            <FormDescription>
+                                                Enter comma-separated keywords for better SEO.
+                                            </FormDescription>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />

@@ -16,9 +16,10 @@ type CreatePostData = {
     image: string;
     content: string;
     author: string;
+    keywords?: string;
 };
 
-type UpdatePostData = CreatePostData;
+type UpdatePostData = Partial<CreatePostData>;
 
 function slugify(text: string) {
   return text
@@ -89,6 +90,7 @@ export async function getAllPosts(): Promise<Post[]> {
         author: data.author,
         authorSlug: data.authorSlug || slugify(data.author),
         authorImage: data.authorImage,
+        keywords: data.keywords,
         // Convert Firestore Timestamp to a simple date string if necessary
         date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
       };
@@ -126,6 +128,7 @@ export async function getPostById(id: string): Promise<Post | null> {
         author: data.author,
         authorSlug: data.authorSlug || slugify(data.author),
         authorImage: data.authorImage,
+        keywords: data.keywords,
         date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
     };
   } catch (error) {
@@ -160,6 +163,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       author: data.author,
       authorSlug: data.authorSlug || slugify(data.author),
       authorImage: data.authorImage,
+      keywords: data.keywords,
       date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
     };
   } catch (error) {
@@ -188,6 +192,7 @@ export async function getPostsByAuthorSlug(authorSlug: string): Promise<Post[]> 
         author: data.author,
         authorSlug: data.authorSlug,
         authorImage: data.authorImage,
+        keywords: data.keywords,
         date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
       };
     });
@@ -206,15 +211,23 @@ export async function updatePost(id: string, postData: UpdatePostData): Promise<
     const teamMembers = await getAllTeamMembers();
     const authorData = teamMembers.find(member => member.name === postData.author);
 
-    const newSlug = slugify(postData.title);
+    const newSlug = postData.title ? slugify(postData.title) : undefined;
     
-    await updateDoc(postDocRef, {
+    const dataToUpdate: any = {
       ...postData,
-      authorImage: authorData ? authorData.image : `https://i.pravatar.cc/40?u=${postData.author}`,
-      authorSlug: authorData ? authorData.slug : slugify(postData.author),
-      slug: newSlug,
       updatedAt: serverTimestamp(),
-    });
+    };
+
+    if (authorData) {
+      dataToUpdate.authorImage = authorData.image;
+      dataToUpdate.authorSlug = authorData.slug;
+    }
+    
+    if (newSlug) {
+      dataToUpdate.slug = newSlug;
+    }
+    
+    await updateDoc(postDocRef, dataToUpdate);
   } catch (error) {
     console.error("Error updating post: ", error);
     throw new Error('Could not update post in database.');

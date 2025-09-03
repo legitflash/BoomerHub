@@ -102,13 +102,14 @@ export async function handleUpdatePost(formData: FormData) {
         throw new Error('Post ID is required for update');
     }
     
-    const postData = {
+    const postData: Partial<Post> = {
         title: formData.get('title') as string,
         description: formData.get('description') as string,
         category: formData.get('category') as string,
         image: formData.get('image') as string,
         content: formData.get('content') as string,
         author: formData.get('author') as string,
+        keywords: formData.get('keywords') as string,
     };
 
     try {
