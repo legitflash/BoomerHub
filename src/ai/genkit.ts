@@ -1,6 +1,9 @@
 import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import {GoogleAuth} from 'google-auth-library';
+import { config } from 'dotenv';
+config();
+
 
 let credentials;
 
