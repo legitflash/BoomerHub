@@ -11,6 +11,8 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { checkUsage, recordUsage } from '@/services/usage-service';
+import { headers } from 'next/headers';
+import type { User } from '@/hooks/use-auth';
 
 
 const GenerateMatchAnalysisInputSchema = z.object({
@@ -18,8 +20,7 @@ const GenerateMatchAnalysisInputSchema = z.object({
   awayTeam: z.string().describe('The name of the away team.'),
   league: z.string().describe('The league the match is being played in.'),
   matchDate: z.string().optional().describe('The date of the match (e.g., YYYY-MM-DD).'),
-  userId: z.string().describe('The user ID or guest ID making the request.'),
-  isGuest: z.boolean().describe('Whether the user is a guest.'),
+  user: z.custom<User | null>().describe('The authenticated user object, or null for guests.'),
 });
 export type GenerateMatchAnalysisInput = z.infer<typeof GenerateMatchAnalysisInputSchema>;
 
@@ -34,7 +35,13 @@ const GenerateMatchAnalysisOutputSchema = z.object({
 export type GenerateMatchAnalysisOutput = z.infer<typeof GenerateMatchAnalysisOutputSchema>;
 
 export async function generateMatchAnalysis(input: GenerateMatchAnalysisInput): Promise<GenerateMatchAnalysisOutput> {
-    const { userId, isGuest, ...analysisInput } = input;
+    const { user, ...analysisInput } = input;
+    const isGuest = !user;
+    
+    const headerList = headers();
+    const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+    const userId = isGuest ? ip : user.uid;
+
 
     const usage = await checkUsage(userId, isGuest);
     if (!usage.hasRemaining) {
@@ -49,7 +56,7 @@ export async function generateMatchAnalysis(input: GenerateMatchAnalysisInput): 
     return result;
 }
 
-const promptInputSchema = GenerateMatchAnalysisInputSchema.omit({ userId: true, isGuest: true });
+const promptInputSchema = GenerateMatchAnalysisInputSchema.omit({ user: true });
 
 const prompt = ai.definePrompt({
   name: 'generateMatchAnalysisPrompt',

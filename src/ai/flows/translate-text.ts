@@ -11,12 +11,13 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { checkUsage, recordUsage } from '@/services/usage-service';
+import { headers } from 'next/headers';
+import type { User } from '@/hooks/use-auth';
 
 const TranslateTextInputSchema = z.object({
   text: z.string().describe('The text content to be translated.'),
   targetLanguage: z.string().describe('The target language to translate the text into (e.g., "Spanish", "French").'),
-  userId: z.string().describe('The user ID or guest ID making the request.'),
-  isGuest: z.boolean().describe('Whether the user is a guest.'),
+  user: z.custom<User | null>().describe('The authenticated user object, or null for guests.'),
 });
 export type TranslateTextInput = z.infer<typeof TranslateTextInputSchema>;
 
@@ -26,7 +27,12 @@ const TranslateTextOutputSchema = z.object({
 export type TranslateTextOutput = z.infer<typeof TranslateTextOutputSchema>;
 
 export async function translateText(input: TranslateTextInput): Promise<TranslateTextOutput> {
-  const { userId, isGuest, ...translationInput } = input;
+  const { user, ...translationInput } = input;
+  const isGuest = !user;
+  
+  const headerList = headers();
+  const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+  const userId = isGuest ? ip : user.uid;
 
   const usage = await checkUsage(userId, isGuest);
   if (!usage.hasRemaining) {

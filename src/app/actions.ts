@@ -15,6 +15,7 @@ import { deleteAdvertisement, updateAdvertisement } from '@/services/ad-service'
 import { findUserByEmail, updateUserRole } from '@/services/user-service';
 import { getNotificationsForUser, isFollowingCategory, toggleFollowCategory, clearAllNotificationsForUser } from '@/services/notification-service';
 import { checkUsage } from '@/services/usage-service';
+import { headers } from 'next/headers';
 
 export async function handleIntelligentSearch(input: IntelligentSearchInput): Promise<IntelligentSearchOutput> {
   try {
@@ -333,5 +334,11 @@ export async function handleUnsaveAllPosts(userId: string): Promise<{ success: b
 
 // --- AI Usage Action ---
 export async function handleCheckUsage(userId: string, isGuest: boolean) {
-    return checkUsage(userId, isGuest);
+    let id = userId;
+    if(isGuest) {
+      const headerList = headers();
+      const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+      id = ip;
+    }
+    return checkUsage(id, isGuest);
 }

@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
-import { v4 as uuidv4 } from 'uuid';
 import Link from 'next/link';
 
 
@@ -104,7 +103,6 @@ export default function MatchPredictionPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [analysis, setAnalysis] = useState<GenerateMatchAnalysisOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [guestId, setGuestId] = useState<string | null>(null);
   const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
   const [adUrl, setAdUrl] = useState('');
   
@@ -128,27 +126,14 @@ export default function MatchPredictionPage() {
   }, []);
 
   const updateUsage = async () => {
-    const id = user ? user.uid : guestId;
-    if (id) {
-        const usageInfo = await handleCheckUsage(id, !user);
-        setUsage(usageInfo);
-    }
+    const id = user ? user.uid : 'guest';
+    const usageInfo = await handleCheckUsage(id, !user);
+    setUsage(usageInfo);
   };
 
   useEffect(() => {
-    if (!user) {
-        let storedId = localStorage.getItem('boomerhub_guest_id');
-        if (!storedId) {
-            storedId = uuidv4();
-            localStorage.setItem('boomerhub_guest_id', storedId);
-        }
-        setGuestId(storedId);
-    }
-  }, [user]);
-
-  useEffect(() => {
     updateUsage();
-  }, [user, guestId]);
+  }, [user]);
 
 
   const handleCountryChange = (country: string) => {
@@ -162,21 +147,13 @@ export default function MatchPredictionPage() {
     setError(null);
     setAnalysis(null);
 
-    const id = user ? user.uid : guestId;
-    if (!id) {
-        setError("Could not identify user. Please refresh the page.");
-        setIsLoading(false);
-        return;
-    }
-
     try {
       const result = await generateMatchAnalysis({ 
         homeTeam: values.homeTeam, 
         awayTeam: values.awayTeam,
         league: values.league,
         matchDate: values.matchDate ? format(values.matchDate, 'yyyy-MM-dd') : undefined,
-        userId: id,
-        isGuest: !user,
+        user: user,
       });
       setAnalysis(result);
       updateUsage();

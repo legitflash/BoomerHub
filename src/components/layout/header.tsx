@@ -101,7 +101,7 @@ export function Header() {
                     <AccordionItem value="ai-tools" className="border-b-0">
                       <AccordionTrigger className="flex items-center gap-2"><Bot className="h-4 w-4" /> Boomerhub AI</AccordionTrigger>
                       <AccordionContent className="flex flex-col space-y-2 pl-4">
-                          {aiToolsCategories.map((tool) => (
+                          {aiToolsCategories.filter(tool => tool.slug !== '/ai/audio-transcriber').map((tool) => (
                             <Link key={tool.slug} href={tool.slug} onClick={(e) => handleAIClick(e, tool.slug)} className="flex items-center gap-2">
                             <tool.icon className="h-4 w-4" />
                             {tool.name}

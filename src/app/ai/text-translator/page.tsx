@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { v4 as uuidv4 } from 'uuid';
 import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,7 +41,6 @@ export default function TextTranslatorPage() {
   const [translation, setTranslation] = useState<TranslateTextOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [guestId, setGuestId] = useState<string | null>(null);
   const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
   const [adUrl, setAdUrl] = useState('');
 
@@ -64,27 +62,14 @@ export default function TextTranslatorPage() {
   }, []);
   
   const updateUsage = async () => {
-    const id = user ? user.uid : guestId;
-    if (id) {
-        const usageInfo = await handleCheckUsage(id, !user);
-        setUsage(usageInfo);
-    }
+    const id = user ? user.uid : 'guest';
+    const usageInfo = await handleCheckUsage(id, !user);
+    setUsage(usageInfo);
   };
 
   useEffect(() => {
-    if (!user) {
-        let storedId = localStorage.getItem('boomerhub_guest_id');
-        if (!storedId) {
-            storedId = uuidv4();
-            localStorage.setItem('boomerhub_guest_id', storedId);
-        }
-        setGuestId(storedId);
-    }
-  }, [user]);
-
-  useEffect(() => {
     updateUsage();
-  }, [user, guestId]);
+  }, [user]);
 
 
   async function onSubmit(values: FormValues) {
@@ -92,18 +77,10 @@ export default function TextTranslatorPage() {
     setError(null);
     setTranslation(null);
 
-    const id = user ? user.uid : guestId;
-    if (!id) {
-        setError("Could not identify user. Please refresh the page.");
-        setIsLoading(false);
-        return;
-    }
-
     try {
       const result = await translateText({
         ...values,
-        userId: id,
-        isGuest: !user
+        user: user,
       });
       setTranslation(result);
       updateUsage();

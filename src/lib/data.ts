@@ -31,7 +31,6 @@ export const blogCategories: BlogCategory[] = [
 
 export const aiToolsCategories = [
     { name: 'AI Match Prediction', icon: Search, slug: '/ai/match-prediction', flowName: 'generateMatchAnalysisFlow' },
-    { name: 'AI Audio Transcriber', icon: AudioLines, slug: '/ai/audio-transcriber', flowName: 'transcribeAudioFlow' },
     { name: 'AI Financial Advisor', icon: PiggyBank, slug: '/ai/financial-adviser', flowName: 'generateFinancialAdviceFlow' },
     { name: 'AI Text Translator', icon: Languages, slug: '/ai/text-translator', flowName: 'translateTextFlow' },
 ];
