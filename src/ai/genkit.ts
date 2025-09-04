@@ -2,18 +2,25 @@ import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
 import {GoogleAuth} from 'google-auth-library';
 
-const auth = new GoogleAuth({
-  scopes: 'https://www.googleapis.com/auth/cloud-platform',
-});
-
-// Use GOOGLE_APPLICATION_CREDENTIALS_JSON if provided, otherwise fall back to default credentials
 let credentials;
-if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+
+// Check if individual credential environment variables are set
+if (
+  process.env.GOOGLE_PRIVATE_KEY &&
+  process.env.GOOGLE_CLIENT_EMAIL &&
+  process.env.GOOGLE_PROJECT_ID
+) {
+  credentials = {
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    project_id: process.env.GOOGLE_PROJECT_ID,
+  };
+} else if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+  // Fallback for local development if the full JSON is still provided
   try {
-    // Sanitize the JSON string: remove escaped newlines and trim whitespace/quotes.
     let jsonString = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON.replace(/\\n/g, '\n').trim();
     if (jsonString.startsWith('"') && jsonString.endsWith('"')) {
-        jsonString = jsonString.substring(1, jsonString.length - 1);
+      jsonString = jsonString.substring(1, jsonString.length - 1);
     }
     credentials = JSON.parse(jsonString);
   } catch (error) {
@@ -22,12 +29,21 @@ if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
   }
 }
 
-
 export const ai = genkit({
-  plugins: [googleAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    apiVersion: 'v1beta',
-    auth: credentials ? new GoogleAuth({credentials, scopes: 'https://www.googleapis.com/auth/cloud-platform'}) : auth
-  })],
+  plugins: [
+    googleAI({
+      apiKey: process.env.GEMINI_API_KEY,
+      apiVersion: 'v1beta',
+      // Use credentials object if it was successfully created, otherwise use default auth
+      auth: credentials
+        ? new GoogleAuth({
+            credentials,
+            scopes: 'https://www.googleapis.com/auth/cloud-platform',
+          })
+        : new GoogleAuth({
+            scopes: 'https://www.googleapis.com/auth/cloud-platform',
+          }),
+    }),
+  ],
   model: 'googleai/gemini-2.5-flash',
 });
