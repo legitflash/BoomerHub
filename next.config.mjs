@@ -1,6 +1,4 @@
 
-require('dotenv').config();
-import type {NextConfig} from 'next';
 import withPWA from 'next-pwa';
 
 const pwaConfig = withPWA({
@@ -10,7 +8,8 @@ const pwaConfig = withPWA({
   disable: process.env.NODE_ENV === 'development'
 });
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   /* config options here */
   staticPageGenerationTimeout: 1000,
   typescript: {
