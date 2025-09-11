@@ -1,10 +1,8 @@
 
 import { createClient } from 'next-sanity';
 import imageUrlBuilder from '@sanity/image-url';
+import { apiVersion, dataset, projectId, useCdn } from '../../sanity/env';
 
-export const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
-export const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
-export const apiVersion = '2023-05-03';
 
 if (!projectId || !dataset) {
   throw new Error('Sanity project ID and dataset must be defined in .env');
@@ -14,7 +12,7 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: process.env.NODE_ENV === 'production',
+  useCdn,
 });
 
 const builder = imageUrlBuilder(client);
