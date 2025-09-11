@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PortableText } from 'next-sanity';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -63,7 +64,9 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
   };
     
   const articleBody = (
-     <div className="prose prose-lg dark:prose-invert max-w-none mx-auto" dangerouslySetInnerHTML={{ __html: post.content || '' }} />
+     <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
+        <PortableText value={post.content} />
+     </div>
   )
 
   return (
@@ -103,7 +106,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
 
         <AdsterraBanner />
         
-        <div className="prose prose-lg dark:prose-invert max-w-none mx-auto mt-8">
+        <div className="mt-8">
             {articleBody}
         </div>
 

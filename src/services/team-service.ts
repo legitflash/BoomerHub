@@ -2,99 +2,82 @@
 'use server';
 
 import type { TeamMember } from '@/lib/types';
+import { client, urlFor } from '@/lib/sanity-client';
 
-let teamMembers: TeamMember[] = [];
-let initialized = false;
+const memberFields = `
+  _id,
+  name,
+  "slug": slug.current,
+  role,
+  image,
+  description,
+  email,
+  userRole
+`;
 
-function slugify(text: string) {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
-}
-
-function initializeData() {
-    if (initialized) return;
-
-    teamMembers = [
-        {
-            id: '1',
-            name: 'John Makola',
-            slug: 'john-makola',
-            role: 'Founder & CEO',
-            image: 'https://picsum.photos/seed/john-makola/200/200',
-            description: 'John is the visionary behind BoomerHub, passionate about empowering individuals through technology and financial literacy.',
-            email: 'john@boomerhub.com',
-            userRole: 'admin',
-        },
-        {
-            id: '2',
-            name: 'Jane Smith',
-            slug: 'jane-smith',
-            role: 'Lead Editor',
-            image: 'https://picsum.photos/seed/jane-smith/200/200',
-            description: 'Jane ensures all content meets our high standards of quality, accuracy, and engagement. She is an expert in digital content strategy.',
-            email: 'jane@boomerhub.com',
-            userRole: 'editor',
-        },
-    ];
-
-    initialized = true;
-}
-
-initializeData();
-
-export async function addTeamMember(memberData: Omit<TeamMember, 'id' | 'slug'>): Promise<string> {
-    const newMember: TeamMember = {
-        id: String(teamMembers.length + 1),
-        slug: slugify(memberData.name),
-        ...memberData
+function formatMember(member: any): TeamMember {
+    return {
+        id: member._id,
+        name: member.name,
+        slug: member.slug,
+        role: member.role,
+        image: urlFor(member.image).width(200).height(200).url(),
+        description: member.description,
+        email: member.email,
+        userRole: member.userRole,
     };
-    teamMembers.push(newMember);
-    return newMember.id;
 }
 
 export async function getAllTeamMembers(): Promise<TeamMember[]> {
-    return teamMembers;
-}
-
-export async function getTeamMemberById(id: string): Promise<TeamMember | null> {
-    return teamMembers.find(m => m.id === id) || null;
+    const query = `*[_type == "author"] | order(name asc) {
+        ${memberFields}
+    }`;
+    const results = await client.fetch(query);
+    return results.map(formatMember);
 }
 
 export async function getTeamMemberBySlug(slug: string): Promise<TeamMember | null> {
-    return teamMembers.find(m => m.slug === slug) || null;
+    const query = `*[_type == "author" && slug.current == $slug][0] {
+        ${memberFields}
+    }`;
+    const result = await client.fetch(query, { slug });
+    return result ? formatMember(result) : null;
+}
+
+// These functions are deprecated as content is managed in Sanity.
+export async function addTeamMember(memberData: Omit<TeamMember, 'id' | 'slug'>): Promise<string> {
+    console.warn("addTeamMember is deprecated. Please use Sanity Studio.");
+    return '';
+}
+
+export async function getTeamMemberById(id: string): Promise<TeamMember | null> {
+    const query = `*[_type == "author" && _id == $id][0] {
+        ${memberFields}
+    }`;
+    const result = await client.fetch(query, { id });
+    return result ? formatMember(result) : null;
 }
 
 export async function updateTeamMember(id: string, memberData: Partial<TeamMember>): Promise<void> {
-    const index = teamMembers.findIndex(m => m.id === id);
-    if (index !== -1) {
-        teamMembers[index] = { ...teamMembers[index], ...memberData };
-        if (memberData.name) {
-            teamMembers[index].slug = slugify(memberData.name);
-        }
-    }
+    console.warn("updateTeamMember is deprecated. Please use Sanity Studio.");
 }
 
 export async function deleteTeamMember(id: string): Promise<void> {
-    teamMembers = teamMembers.filter(m => m.id !== id);
+    console.warn("deleteTeamMember is deprecated. Please use Sanity Studio.");
 }
 
 export async function findUserByEmail(email: string): Promise<{ uid: string, email: string } | null> {
-    const member = teamMembers.find(m => m.email === email);
-    if (member) {
-        return { uid: member.id, email: member.email! };
+     const query = `*[_type == "author" && email == $email][0] {
+        _id,
+        email
+    }`;
+    const result = await client.fetch(query, { email });
+    if (result) {
+        return { uid: result._id, email: result.email };
     }
     return null;
 }
 
 export async function updateUserRole(uid: string, role: 'admin' | 'editor' | 'member'): Promise<void> {
-    const index = teamMembers.findIndex(m => m.id === uid);
-    if (index !== -1) {
-        teamMembers[index].userRole = role;
-    }
+    console.warn("updateUserRole is deprecated. Please use Sanity Studio.");
 }

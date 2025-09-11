@@ -2,54 +2,59 @@
 'use server';
 
 import type { Page } from '@/lib/types';
+import { client } from '@/lib/sanity-client';
+import { format } from 'date-fns';
 
-let pages: Page[] = [];
+const pageFields = `
+  _id,
+  title,
+  "slug": slug.current,
+  content,
+  _createdAt,
+  _updatedAt
+`;
 
-function slugify(text: string) {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
-}
-
-export async function createPage(pageData: Omit<Page, 'id' | 'slug' | 'createdAt' | 'updatedAt'>): Promise<string> {
-    const newPage: Page = {
-        id: String(pages.length + 1),
-        slug: slugify(pageData.title),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        ...pageData,
+function formatPage(page: any): Page {
+    return {
+        id: page._id,
+        title: page.title,
+        slug: page.slug,
+        content: page.content,
+        createdAt: format(new Date(page._createdAt), 'PPP'),
+        updatedAt: format(new Date(page._updatedAt), 'PPP'),
     };
-    pages.push(newPage);
-    return newPage.id;
 }
 
-export async function getAllPages(): Promise<Page[]> {
-  return pages.map(page => ({
-      ...page,
-      createdAt: page.createdAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-      updatedAt: page.updatedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-  }));
-}
 
 export async function getPageBySlug(slug: string): Promise<Page | null> {
     const excludedSlugs = ['about', 'contact', 'admin', 'blog', 'privacy-policy', 'terms-of-use', 'advertise-with-us', 'write-for-us', 'login', 'signup', 'profile'];
     if (excludedSlugs.includes(slug) || slug.startsWith('ai/') || slug.startsWith('admin/')) {
         return null;
     }
-    const page = pages.find(p => p.slug === slug);
+    
+    const query = `*[_type == "page" && slug.current == $slug][0] {
+        ${pageFields}
+    }`;
+    
+    const page = await client.fetch(query, { slug });
+
     if (!page) return null;
-    return {
-        ...page,
-        createdAt: page.createdAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-        updatedAt: page.updatedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-    };
+    
+    return formatPage(page);
+}
+
+// Deprecated functions
+export async function createPage(pageData: Omit<Page, 'id' | 'slug' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    console.warn("createPage is deprecated. Please use Sanity Studio.");
+    return '';
+}
+
+export async function getAllPages(): Promise<Page[]> {
+    const query = `*[_type == "page"] { ${pageFields} }`;
+    const results = await client.fetch(query);
+    return results.map(formatPage);
 }
 
 export async function deletePage(id: string): Promise<void> {
-    pages = pages.filter(p => p.id !== id);
+    console.warn("deletePage is deprecated. Please use Sanity Studio.");
 }

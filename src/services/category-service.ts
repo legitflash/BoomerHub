@@ -2,52 +2,51 @@
 'use server';
 
 import type { BlogCategory } from '@/lib/types';
-import { blogCategories as staticCategories } from '@/lib/data';
+import { client } from '@/lib/sanity-client';
 
-let categories: BlogCategory[] = staticCategories.map((c, i) => ({
-    id: String(i + 1),
-    ...c
-}));
+const categoryFields = `
+  _id,
+  name,
+  "slug": slug.current,
+  iconName
+`;
 
-function slugify(text: string) {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-+/, '')
-    .replace(/-+$/, '');
-}
-
-export async function createCategory(categoryData: Omit<BlogCategory, 'id' | 'slug'>): Promise<string> {
-    const newCategory: BlogCategory = {
-        id: String(categories.length + 1),
-        slug: slugify(categoryData.name),
-        ...categoryData,
+function formatCategory(category: any): BlogCategory {
+    return {
+        id: category._id,
+        name: category.name,
+        slug: category.slug,
+        iconName: category.iconName || 'DollarSign', // Default icon
     };
-    categories.push(newCategory);
-    return newCategory.id;
 }
 
 export async function getAllCategories(): Promise<BlogCategory[]> {
-    return categories;
+    const query = `*[_type == "category"] | order(name asc) {
+        ${categoryFields}
+    }`;
+    const results = await client.fetch(query);
+    return results.map(formatCategory);
 }
 
 export async function getCategoryById(id: string): Promise<BlogCategory | null> {
-    return categories.find(c => c.id === id) || null;
+    const query = `*[_type == "category" && _id == $id][0] {
+        ${categoryFields}
+    }`;
+    const result = await client.fetch(query, { id });
+    return result ? formatCategory(result) : null;
+}
+
+
+// Deprecated functions
+export async function createCategory(categoryData: Omit<BlogCategory, 'id' | 'slug'>): Promise<string> {
+    console.warn("createCategory is deprecated. Please use Sanity Studio.");
+    return '';
 }
 
 export async function updateCategory(id: string, categoryData: Partial<Omit<BlogCategory, 'id' | 'slug'>>): Promise<void> {
-    const index = categories.findIndex(c => c.id === id);
-    if (index !== -1) {
-        categories[index] = { ...categories[index], ...categoryData };
-        if (categoryData.name) {
-            categories[index].slug = slugify(categoryData.name);
-        }
-    }
+    console.warn("updateCategory is deprecated. Please use Sanity Studio.");
 }
 
 export async function deleteCategory(id: string): Promise<void> {
-    categories = categories.filter(c => c.id !== id);
+    console.warn("deleteCategory is deprecated. Please use Sanity Studio.");
 }

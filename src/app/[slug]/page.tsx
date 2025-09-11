@@ -2,6 +2,7 @@
 import { notFound } from 'next/navigation';
 import { getPageBySlug } from '@/services/page-service';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PortableText } from 'next-sanity';
 
 export default async function CustomPage({ params }: { params: { slug: string } }) {
   // A simple check to avoid trying to render known static routes with this dynamic page.
@@ -27,8 +28,9 @@ export default async function CustomPage({ params }: { params: { slug: string } 
         <CardContent>
           <div
             className="prose prose-lg dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: page.content }}
-          />
+          >
+            <PortableText value={page.content} />
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -6,8 +6,9 @@ export type Post = {
   slug: string;
   title: string;
   category: string;
+  categorySlug: string;
   description: string;
-  content?: string;
+  content?: any; // Sanity Portable Text
   image: string;
   dataAiHint: string;
   author: string;
@@ -21,7 +22,7 @@ export type Page = {
   id?: string;
   slug: string;
   title: string;
-  content: string;
+  content: any; // Sanity Portable Text
   createdAt: any;
   updatedAt: any;
 }
