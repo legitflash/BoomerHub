@@ -65,7 +65,6 @@
     "@types/uuid": "^9.0.8",
     "genkit-cli": "^1.14.1",
     "postcss": "^8",
-    "raw-loader": "^4.0.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

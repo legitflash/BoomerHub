@@ -3,12 +3,6 @@
 
 import type { Post } from '@/lib/types';
 import { getAllTeamMembers } from './team-service';
-import article1 from '@/lib/generated-articles/how-i-made-my-first-100-online.html';
-import article2 from '@/lib/generated-articles/passive-income-from-your-phone.html';
-import article3 from '@/lib/generated-articles/forex-trading-beginners-guide.html';
-import article4 from '@/lib/generated-articles/best-countries-to-visit-2025.html';
-import article5 from '@/lib/generated-articles/top-10-richest-men-nigeria.html';
-
 
 let posts: Post[] = [];
 let teamMembers: any[] = [];
@@ -40,7 +34,7 @@ async function initializeData() {
           title: 'How I Made My First $100 Online In a Month',
           category: 'GetPaidTo',
           description: 'A step-by-step case study on earning your first $100 online using Get-Paid-To apps, with a detailed breakdown of the strategy and results.',
-          content: article1,
+          content: 'Article content has been removed.',
           image: 'https://picsum.photos/seed/online-earnings/600/400',
           dataAiHint: 'man working laptop',
           author: author1.name,
@@ -55,7 +49,7 @@ async function initializeData() {
           title: '5 Apps That Let You Earn Passive Income From Your Phone',
           category: 'App/Web Reviews',
           description: 'Discover the best mobile apps that allow you to earn rewards and passive income with minimal effort, perfect for monetizing your downtime.',
-          content: article2,
+          content: 'Article content has been removed.',
           image: 'https://picsum.photos/seed/passive-income-apps/600/400',
           dataAiHint: 'woman using phone',
           author: author2.name,
@@ -70,7 +64,7 @@ async function initializeData() {
           title: 'Forex Trading for Beginners: A 5-Step Guide',
           category: 'Finance',
           description: 'A simple, actionable 5-step guide to help beginners start their Forex trading journey, from education and choosing a broker to practicing with a demo account.',
-          content: article3,
+          content: 'Article content has been removed.',
           image: 'https://picsum.photos/seed/forex-trading/600/400',
           dataAiHint: 'forex chart',
           author: author1.name,
@@ -85,7 +79,7 @@ async function initializeData() {
             title: 'Best Countries to Visit in 2025',
             category: 'Travel',
             description: 'Explore the top travel destinations for 2025, from the vibrant culture of Cameroon to the eco-friendly landscapes of Lithuania, as recommended by top travel experts.',
-            content: article4,
+            content: 'Article content has been removed.',
             image: 'https://picsum.photos/seed/travel-destinations/600/400',
             dataAiHint: 'beautiful landscape',
             author: author2.name,
@@ -100,7 +94,7 @@ async function initializeData() {
             title: 'Top 10 Richest Men in Nigeria & Their Travel Lifestyle',
             category: 'Top 10s',
             description: 'A look into the luxurious travel habits of Nigeria\'s wealthiest individuals, from private jets and superyachts to exclusive vacations in the Mediterranean and beyond.',
-            content: article5,
+            content: 'Article content has been removed.',
             image: 'https://picsum.photos/seed/luxury-lifestyle/600/400',
             dataAiHint: 'private jet',
             author: author1.name,
