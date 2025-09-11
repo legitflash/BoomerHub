@@ -139,5 +139,5 @@ export type Notification = {
 
 export type Usage = {
     count: number;
-    lastReset: any; // Firestore Timestamp
+    lastReset: any;
 };

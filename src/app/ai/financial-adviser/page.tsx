@@ -14,7 +14,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, PiggyBank, ArrowRight } from "lucide-react";
 import { generateFinancialAdvice } from '@/ai/flows/generate-financial-advice';
 import type { GenerateFinancialAdviceOutput } from '@/ai/flows/generate-financial-advice';
-import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
@@ -38,7 +37,6 @@ export default function FinancialAdviserPage() {
   const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
   const [adUrl, setAdUrl] = useState('');
 
-  const { user } = useAuth();
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -55,14 +53,13 @@ export default function FinancialAdviserPage() {
   }, []);
   
   const updateUsage = async () => {
-    const id = user ? user.uid : 'guest'; // Use a placeholder for guest, server will use IP
-    const usageInfo = await handleCheckUsage(id, !user);
+    const usageInfo = await handleCheckUsage('guest', true);
     setUsage(usageInfo);
   };
 
   useEffect(() => {
     updateUsage();
-  }, [user]);
+  }, []);
 
 
   async function onSubmit(values: FormValues) {
@@ -73,7 +70,7 @@ export default function FinancialAdviserPage() {
     try {
       const result = await generateFinancialAdvice({ 
         query: values.query,
-        user: user 
+        user: null 
       });
       setAdvice(result);
       updateUsage();
@@ -102,15 +99,11 @@ export default function FinancialAdviserPage() {
 
   const renderUsageInfo = () => {
     if (!usage) return null;
-    const limit = user ? USER_LIMIT : GUEST_LIMIT;
-    
-    if (user) {
-        return <p className="text-sm text-muted-foreground text-center mt-2">You have {usage.remainingCount} of {limit} daily requests remaining.</p>
-    }
+    const limit = GUEST_LIMIT;
     
     return (
       <p className="text-sm text-muted-foreground text-center mt-2">
-        You have {usage.remainingCount} of {limit} free requests. <Link href="/signup" className="underline text-primary">Sign up</Link> for {USER_LIMIT} daily requests.
+        You have {usage.remainingCount} of {limit} free requests remaining.
       </p>
     )
   }

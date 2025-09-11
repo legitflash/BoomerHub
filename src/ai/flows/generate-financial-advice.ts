@@ -12,12 +12,11 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { checkUsage, recordUsage } from '@/services/usage-service';
 import { headers } from 'next/headers';
-import type { User } from '@/hooks/use-auth';
 
 
 const GenerateFinancialAdviceInputSchema = z.object({
   query: z.string().describe('The user\'s question or description of their situation.'),
-  user: z.custom<User | null>().describe('The authenticated user object, or null for guests.'),
+  user: z.null().describe('The authenticated user object, or null for guests.'),
 });
 export type GenerateFinancialAdviceInput = z.infer<typeof GenerateFinancialAdviceInputSchema>;
 
@@ -34,7 +33,7 @@ export async function generateFinancialAdvice(input: GenerateFinancialAdviceInpu
   
   const headerList = headers();
   const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-  const userId = isGuest ? ip : user.uid;
+  const userId = ip;
 
   const usage = await checkUsage(userId, isGuest);
   if (!usage.hasRemaining) {

@@ -11,7 +11,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Share2, Loader2, Bookmark } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Post, Advertisement } from '@/lib/types';
-import { useAuth } from '@/hooks/use-auth';
 import { getSavesForPost } from '@/services/saves-service';
 import { handleToggleSavePost } from '@/app/actions';
 import Script from 'next/script';
@@ -33,51 +32,6 @@ function slugify(text: string) {
 
 export default function BlogPostContent({ post, relatedPosts }: { post: Post, relatedPosts: Post[] }) {
   const { toast } = useToast();
-  const { user } = useAuth();
-  
-  const [isSaved, setIsSaved] = useState(false);
-  const [saveCount, setSaveCount] = useState(0);
-  const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
-    const fetchSaveStatus = async () => {
-      const { count, isSaved: userHasSaved } = await getSavesForPost(post.slug, user?.uid);
-      setSaveCount(count);
-      setIsSaved(userHasSaved);
-    };
-
-    fetchSaveStatus();
-  }, [post.slug, user]);
-
-  const toggleSave = async () => {
-    if (!user) {
-        toast({
-            title: "Login Required",
-            description: "You must be logged in to save posts.",
-            variant: "destructive",
-        });
-        return;
-    }
-    setIsSaving(true);
-    try {
-        const result = await handleToggleSavePost(post.slug, user.uid);
-        setIsSaved(result.isSaved);
-        setSaveCount(prev => result.isSaved ? prev + 1 : prev - 1);
-        toast({
-            title: result.isSaved ? "Post Saved!" : "Post Unsaved",
-            description: result.isSaved ? "This article has been added to your profile." : "This article has been removed from your profile.",
-            variant: "success",
-        });
-    } catch (error) {
-        toast({
-            title: "Error",
-            description: "Could not update save status. Please try again.",
-            variant: "destructive",
-        });
-    } finally {
-        setIsSaving(false);
-    }
-  };
   
   const fallbackCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -132,10 +86,6 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
               </div>
           </div>
           <div className="mt-6 flex items-center justify-center flex-wrap gap-2 border-t border-b py-4">
-              <Button variant="ghost" size="sm" onClick={toggleSave} disabled={isSaving}>
-                {isSaving ? <Loader2 className="mr-2 animate-spin"/> : <Bookmark className={`mr-2 ${isSaved ? 'fill-primary' : ''}`} />}
-                {isSaved ? 'Saved' : 'Save'} ({saveCount})
-              </Button>
               <Button variant="ghost" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
           </div>
         </header>

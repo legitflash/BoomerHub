@@ -4,7 +4,6 @@ import './globals.css';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
-import { AuthProvider } from '@/hooks/use-auth';
 import Script from 'next/script';
 import AdScripts from './ad-scripts';
 import { ThemeProvider } from '@/components/layout/theme-provider';
@@ -43,7 +42,6 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-          <AuthProvider>
             <div className="relative flex min-h-screen flex-col">
               <Header />
               <main className="flex-1">{children}</main>
@@ -51,7 +49,6 @@ export default function RootLayout({
             </div>
             <Toaster />
             <PwaInstallBanner />
-          </AuthProvider>
           <AdScripts />
         </ThemeProvider>
       </body>

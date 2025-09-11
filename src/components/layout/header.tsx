@@ -23,7 +23,6 @@ import { aiToolsCategories } from '@/lib/data';
 import { useState, useEffect } from 'react';
 import { getAllCategories } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
-import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 
@@ -36,7 +35,6 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 
 export function Header() {
   const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
-  const { user, isAdmin, isEditor, signOutUser } = useAuth();
   const router = useRouter();
   const { setTheme, theme } = useTheme();
 
@@ -48,10 +46,6 @@ export function Header() {
     fetchCategories();
   }, []);
 
-  const handleSignOut = async () => {
-    await signOutUser();
-    router.push('/');
-  }
   
   const handleAIClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
     e.preventDefault();
@@ -115,11 +109,6 @@ export function Header() {
                     <AccordionItem value="contact" className="border-b-0">
                         <Link href="/contact" className="text-foreground py-4 w-full block">Contact</Link>
                     </AccordionItem>
-                     {(isAdmin || isEditor) && (
-                        <AccordionItem value="admin" className="border-b-0">
-                            <Link href="/admin" className="font-semibold text-primary flex items-center gap-2 py-4 w-full block"><Shield/> {isAdmin ? 'Admin Panel' : 'Editor Dashboard'}</Link>
-                        </AccordionItem>
-                     )}
                   </Accordion>
                 </div>
               </SheetContent>
@@ -141,64 +130,6 @@ export function Header() {
                 <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                 <span className="sr-only">Toggle theme</span>
             </Button>
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Avatar className="h-10 w-10">
-                    {user ? (
-                        <>
-                            <AvatarImage src={user.photoURL || undefined} alt={user.displayName || user.email || 'User'} />
-                            <AvatarFallback>
-                              {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email ? user.email.charAt(0).toUpperCase() : <User />}
-                            </AvatarFallback>
-                        </>
-                    ) : (
-                        <AvatarFallback>
-                            <User/>
-                        </AvatarFallback>
-                    )}
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                {user ? (
-                  <>
-                      <DropdownMenuItem disabled>
-                        <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-medium leading-none">{user.displayName || 'User'}</p>
-                          <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-                        </div>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                       <DropdownMenuItem asChild>
-                         <Link href="/profile" className="flex items-center"><User className="mr-2"/> My Profile</Link>
-                      </DropdownMenuItem>
-                      {(isAdmin || isEditor) && (
-                        <DropdownMenuItem asChild>
-                            <Link href="/admin" className="flex items-center">
-                               {isAdmin ? <Shield className="mr-2"/> : <Edit className="mr-2"/>} 
-                               {isAdmin ? 'Admin Panel' : 'Editor Dashboard'}
-                            </Link>
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
-                        <LogOut className="mr-2" />
-                        Sign Out
-                      </DropdownMenuItem>
-                  </>
-                ) : (
-                  <>
-                    <DropdownMenuItem asChild>
-                        <Link href="/login" className="flex items-center"><LogIn className="mr-2"/> Sign In</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Link href="/signup" className="flex items-center"><UserPlus className="mr-2"/> Sign Up</Link>
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
         </div>
       </div>
     </header>

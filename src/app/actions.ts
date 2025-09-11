@@ -70,12 +70,6 @@ export async function handleUpdateTeamMember(formData: FormData) {
     
     try {
         await updateTeamMember(id, memberData);
-        if (email && userRole) {
-            const user = await findUserByEmail(email);
-            if (user) {
-                await updateUserRole(user.uid, userRole);
-            }
-        }
         revalidatePath('/admin');
     } catch (error) {
         console.error('Error updating team member:', error);

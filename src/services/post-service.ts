@@ -1,246 +1,169 @@
 
 'use server';
 
-import { db } from '@/lib/firebase';
-import { collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, getDoc, where, updateDoc, deleteDoc } from 'firebase/firestore';
 import type { Post } from '@/lib/types';
 import { getAllTeamMembers } from './team-service';
-import { createNotificationForFollowers } from './notification-service';
+import article1 from '@/lib/generated-articles/how-i-made-my-first-100-online.html';
+import article2 from '@/lib/generated-articles/passive-income-from-your-phone.html';
+import article3 from '@/lib/generated-articles/forex-trading-beginners-guide.html';
+import article4 from '@/lib/generated-articles/best-countries-to-visit-2025.html';
+import article5 from '@/lib/generated-articles/top-10-richest-men-nigeria.html';
 
-// This is a simplified version of what a Post object might look like for creation.
-// In a real app, you'd likely have a more robust validation schema (e.g., using Zod).
-type CreatePostData = {
-    title: string;
-    description: string;
-    category: string;
-    image: string;
-    content: string;
-    author: string;
-    keywords?: string;
-};
 
-type UpdatePostData = Partial<CreatePostData>;
+let posts: Post[] = [];
+let teamMembers: any[] = [];
+let initialized = false;
 
 function slugify(text: string) {
   return text
     .toString()
     .toLowerCase()
-    .replace(/\s+/g, '-')       // Replace spaces with -
-    .replace(/[^\w-]+/g, '')    // Remove all non-word chars
-    .replace(/--+/g, '-')       // Replace multiple - with single -
-    .replace(/^-+/, '')          // Trim - from start of text
-    .replace(/-+$/, '');         // Trim - from end of text
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
 }
 
+async function initializeData() {
+    if (initialized) return;
 
-// Function to create a new post in Firestore
-export async function createPost(postData: CreatePostData): Promise<string> {
-  try {
-    const postsCollection = collection(db, 'posts');
-    const teamMembers = await getAllTeamMembers();
-    const authorData = teamMembers.find(member => member.name === postData.author);
+    teamMembers = await getAllTeamMembers();
     
-    const authorImage = authorData ? authorData.image : `https://i.pravatar.cc/40?u=${postData.author}`;
-    const authorSlug = authorData ? authorData.slug : slugify(postData.author);
-    const postSlug = slugify(postData.title);
+    const author1 = teamMembers.find(m => m.name === 'John Makola') || teamMembers[0];
+    const author2 = teamMembers.find(m => m.name === 'Jane Smith') || teamMembers[1];
 
-    const docRef = await addDoc(postsCollection, {
-      ...postData,
-      authorImage: authorImage,
-      authorSlug: authorSlug,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      slug: postSlug,
-      date: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
-      dataAiHint: 'article content', // Placeholder AI hint
-    });
+    posts = [
+        {
+          id: '1',
+          slug: 'how-i-made-my-first-100-online-in-a-month',
+          title: 'How I Made My First $100 Online In a Month',
+          category: 'GetPaidTo',
+          description: 'A step-by-step case study on earning your first $100 online using Get-Paid-To apps, with a detailed breakdown of the strategy and results.',
+          content: article1,
+          image: 'https://picsum.photos/seed/online-earnings/600/400',
+          dataAiHint: 'man working laptop',
+          author: author1.name,
+          authorSlug: author1.slug,
+          authorImage: author1.image,
+          date: '2024-07-20',
+          keywords: 'get paid to, make money online, side hustle, swagbucks, prolific, freecash'
+        },
+        {
+          id: '2',
+          slug: '5-apps-that-let-you-earn-passive-income-from-your-phone',
+          title: '5 Apps That Let You Earn Passive Income From Your Phone',
+          category: 'App/Web Reviews',
+          description: 'Discover the best mobile apps that allow you to earn rewards and passive income with minimal effort, perfect for monetizing your downtime.',
+          content: article2,
+          image: 'https://picsum.photos/seed/passive-income-apps/600/400',
+          dataAiHint: 'woman using phone',
+          author: author2.name,
+          authorSlug: author2.slug,
+          authorImage: author2.image,
+          date: '2024-07-18',
+          keywords: 'passive income, mobile apps, earn money, swagbucks, mistplay, google opinion rewards'
+        },
+        {
+          id: '3',
+          slug: 'forex-trading-for-beginners-a-5-step-guide',
+          title: 'Forex Trading for Beginners: A 5-Step Guide',
+          category: 'Finance',
+          description: 'A simple, actionable 5-step guide to help beginners start their Forex trading journey, from education and choosing a broker to practicing with a demo account.',
+          content: article3,
+          image: 'https://picsum.photos/seed/forex-trading/600/400',
+          dataAiHint: 'forex chart',
+          author: author1.name,
+          authorSlug: author1.slug,
+          authorImage: author1.image,
+          date: '2024-07-15',
+          keywords: 'forex, trading, beginners guide, investing, finance'
+        },
+        {
+            id: '4',
+            slug: 'best-countries-to-visit-in-2025',
+            title: 'Best Countries to Visit in 2025',
+            category: 'Travel',
+            description: 'Explore the top travel destinations for 2025, from the vibrant culture of Cameroon to the eco-friendly landscapes of Lithuania, as recommended by top travel experts.',
+            content: article4,
+            image: 'https://picsum.photos/seed/travel-destinations/600/400',
+            dataAiHint: 'beautiful landscape',
+            author: author2.name,
+            authorSlug: author2.slug,
+            authorImage: author2.image,
+            date: '2024-07-12',
+            keywords: 'travel, 2025 destinations, Cameroon, Lithuania, Fiji, Laos'
+        },
+        {
+            id: '5',
+            slug: 'top-10-richest-men-in-nigeria-and-their-travel-lifestyle',
+            title: 'Top 10 Richest Men in Nigeria & Their Travel Lifestyle',
+            category: 'Top 10s',
+            description: 'A look into the luxurious travel habits of Nigeria\'s wealthiest individuals, from private jets and superyachts to exclusive vacations in the Mediterranean and beyond.',
+            content: article5,
+            image: 'https://picsum.photos/seed/luxury-lifestyle/600/400',
+            dataAiHint: 'private jet',
+            author: author1.name,
+            authorSlug: author1.slug,
+            authorImage: author1.image,
+            date: '2024-07-10',
+            keywords: 'richest men, Nigeria, luxury travel, Aliko Dangote, Mike Adenuga, Femi Otedola'
+        }
+    ];
 
-    console.log("Document written with ID: ", docRef.id);
-
-    // After post is created, create notifications for followers of the category
-    const categorySlug = slugify(postData.category);
-    await createNotificationForFollowers(categorySlug, docRef.id, postData.title);
-
-
-    return docRef.id;
-  } catch (error) {
-    console.error("Error adding document: ", error);
-    throw new Error('Could not create post in database.');
-  }
+    initialized = true;
 }
 
-// Function to fetch all posts from Firestore
+export async function createPost(postData: Partial<Post>): Promise<string> {
+    await initializeData();
+    const newPost: Post = {
+        id: String(posts.length + 1),
+        slug: postData.slug || slugify(postData.title || ''),
+        title: postData.title || '',
+        category: postData.category || '',
+        description: postData.description || '',
+        content: postData.content || '',
+        image: postData.image || '',
+        dataAiHint: postData.dataAiHint || 'article content',
+        author: postData.author || '',
+        authorSlug: postData.authorSlug || slugify(postData.author || ''),
+        authorImage: postData.authorImage || '',
+        date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+        keywords: postData.keywords || '',
+    };
+    posts.unshift(newPost);
+    return newPost.id!;
+}
+
 export async function getAllPosts(): Promise<Post[]> {
-  try {
-    const postsCollection = collection(db, 'posts');
-    const q = query(postsCollection, orderBy('createdAt', 'desc')); // Order by most recent
-    const querySnapshot = await getDocs(q);
-
-    const posts: Post[] = querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        slug: data.slug,
-        title: data.title,
-        category: data.category,
-        description: data.description,
-        content: data.content,
-        image: data.image,
-        dataAiHint: data.dataAiHint,
-        author: data.author,
-        authorSlug: data.authorSlug || slugify(data.author),
-        authorImage: data.authorImage,
-        keywords: data.keywords,
-        // Convert Firestore Timestamp to a simple date string if necessary
-        date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
-      };
-    });
-
+    await initializeData();
     return posts;
-  } catch (error) {
-    console.error("Error getting documents: ", error);
-    // Return an empty array in case of an error to prevent the app from crashing.
-    return [];
-  }
 }
 
-// Function to fetch a single post by its ID
 export async function getPostById(id: string): Promise<Post | null> {
-  try {
-    const postDocRef = doc(db, 'posts', id);
-    const docSnap = await getDoc(postDocRef);
-
-    if (!docSnap.exists()) {
-      console.log("No such document!");
-      return null;
-    }
-
-    const data = docSnap.data();
-    return {
-        id: docSnap.id,
-        slug: data.slug,
-        title: data.title,
-        category: data.category,
-        description: data.description,
-        content: data.content,
-        image: data.image,
-        dataAiHint: data.dataAiHint,
-        author: data.author,
-        authorSlug: data.authorSlug || slugify(data.author),
-        authorImage: data.authorImage,
-        keywords: data.keywords,
-        date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
-    };
-  } catch (error) {
-    console.error("Error getting post by ID:", error);
-    throw new Error('Could not retrieve post from database.');
-  }
+    await initializeData();
+    return posts.find(p => p.id === id) || null;
 }
 
-
-// Function to fetch a single post by its slug
 export async function getPostBySlug(slug: string): Promise<Post | null> {
-  try {
-    const postsCollection = collection(db, 'posts');
-    const q = query(postsCollection, where('slug', '==', slug));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      return null;
-    }
-
-    const doc = querySnapshot.docs[0];
-    const data = doc.data();
-    return {
-      id: doc.id,
-      slug: data.slug,
-      title: data.title,
-      category: data.category,
-      description: data.description,
-      content: data.content,
-      image: data.image,
-      dataAiHint: data.dataAiHint,
-      author: data.author,
-      authorSlug: data.authorSlug || slugify(data.author),
-      authorImage: data.authorImage,
-      keywords: data.keywords,
-      date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
-    };
-  } catch (error) {
-    console.error("Error getting document by slug: ", error);
-    return null;
-  }
+    await initializeData();
+    return posts.find(p => p.slug === slug) || null;
 }
 
 export async function getPostsByAuthorSlug(authorSlug: string): Promise<Post[]> {
-  try {
-    const postsCollection = collection(db, 'posts');
-    const q = query(postsCollection, where('authorSlug', '==', authorSlug), orderBy('createdAt', 'desc'));
-    const querySnapshot = await getDocs(q);
-
-    const posts: Post[] = querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        slug: data.slug,
-        title: data.title,
-        category: data.category,
-        description: data.description,
-        content: data.content,
-        image: data.image,
-        dataAiHint: data.dataAiHint,
-        author: data.author,
-        authorSlug: data.authorSlug,
-        authorImage: data.authorImage,
-        keywords: data.keywords,
-        date: data.createdAt?.toDate().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) || new Date().toLocaleDateString(),
-      };
-    });
-
-    return posts;
-  } catch (error) {
-    console.error("Error getting posts by author: ", error);
-    return [];
-  }
+    await initializeData();
+    return posts.filter(p => p.authorSlug === authorSlug);
 }
 
-// Function to update a post in Firestore
-export async function updatePost(id: string, postData: UpdatePostData): Promise<void> {
-  try {
-    const postDocRef = doc(db, 'posts', id);
-    const teamMembers = await getAllTeamMembers();
-    const authorData = teamMembers.find(member => member.name === postData.author);
-
-    const newSlug = postData.title ? slugify(postData.title) : undefined;
-    
-    const dataToUpdate: any = {
-      ...postData,
-      updatedAt: serverTimestamp(),
-    };
-
-    if (authorData) {
-      dataToUpdate.authorImage = authorData.image;
-      dataToUpdate.authorSlug = authorData.slug;
+export async function updatePost(id: string, postData: Partial<Post>): Promise<void> {
+    await initializeData();
+    const index = posts.findIndex(p => p.id === id);
+    if (index !== -1) {
+        posts[index] = { ...posts[index], ...postData };
     }
-    
-    if (newSlug) {
-      dataToUpdate.slug = newSlug;
-    }
-    
-    await updateDoc(postDocRef, dataToUpdate);
-  } catch (error) {
-    console.error("Error updating post: ", error);
-    throw new Error('Could not update post in database.');
-  }
 }
 
-// Function to delete a post from Firestore
 export async function deletePost(id: string): Promise<void> {
-  try {
-    const postDocRef = doc(db, 'posts', id);
-    await deleteDoc(postDocRef);
-  } catch (error) {
-    console.error("Error deleting post: ", error);
-    throw new Error('Could not delete post from database.');
-  }
+    await initializeData();
+    posts = posts.filter(p => p.id !== id);
 }

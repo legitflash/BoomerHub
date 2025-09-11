@@ -12,7 +12,6 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { checkUsage, recordUsage } from '@/services/usage-service';
 import { headers } from 'next/headers';
-import type { User } from '@/hooks/use-auth';
 
 
 const GenerateMatchAnalysisInputSchema = z.object({
@@ -20,7 +19,7 @@ const GenerateMatchAnalysisInputSchema = z.object({
   awayTeam: z.string().describe('The name of the away team.'),
   league: z.string().describe('The league the match is being played in.'),
   matchDate: z.string().optional().describe('The date of the match (e.g., YYYY-MM-DD).'),
-  user: z.custom<User | null>().describe('The authenticated user object, or null for guests.'),
+  user: z.null().describe('The authenticated user object, or null for guests.'),
 });
 export type GenerateMatchAnalysisInput = z.infer<typeof GenerateMatchAnalysisInputSchema>;
 
@@ -40,7 +39,7 @@ export async function generateMatchAnalysis(input: GenerateMatchAnalysisInput): 
     
     const headerList = headers();
     const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-    const userId = isGuest ? ip : user.uid;
+    const userId = ip;
 
 
     const usage = await checkUsage(userId, isGuest);

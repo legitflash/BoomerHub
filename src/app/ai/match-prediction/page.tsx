@@ -21,7 +21,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2, Shield, Users, ArrowRight } from 'lucide-react';
 import type { GenerateMatchAnalysisOutput } from '@/ai/flows/generate-match-analysis';
 import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
-import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
@@ -106,7 +105,6 @@ export default function MatchPredictionPage() {
   const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
   const [adUrl, setAdUrl] = useState('');
   
-  const { user } = useAuth();
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -126,14 +124,13 @@ export default function MatchPredictionPage() {
   }, []);
 
   const updateUsage = async () => {
-    const id = user ? user.uid : 'guest';
-    const usageInfo = await handleCheckUsage(id, !user);
+    const usageInfo = await handleCheckUsage('guest', true);
     setUsage(usageInfo);
   };
 
   useEffect(() => {
     updateUsage();
-  }, [user]);
+  }, []);
 
 
   const handleCountryChange = (country: string) => {
@@ -153,7 +150,7 @@ export default function MatchPredictionPage() {
         awayTeam: values.awayTeam,
         league: values.league,
         matchDate: values.matchDate ? format(values.matchDate, 'yyyy-MM-dd') : undefined,
-        user: user,
+        user: null,
       });
       setAnalysis(result);
       updateUsage();
@@ -182,15 +179,11 @@ export default function MatchPredictionPage() {
 
   const renderUsageInfo = () => {
     if (!usage) return null;
-    const limit = user ? USER_LIMIT : GUEST_LIMIT;
-    
-    if (user) {
-        return <p className="text-sm text-muted-foreground text-center mt-2">You have {usage.remainingCount} of {limit} daily requests remaining.</p>
-    }
+    const limit = GUEST_LIMIT;
     
     return (
       <p className="text-sm text-muted-foreground text-center mt-2">
-        You have {usage.remainingCount} of {limit} free requests. <Link href="/signup" className="underline text-primary">Sign up</Link> for {USER_LIMIT} daily requests.
+        You have {usage.remainingCount} of {limit} free requests remaining.
       </p>
     )
   }
