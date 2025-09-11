@@ -3,9 +3,6 @@ import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Force load environment variables
-require('dotenv').config();
-
 // Your web app's Firebase configuration is now loaded from environment variables
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -19,7 +16,7 @@ const firebaseConfig = {
 
 // Basic check to see if the key is loaded
 if (!firebaseConfig.apiKey) {
-    console.error("Firebase API Key is missing. Check your .env file and environment variables setup.");
+    console.error("Firebase API Key is missing. Check your .env file and ensure it's loaded correctly.");
 }
 
 
