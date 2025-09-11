@@ -13,12 +13,12 @@ export default function AdminRedirect() {
                     <CardHeader>
                         <CardTitle>Access Removed</CardTitle>
                         <CardDescription>
-                            This page was part of the Firebase authentication and admin system, which has been removed.
+                             This page has been replaced by the Sanity Content Studio.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Button asChild>
-                            <Link href="/">Return to Homepage</Link>
+                            <Link href="/admin">Go to Content Studio</Link>
                         </Button>
                     </CardContent>
                 </Card>
