@@ -75,6 +75,8 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
      </div>
   )
 
+  const finalRelatedPosts = relatedPosts.slice(0, 4);
+
   return (
     <>
       <article className="container max-w-4xl py-12 md:py-24">
@@ -158,11 +160,11 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
         <CategoryActionBanner category={post.category} />
       </div>
 
-      {relatedPosts.length > 0 && (
+      {(finalRelatedPosts.length > 0) && (
         <aside className="container max-w-4xl py-16">
           <h2 className="text-3xl font-bold tracking-tighter mb-8 text-center font-headline">Related Articles</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {relatedPosts.slice(0, 2).map((relatedPost) => (
+            {finalRelatedPosts.map((relatedPost) => (
               <Card key={relatedPost.slug} className="group flex flex-col">
                 <Link href={`/blog/${relatedPost.slug}`} className="block">
                   <Image
@@ -183,26 +185,6 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
               </Card>
             ))}
              <SearchAdCard />
-            {relatedPosts.slice(2).map((relatedPost) => (
-              <Card key={relatedPost.slug} className="group flex flex-col">
-                <Link href={`/blog/${relatedPost.slug}`} className="block">
-                  <Image
-                    src={relatedPost.image}
-                    alt={relatedPost.title}
-                    width={600}
-                    height={400}
-                    data-ai-hint={relatedPost.dataAiHint}
-                    className="rounded-t-lg object-cover aspect-video"
-                  />
-                </Link>
-                <CardContent className="p-4 space-y-2 flex-grow flex flex-col">
-                   <Badge variant="outline" className="w-fit">{relatedPost.category}</Badge>
-                   <Link href={`/blog/${relatedPost.slug}`} className="block">
-                    <h3 className="text-lg font-semibold group-hover:text-primary transition-colors flex-grow">{relatedPost.title}</h3>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
           </div>
         </aside>
       )}

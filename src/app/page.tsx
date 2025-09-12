@@ -8,22 +8,23 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { topCategories } from '@/lib/data';
 import { getAllPosts } from '@/services/post-service';
 import HeroSearch from '@/components/home/hero-search';
-import PaginationControls from '@/components/blog/pagination-controls';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+import type { Post } from '@/lib/types';
+import { Badge } from '@/components/ui/badge';
 
-const POSTS_PER_PAGE = 10;
+// Helper function to get the top 3 recent posts for a specific category slug
+const getRecentPostsByCategory = (posts: Post[], categorySlug: string, count: number): Post[] => {
+  return posts
+    .filter(post => post.categorySlug === categorySlug)
+    .slice(0, count);
+};
+
 
 export default async function Home({ searchParams }: { searchParams: { page?: string } }) {
-  const blogPosts = await getAllPosts();
+  const allPosts = await getAllPosts();
   
-  const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = Math.ceil(blogPosts.length / POSTS_PER_PAGE);
-
-  const paginatedPosts = blogPosts.slice(
-    (currentPage - 1) * POSTS_PER_PAGE,
-    currentPage * POSTS_PER_PAGE
-  );
-
+  const featuredPost = allPosts[0]; // The latest post is the featured one
+  const otherPosts = allPosts.slice(1);
 
   return (
     <>
@@ -57,6 +58,47 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
         </div>
       </section>
 
+      {/* Featured Post Section */}
+      {featuredPost && (
+        <section className="container px-4 md:px-6">
+           <h2 className="text-3xl font-bold tracking-tighter font-headline mb-8">Featured Post</h2>
+            <Card className="grid md:grid-cols-2 overflow-hidden group">
+                <div className="relative">
+                     <Link href={`/blog/${featuredPost.slug}`}>
+                        <Image
+                            src={featuredPost.image}
+                            alt={featuredPost.title}
+                            width={800}
+                            height={600}
+                            data-ai-hint={featuredPost.dataAiHint}
+                            className="w-full h-full object-cover aspect-video md:aspect-auto"
+                            priority
+                        />
+                    </Link>
+                </div>
+                <div className="p-6 md:p-8 flex flex-col justify-center">
+                    <CardContent className="space-y-3 p-0">
+                        <Badge variant="secondary" className="w-fit">{featuredPost.category}</Badge>
+                        <Link href={`/blog/${featuredPost.slug}`}>
+                            <h3 className="text-2xl md:text-3xl font-bold group-hover:text-primary transition-colors">{featuredPost.title}</h3>
+                        </Link>
+                        <p className="text-muted-foreground line-clamp-3">{featuredPost.description}</p>
+                        <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground">
+                            <Avatar className="h-8 w-8">
+                                <AvatarImage src={featuredPost.authorImage} alt={featuredPost.author} />
+                                <AvatarFallback>{featuredPost.author.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <p className="font-semibold">{featuredPost.author}</p>
+                                <p>{featuredPost.date}</p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </div>
+            </Card>
+        </section>
+      )}
+
       {/* Top Categories Section */}
       <section className="container px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter text-center mb-8 font-headline">Top Categories</h2>
@@ -74,53 +116,53 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
       
       <AdsterraBanner />
 
-      {/* Latest Blog Posts Section */}
-      <section className="container px-4 md:px-6 pb-12 md:pb-24">
-        <div className="flex justify-between items-baseline mb-8">
-          <h2 className="text-3xl font-bold tracking-tighter font-headline">Latest Blog Posts</h2>
-          <Button variant="link" asChild>
-            <Link href="/blog">View All <ArrowRight className="ml-2 h-4 w-4" /></Link>
-          </Button>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {paginatedPosts.map((post) => (
-            <Card key={post.slug} className="group">
-              <Link href={`/blog/${post.slug}`}>
-                <Image
-                  src={post.image}
-                  alt={post.title}
-                  width={600}
-                  height={400}
-                  data-ai-hint={post.dataAiHint}
-                  className="w-full rounded-t-lg object-cover aspect-video"
-                />
-              </Link>
-              <CardContent className="p-4 space-y-2">
-                <Link href={`/blog/${post.slug}`}>
-                  <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{post.title}</h3>
-                </Link>
-                <p className="text-sm text-muted-foreground line-clamp-2">{post.description}</p>
-                <div className="flex items-center gap-2 pt-2 text-xs text-muted-foreground">
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src={post.authorImage} alt={post.author} />
-                    <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <span>{post.author}</span>
-                  <span>&middot;</span>
-                  <span>{post.date}</span>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        <div className="mt-12">
-            <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            baseUrl="/"
-            />
-        </div>
-      </section>
+      {/* Category Sections */}
+      {topCategories.map(category => {
+        const recentPosts = getRecentPostsByCategory(otherPosts, category.slug, 3);
+        if (recentPosts.length === 0) return null;
+
+        return (
+          <section key={category.slug} className="container px-4 md:px-6">
+            <div className="flex justify-between items-baseline mb-8">
+              <h2 className="text-3xl font-bold tracking-tighter font-headline">{category.name}</h2>
+              <Button variant="link" asChild>
+                <Link href={`/blog/category/${category.slug}`}>View All <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {recentPosts.map((post) => (
+                <Card key={post.slug} className="group">
+                  <Link href={`/blog/${post.slug}`}>
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      width={600}
+                      height={400}
+                      data-ai-hint={post.dataAiHint}
+                      className="w-full rounded-t-lg object-cover aspect-video"
+                    />
+                  </Link>
+                  <CardContent className="p-4 space-y-2">
+                    <Link href={`/blog/${post.slug}`}>
+                      <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{post.title}</h3>
+                    </Link>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{post.description}</p>
+                    <div className="flex items-center gap-2 pt-2 text-xs text-muted-foreground">
+                      <Avatar className="h-6 w-6">
+                        <AvatarImage src={post.authorImage} alt={post.author} />
+                        <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <span>{post.author}</span>
+                      <span>&middot;</span>
+                      <span>{post.date}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        );
+      })}
     </div>
     </>
   );

@@ -1,6 +1,6 @@
 
 import { notFound } from 'next/navigation';
-import type { Post, BlogCategory as CategoryType } from '@/lib/types';
+import type { Post } from '@/lib/types';
 import { getAllPosts } from '@/services/post-service';
 import { getCategoryBySlug, getAllCategories } from '@/services/category-service';
 import Link from 'next/link';
@@ -10,10 +10,13 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit } from 'lucide-react';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+import PaginationControls from '@/components/blog/pagination-controls';
 
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
   DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit,
 };
+
+const POSTS_PER_PAGE = 10;
 
 export async function generateStaticParams() {
   const categories = await getAllCategories();
@@ -22,7 +25,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function BlogCategoryPage({ params }: { params: { slug: string } }) {
+export default async function BlogCategoryPage({ params, searchParams }: { params: { slug: string }, searchParams: { page?: string } }) {
   const { slug } = params;
   const category = await getCategoryBySlug(slug);
   
@@ -33,6 +36,14 @@ export default async function BlogCategoryPage({ params }: { params: { slug: str
   const allPosts = await getAllPosts();
   const postsForCategory: Post[] = allPosts.filter((p) => p.categorySlug === slug);
   const Icon = iconMap[category.iconName] || DollarSign;
+
+  const currentPage = Number(searchParams?.page) || 1;
+  const totalPages = Math.ceil(postsForCategory.length / POSTS_PER_PAGE);
+
+  const paginatedPosts = postsForCategory.slice(
+    (currentPage - 1) * POSTS_PER_PAGE,
+    currentPage * POSTS_PER_PAGE
+  );
 
   return (
     <div className="container py-12 md:py-16">
@@ -54,9 +65,9 @@ export default async function BlogCategoryPage({ params }: { params: { slug: str
 
       <AdsterraBanner />
       
-      {postsForCategory.length > 0 ? (
+      {paginatedPosts.length > 0 ? (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {postsForCategory.map((post) => (
+          {paginatedPosts.map((post) => (
             <Card key={post.slug} className="group flex flex-col">
               <Link href={`/blog/${post.slug}`} className="block">
                 <Image
@@ -90,6 +101,14 @@ export default async function BlogCategoryPage({ params }: { params: { slug: str
       ) : (
         <p className="text-center text-muted-foreground">No posts found in this category yet.</p>
       )}
+
+      <div className="mt-12">
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          baseUrl={`/blog/category/${slug}`}
+        />
+      </div>
     </div>
   );
 }
