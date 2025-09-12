@@ -2,11 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Check, Flame, Send, TrendingUp, X, Calendar } from "lucide-react";
+import { ArrowLeft, Check, Flame, Send, TrendingUp, X, Calendar, Trophy } from "lucide-react";
 import Link from "next/link";
 import { getAllPredictions } from "@/services/prediction-service";
 import type { Prediction } from "@/lib/types";
-import { format } from "date-fns";
 
 
 export default async function BettingPredictionsPage() {
@@ -46,65 +45,78 @@ export default async function BettingPredictionsPage() {
         </Button>
       </div>
       <header className="text-center mb-12">
+        <Trophy className="h-12 w-12 mx-auto mb-4 text-primary" />
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">Betting Predictions</h1>
         <p className="max-w-2xl mx-auto mt-4 text-muted-foreground md:text-xl">
           Expert analysis and predictions for upcoming matches. Please bet responsibly.
         </p>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {predictions.map((p) => (
-          <Card key={p.id} className={`flex flex-col ${p.isHot ? 'border-primary border-2' : ''}`}>
-             {p.isHot && (
-                 <div className="bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center p-2 rounded-t-lg">
-                    <Flame className="mr-2 h-5 w-5"/>
-                    Hot Tip
-                 </div>
-            )}
-            <CardHeader>
-              <CardTitle>{p.match}</CardTitle>
-              <CardDescription>{p.league}</CardDescription>
-               {p.matchDate && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>Match Date: {p.matchDate}</span>
+      {predictions.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {predictions.map((p) => (
+            <Card key={p.id} className={`flex flex-col ${p.isHot ? 'border-primary border-2' : ''}`}>
+                {p.isHot && (
+                    <div className="bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center p-2 rounded-t-lg">
+                        <Flame className="mr-2 h-5 w-5"/>
+                        Hot Tip
+                    </div>
+                )}
+                <CardHeader>
+                <CardTitle>{p.match}</CardTitle>
+                <CardDescription>{p.league}</CardDescription>
+                {p.matchDate && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
+                    <Calendar className="h-4 w-4" />
+                    <span>Match Date: {p.matchDate}</span>
+                    </div>
+                )}
+                {p.createdAt && (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+                    <span>Posted: {p.createdAt}</span>
+                    </div>
+                )}
+                </CardHeader>
+                <CardContent className="flex-grow space-y-4">
+                <div>
+                    <p className="text-sm font-semibold text-muted-foreground">Prediction</p>
+                    <p className="text-lg font-bold">{p.prediction}</p>
                 </div>
-              )}
-               {p.createdAt && (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
-                  <span>Posted: {format(new Date(p.createdAt), "PPP")}</span>
+                {p.correctScore && (
+                    <div>
+                        <p className="text-sm font-semibold text-muted-foreground">Correct Score</p>
+                        <p className="text-lg font-bold">{p.correctScore}</p>
+                    </div>
+                )}
+                <div className="flex justify-between items-center">
+                    <div>
+                        <p className="text-sm font-semibold text-muted-foreground">Odds</p>
+                        <p className="text-lg font-bold">{p.odds}</p>
+                    </div>
+                    {getConfidenceBadge(p.confidence)}
                 </div>
-              )}
-            </CardHeader>
-            <CardContent className="flex-grow space-y-4">
-              <div>
-                <p className="text-sm font-semibold text-muted-foreground">Prediction</p>
-                <p className="text-lg font-bold">{p.prediction}</p>
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-muted-foreground">Correct Score</p>
-                <p className="text-lg font-bold">{p.correctScore}</p>
-              </div>
-              <div className="flex justify-between items-center">
-                 <div>
-                    <p className="text-sm font-semibold text-muted-foreground">Odds</p>
-                    <p className="text-lg font-bold">{p.odds}</p>
-                </div>
-                {getConfidenceBadge(p.confidence)}
-              </div>
-            </CardContent>
-            <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
-                <div className="flex items-center gap-2 font-bold">
-                    {getStatusIcon(p.status)}
-                    <span>{p.status}</span>
-                </div>
-                <Button variant="secondary" size="sm" asChild>
-                  <Link href={`/blog/category/betting-predictions/${p.id}`}>Details</Link>
-                </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+                </CardContent>
+                <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
+                    <div className="flex items-center gap-2 font-bold">
+                        {getStatusIcon(p.status)}
+                        <span>{p.status}</span>
+                    </div>
+                    {p.analysis && p.analysis.length > 0 && (
+                        <Button variant="secondary" size="sm" asChild>
+                            <Link href={`/blog/category/betting-predictions/${p.id}`}>Details</Link>
+                        </Button>
+                    )}
+                </CardFooter>
+            </Card>
+            ))}
+        </div>
+      ) : (
+        <div className="text-center py-16 border-2 border-dashed rounded-lg">
+            <Trophy className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-xl font-semibold">No Predictions Yet</h3>
+            <p className="text-muted-foreground mt-2">Check back soon for new match predictions.</p>
+        </div>
+      )}
       
        <div className="text-center mt-16 p-8 bg-secondary/50 rounded-lg">
             <h2 className="text-2xl font-bold font-headline mb-2">Join Our Community</h2>

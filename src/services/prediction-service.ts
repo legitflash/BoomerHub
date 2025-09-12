@@ -2,91 +2,65 @@
 'use server';
 
 import type { Prediction } from '@/lib/types';
-import { format, toDate } from 'date-fns';
+import { client, urlFor } from '@/lib/sanity-client';
+import { format } from 'date-fns';
 
-let predictions: Prediction[] = [];
-let initialized = false;
+const predictionFields = `
+  _id,
+  league,
+  homeTeam,
+  awayTeam,
+  'homeTeamLogo': homeTeamLogo,
+  'awayTeamLogo': awayTeamLogo,
+  'homeTeamForm': homeTeamForm,
+  'awayTeamForm': awayTeamForm,
+  prediction,
+  correctScore,
+  odds,
+  confidence,
+  status,
+  isHot,
+  analysis,
+  matchDate,
+  _createdAt
+`;
 
-function initializeData() {
-    if (initialized) return;
-
-    predictions = [
-        {
-            id: '1',
-            league: 'English Premier League',
-            match: 'Manchester United vs. Arsenal',
-            prediction: 'Over 2.5 Goals',
-            correctScore: '2-1',
-            odds: '1.85',
-            confidence: 'high',
-            status: 'Won',
-            isHot: true,
-            analysis: '<p>Both teams have been in fine goalscoring form, and their head-to-head fixtures often produce goals. Expect an open, attacking game.</p>',
-            matchDate: '2024-08-10',
-            createdAt: '2024-07-21T10:00:00Z',
-            teams: {
-                home: { name: 'Manchester United', logo: 'https://logo.clearbit.com/manutd.com', form: ['W', 'W', 'D', 'L', 'W'] },
-                away: { name: 'Arsenal', logo: 'https://logo.clearbit.com/arsenal.com', form: ['W', 'L', 'W', 'W', 'D'] }
-            }
-        },
-        {
-            id: '2',
-            league: 'Spanish La Liga',
-            match: 'Real Madrid vs. Barcelona',
-            prediction: 'Real Madrid to Win',
-            correctScore: '3-1',
-            odds: '2.10',
-            confidence: 'medium',
-            status: 'Pending',
-            isHot: false,
-            analysis: '<p>El Clásico is always unpredictable, but Real Madrid\'s home form gives them a slight edge over a Barcelona side in transition.</p>',
-            matchDate: '2024-08-12',
-            createdAt: '2024-07-20T12:00:00Z',
-            teams: {
-                home: { name: 'Real Madrid', logo: 'https://logo.clearbit.com/realmadrid.com', form: ['W', 'D', 'W', 'W', 'W'] },
-                away: { name: 'Barcelona', logo: 'https://logo.clearbit.com/fcbarcelona.com', form: ['L', 'W', 'D', 'W', 'L'] }
-            }
-        }
-    ];
-
-    initialized = true;
+function formatPrediction(prediction: any): Prediction {
+    return {
+        id: prediction._id,
+        league: prediction.league,
+        match: `${prediction.homeTeam} vs. ${prediction.awayTeam}`,
+        homeTeam: prediction.homeTeam,
+        awayTeam: prediction.awayTeam,
+        homeTeamLogo: prediction.homeTeamLogo ? urlFor(prediction.homeTeamLogo).width(64).height(64).url() : `https://logo.clearbit.com/${prediction.homeTeam.toLowerCase().replace(/ /g, '')}.com`,
+        awayTeamLogo: prediction.awayTeamLogo ? urlFor(prediction.awayTeamLogo).width(64).height(64).url() : `https://logo.clearbit.com/${prediction.awayTeam.toLowerCase().replace(/ /g, '')}.com`,
+        homeTeamForm: prediction.homeTeamForm || [],
+        awayTeamForm: prediction.awayTeamForm || [],
+        prediction: prediction.prediction,
+        correctScore: prediction.correctScore,
+        odds: prediction.odds,
+        confidence: prediction.confidence || 'medium',
+        status: prediction.status || 'Pending',
+        isHot: prediction.isHot || false,
+        analysis: prediction.analysis,
+        matchDate: prediction.matchDate ? format(new Date(prediction.matchDate), 'PPP') : undefined,
+        createdAt: prediction._createdAt ? format(new Date(prediction._createdAt), 'PPP') : undefined,
+    };
 }
 
-initializeData();
-
-export async function createPrediction(predictionData: Omit<Prediction, 'id' | 'createdAt'>): Promise<string> {
-  const newPrediction: Prediction = {
-    id: String(predictions.length + 1),
-    createdAt: new Date().toISOString(),
-    ...predictionData,
-  };
-  predictions.unshift(newPrediction);
-  return newPrediction.id;
-}
 
 export async function getAllPredictions(): Promise<Prediction[]> {
-  return predictions.map(p => ({
-      ...p,
-      matchDate: p.matchDate ? format(toDate(new Date(p.matchDate)), 'PPP') : undefined,
-  }));
+  const query = `*[_type == "prediction"] | order(matchDate desc, _createdAt desc) {
+    ${predictionFields}
+  }`;
+  const results = await client.fetch(query);
+  return results.map(formatPrediction);
 }
 
 export async function getPredictionById(id:string): Promise<Prediction | null> {
-    const prediction = predictions.find(p => p.id === id);
-    if (!prediction) return null;
-    return {
-        ...prediction,
-        matchDate: prediction.matchDate ? format(toDate(new Date(prediction.matchDate)), 'PPP') : undefined,
-    }
-}
-
-export async function updatePrediction(id: string, predictionData: Partial<Omit<Prediction, 'id' | 'createdAt'>>): Promise<void> {
-    const index = predictions.findIndex(p => p.id === id);
-    if (index !== -1) {
-        predictions[index] = { ...predictions[index], ...predictionData } as Prediction;
-    }
-}
-
-export async function deletePrediction(id: string): Promise<void> {
-    predictions = predictions.filter(p => p.id !== id);
+    const query = `*[_type == "prediction" && _id == $id][0] {
+        ${predictionFields}
+    }`;
+    const result = await client.fetch(query, { id });
+    return result ? formatPrediction(result) : null;
 }

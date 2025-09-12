@@ -1,5 +1,6 @@
 
 import type React from 'react';
+import type { PortableTextBlock } from 'sanity';
 
 export type Post = {
   id?: string;
@@ -50,27 +51,21 @@ export type Prediction = {
   id: string;
   league: string;
   match: string;
+  homeTeam: string;
+  awayTeam: string;
+  homeTeamLogo: string;
+  awayTeamLogo: string;
+  homeTeamForm: ('W' | 'D' | 'L')[];
+  awayTeamForm: ('W' | 'D' | 'L')[];
   prediction: string;
   correctScore: string;
   odds: string;
   confidence: 'high' | 'medium' | 'low' | string;
   status: 'Won' | 'Lost' | 'Pending';
   isHot: boolean;
-  analysis?: string;
+  analysis?: PortableTextBlock[];
   matchDate?: string;
   createdAt?: string;
-  teams: {
-    home: {
-      name:string;
-      logo: string;
-      form: string[];
-    };
-    away: {
-      name: string;
-      logo: string;
-      form: string[];
-    };
-  };
 };
 
 export type TeamMember = {

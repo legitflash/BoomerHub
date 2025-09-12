@@ -6,8 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Check, TrendingUp, Users, Shield, X, Flame } from 'lucide-react';
 import Image from 'next/image';
-import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 import { getPredictionById } from '@/services/prediction-service';
+import { PortableText } from 'next-sanity';
+import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 export default async function MatchAnalysisPage({ params: { id } }: { params: { id: string } }) {
   const prediction = await getPredictionById(id);
@@ -15,13 +16,8 @@ export default async function MatchAnalysisPage({ params: { id } }: { params: { 
   if (!prediction) {
     notFound();
   }
-
-  const { teams } = prediction;
-  const homeTeam = teams.home;
-  const awayTeam = teams.away;
   
-  const analysis = await generateMatchAnalysis({ homeTeam: homeTeam.name, awayTeam: awayTeam.name, league: prediction.league });
-
+  const { homeTeam, awayTeam } = prediction;
 
   const getStatusInfo = (status: string) => {
     switch (status) {
@@ -52,25 +48,27 @@ export default async function MatchAnalysisPage({ params: { id } }: { params: { 
           <div className="bg-muted/30 p-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-4">
-                <Image src={`https://logo.clearbit.com/${homeTeam.name.toLowerCase().replace(/ /g, '')}.com`} alt={`${homeTeam.name} logo`} width={64} height={64} className="rounded-full bg-white p-1" />
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter font-headline text-center sm:text-left">{homeTeam.name} vs {awayTeam.name}</h1>
-                <Image src={`https://logo.clearbit.com/${awayTeam.name.toLowerCase().replace(/ /g, '')}.com`} alt={`${awayTeam.name} logo`} width={64} height={64} className="rounded-full bg-white p-1" />
+                <Image src={prediction.homeTeamLogo} alt={`${homeTeam} logo`} width={64} height={64} className="rounded-full bg-white p-1 object-contain" />
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tighter font-headline text-center sm:text-left">{homeTeam} vs {awayTeam}</h1>
+                <Image src={prediction.awayTeamLogo} alt={`${awayTeam} logo`} width={64} height={64} className="rounded-full bg-white p-1 object-contain" />
               </div>
               <Badge variant="outline">{prediction.league}</Badge>
             </div>
           </div>
-          <CardContent className="p-6 grid md:grid-cols-4 gap-6 text-center">
+          <CardContent className="p-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
               <p className="text-sm text-muted-foreground">Prediction</p>
-              <p className="text-xl font-bold text-primary">{analysis.prediction}</p>
+              <p className="text-xl font-bold text-primary">{prediction.prediction}</p>
             </div>
-             <div>
-              <p className="text-sm text-muted-foreground">Correct Score</p>
-              <p className="text-xl font-bold text-primary">{analysis.correctScore}</p>
-            </div>
+             {prediction.correctScore && (
+                <div>
+                    <p className="text-sm text-muted-foreground">Correct Score</p>
+                    <p className="text-xl font-bold text-primary">{prediction.correctScore}</p>
+                </div>
+             )}
             <div>
               <p className="text-sm text-muted-foreground">Confidence</p>
-              <p className="text-xl font-bold">{analysis.confidence}</p>
+              <p className="text-xl font-bold">{prediction.confidence}</p>
             </div>
             <div className="flex flex-col items-center">
               <p className="text-sm text-muted-foreground mb-1">Status</p>
@@ -83,67 +81,49 @@ export default async function MatchAnalysisPage({ params: { id } }: { params: { 
         </Card>
       </header>
       
-      {prediction.analysis && (
-        <Card className="mb-8">
-            <CardHeader>
-                <CardTitle>Expert Analysis</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: prediction.analysis }} />
-            </CardContent>
-        </Card>
-      )}
+      <AdsterraBanner />
+      
+      <div className="prose prose-lg dark:prose-invert max-w-none mx-auto mt-8">
+        {prediction.analysis && prediction.analysis.length > 0 && (
+            <>
+                <h2>Expert Analysis</h2>
+                <PortableText value={prediction.analysis} />
+            </>
+        )}
 
-      <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Users className="text-primary"/> Head-to-Head</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p>{analysis.headToHead}</p>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Shield className="text-primary"/> Recent Form Analysis</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p>{analysis.formAnalysis}</p>
-                </CardContent>
-            </Card>
-        </div>
-
-        <h2>AI Generated Opinion & Rationale</h2>
-        <p>
-            {analysis.expertOpinion}
-        </p>
-
-        <h2>Team Form (Last 5 Games)</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
-            <h3 className="font-semibold text-lg mb-2">{homeTeam.name}</h3>
-            <div className="flex gap-2">
-              {homeTeam.form.map((res, i) => (
-                <span key={i} className={`flex items-center justify-center w-8 h-8 rounded-full font-bold ${res === 'W' ? 'bg-green-500 text-white' : res === 'D' ? 'bg-gray-500 text-white' : 'bg-red-500 text-white'}`}>
-                  {res}
-                </span>
-              ))}
-            </div>
-          </div>
-           <div>
-            <h3 className="font-semibold text-lg mb-2">{awayTeam.name}</h3>
-             <div className="flex gap-2">
-              {awayTeam.form.map((res, i) => (
-                <span key={i} className={`flex items-center justify-center w-8 h-8 rounded-full font-bold ${res === 'W' ? 'bg-green-500 text-white' : res === 'D' ? 'bg-gray-500 text-white' : 'bg-red-500 text-white'}`}>
-                  {res}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+        {(prediction.homeTeamForm.length > 0 || prediction.awayTeamForm.length > 0) && (
+            <>
+                <h2>Team Form (Last 5 Games)</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 not-prose">
+                {prediction.homeTeamForm.length > 0 && (
+                    <div>
+                        <h3 className="font-semibold text-lg mb-2">{homeTeam}</h3>
+                        <div className="flex gap-2">
+                        {prediction.homeTeamForm.map((res, i) => (
+                            <span key={`home-${i}`} className={`flex items-center justify-center w-8 h-8 rounded-full font-bold ${res === 'W' ? 'bg-green-500 text-white' : res === 'D' ? 'bg-gray-500 text-white' : 'bg-red-500 text-white'}`}>
+                            {res}
+                            </span>
+                        ))}
+                        </div>
+                    </div>
+                )}
+                {prediction.awayTeamForm.length > 0 && (
+                    <div>
+                        <h3 className="font-semibold text-lg mb-2">{awayTeam}</h3>
+                        <div className="flex gap-2">
+                        {prediction.awayTeamForm.map((res, i) => (
+                            <span key={`away-${i}`} className={`flex items-center justify-center w-8 h-8 rounded-full font-bold ${res === 'W' ? 'bg-green-500 text-white' : res === 'D' ? 'bg-gray-500 text-white' : 'bg-red-500 text-white'}`}>
+                            {res}
+                            </span>
+                        ))}
+                        </div>
+                    </div>
+                )}
+                </div>
+            </>
+        )}
         
-        <div className="mt-12 text-center p-4 bg-muted/50 rounded-lg">
+        <div className="mt-12 text-center p-4 bg-muted/50 rounded-lg not-prose">
             <p className="text-sm text-muted-foreground">Disclaimer: This analysis is for informational purposes only and does not constitute financial advice. Please gamble responsibly and only bet what you can afford to lose.</p>
         </div>
       </div>
