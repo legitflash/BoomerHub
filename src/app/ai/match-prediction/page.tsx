@@ -127,13 +127,13 @@ export default function MatchPredictionPage() {
     } catch (e: any) {
       console.error(e);
       const errorMessage = e.message || 'An error occurred while generating the analysis. Please try again.';
-       if (errorMessage.includes('429')) {
+       if (errorMessage.includes('Rate limit exceeded')) {
            toast({
-            title: "Rate Limit Exceeded",
-            description: "You've made too many requests. Please wait a moment and try again.",
+            title: "Daily Limit Reached",
+            description: "You have exceeded your daily request limit. Please try again tomorrow.",
             variant: "destructive",
           });
-          setError("You've made too many requests. Please wait a moment and try again.");
+          setError("You have exceeded your daily request limit. Please try again tomorrow.");
       } else {
           toast({
             title: "Prediction Failed",

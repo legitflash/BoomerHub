@@ -54,13 +54,13 @@ export default function TextTranslatorPage() {
     } catch (e: any) {
       console.error(e);
       const errorMessage = e.message || 'An error occurred during translation. Please try again.';
-       if (errorMessage.includes('429')) {
+       if (errorMessage.includes('Rate limit exceeded')) {
            toast({
-            title: "Rate Limit Exceeded",
-            description: "You've made too many requests. Please wait a moment and try again.",
+            title: "Daily Limit Reached",
+            description: "You have exceeded your daily request limit. Please try again tomorrow.",
             variant: "destructive",
           });
-          setError("You've made too many requests. Please wait a moment and try again.");
+          setError("You have exceeded your daily request limit. Please try again tomorrow.");
       } else {
           toast({
             title: "Request Failed",
@@ -121,7 +121,7 @@ export default function TextTranslatorPage() {
                             <FormControl>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a language" />
-                            </SelectTrigger>
+                            </Trigger>
                             </FormControl>
                             <SelectContent>
                             {languages.map((lang) => (

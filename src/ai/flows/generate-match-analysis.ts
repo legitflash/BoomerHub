@@ -10,6 +10,9 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { headers } from 'next/headers';
+import { checkAndIncrementRateLimit } from '@/services/rate-limit-service';
+
 
 const GenerateMatchAnalysisInputSchema = z.object({
   homeTeam: z.string().describe('The name of the home team.'),
@@ -30,6 +33,8 @@ const GenerateMatchAnalysisOutputSchema = z.object({
 export type GenerateMatchAnalysisOutput = z.infer<typeof GenerateMatchAnalysisOutputSchema>;
 
 export async function generateMatchAnalysis(input: GenerateMatchAnalysisInput): Promise<GenerateMatchAnalysisOutput> {
+    const ip = headers().get('x-forwarded-for') || headers().get('x-real-ip');
+    await checkAndIncrementRateLimit(ip);
     return generateMatchAnalysisFlow(input);
 }
 
