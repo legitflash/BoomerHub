@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, Bot, Moon, Sun } from 'lucide-react';
+import { Menu, Bot, Moon, Sun } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -12,6 +12,7 @@ import {
 import { aiToolsCategories } from '@/lib/data';
 import type { BlogCategory } from '@/lib/types';
 import { useTheme } from 'next-themes';
+import { Logo } from './logo';
 
 // This is now a "dumb" client component that receives categories as a prop.
 export function Header({ blogCategories }: { blogCategories: BlogCategory[] }) {
@@ -34,7 +35,7 @@ export function Header({ blogCategories }: { blogCategories: BlogCategory[] }) {
                   <SheetTitle className="sr-only">Main Menu</SheetTitle>
                 </SheetHeader>
                 <Link href="/" className="mr-6 flex items-center space-x-2 p-4">
-                  <GraduationCap className="h-6 w-6 text-primary" />
+                  <Logo className="h-6 w-6 text-primary" />
                   <span className="font-bold">BoomerHub</span>
                 </Link>
                 <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
@@ -70,7 +71,7 @@ export function Header({ blogCategories }: { blogCategories: BlogCategory[] }) {
         {/* Center: Logo */}
         <div className="flex justify-center">
             <Link href="/" className="flex items-center space-x-2">
-                <GraduationCap className="h-6 w-6 text-primary" />
+                <Logo className="h-6 w-6 text-primary" />
                 <span className="font-bold">BoomerHub</span>
             </Link>
         </div>

@@ -1,10 +1,11 @@
 
 'use server';
 import Link from 'next/link';
-import { GraduationCap, Mail, MessageCircle, Twitter, Facebook, Instagram, Send } from 'lucide-react';
+import { Mail, MessageCircle, Twitter, Facebook, Instagram, Send } from 'lucide-react';
 import { aiToolsCategories } from '@/lib/data';
 import type { BlogCategory } from '@/lib/types';
 import { getAllCategories } from '@/services/category-service';
+import { Logo } from './logo';
 
 export async function Footer() {
   const categories = await getAllCategories();
@@ -19,7 +20,7 @@ export async function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="flex flex-col gap-4 col-span-1">
             <div className="flex items-center gap-2">
-              <GraduationCap className="h-6 w-6 text-primary" />
+              <Logo className="h-6 w-6 text-primary" />
               <span className="font-bold">BoomerHub</span>
             </div>
             <p>Insights for Growth.</p>

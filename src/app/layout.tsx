@@ -17,8 +17,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'BoomerHub',
-  description: 'Learn Skills. Earn Income. Get Certified.',
+  title: 'BoomerHub - Insights for Growth',
+  description: 'Your all-in-one platform for insightful articles, powerful AI tools, and skill development.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
