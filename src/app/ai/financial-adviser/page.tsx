@@ -17,7 +17,7 @@ import type { GenerateFinancialAdviceOutput } from '@/ai/flows/generate-financia
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
-import { GUEST_LIMIT, USER_LIMIT } from '@/lib/data';
+import { GUEST_LIMIT } from '@/lib/data';
 
 const adLinks = [
   "https://otieu.com/4/9697212", // Monetag
@@ -53,7 +53,7 @@ export default function FinancialAdviserPage() {
   }, []);
   
   const updateUsage = async () => {
-    const usageInfo = await handleCheckUsage('guest', true);
+    const usageInfo = await handleCheckUsage();
     setUsage(usageInfo);
   };
 
@@ -70,7 +70,6 @@ export default function FinancialAdviserPage() {
     try {
       const result = await generateFinancialAdvice({ 
         query: values.query,
-        user: null 
       });
       setAdvice(result);
       updateUsage();

@@ -5,12 +5,11 @@ import type { Usage } from '@/lib/types';
 import { isSameDay } from 'date-fns';
 
 const GUEST_LIMIT = 5;
-const USER_LIMIT = 10;
 
 // In-memory store
 let usageData: { [key: string]: Usage } = {};
 
-export async function recordUsage(userId: string, isGuest: boolean): Promise<void> {
+export async function recordUsage(userId: string): Promise<void> {
   const now = new Date();
   const userUsage = usageData[userId];
 
@@ -24,8 +23,8 @@ export async function recordUsage(userId: string, isGuest: boolean): Promise<voi
   }
 }
 
-export async function checkUsage(userId: string, isGuest: boolean): Promise<{ hasRemaining: boolean, remainingCount: number }> {
-  const limit = isGuest ? GUEST_LIMIT : USER_LIMIT;
+export async function checkUsage(userId: string): Promise<{ hasRemaining: boolean, remainingCount: number }> {
+  const limit = GUEST_LIMIT;
   const userUsage = usageData[userId];
   const now = new Date();
 

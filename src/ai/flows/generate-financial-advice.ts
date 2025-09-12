@@ -16,7 +16,6 @@ import { headers } from 'next/headers';
 
 const GenerateFinancialAdviceInputSchema = z.object({
   query: z.string().describe('The user\'s question or description of their situation.'),
-  user: z.null().describe('The authenticated user object, or null for guests.'),
 });
 export type GenerateFinancialAdviceInput = z.infer<typeof GenerateFinancialAdviceInputSchema>;
 
@@ -28,30 +27,25 @@ const GenerateFinancialAdviceOutputSchema = z.object({
 export type GenerateFinancialAdviceOutput = z.infer<typeof GenerateFinancialAdviceOutputSchema>;
 
 export async function generateFinancialAdvice(input: GenerateFinancialAdviceInput): Promise<GenerateFinancialAdviceOutput> {
-  const { user } = input;
-  const isGuest = !user;
-  
   const headerList = headers();
   const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
   const userId = ip;
 
-  const usage = await checkUsage(userId, isGuest);
+  const usage = await checkUsage(userId);
   if (!usage.hasRemaining) {
       throw new Error(`Usage limit exceeded. You have ${usage.remainingCount} requests remaining.`);
   }
 
-  const result = await generateFinancialAdviceFlow({ query: input.query });
+  const result = await generateFinancialAdviceFlow(input);
 
-  await recordUsage(userId, isGuest);
+  await recordUsage(userId);
   
   return result;
 }
 
-const promptInputSchema = GenerateFinancialAdviceInputSchema.pick({ query: true });
-
 const prompt = ai.definePrompt({
   name: 'generateFinancialAdvicePrompt',
-  input: {schema: promptInputSchema},
+  input: {schema: GenerateFinancialAdviceInputSchema},
   output: {schema: GenerateFinancialAdviceOutputSchema},
   prompt: `You are a helpful and wise AI assistant providing personalized advice. The user's query could be about anything from finance to social etiquette. Your goal is to provide safe, practical, and empathetic advice.
 
@@ -70,7 +64,7 @@ const prompt = ai.definePrompt({
 const generateFinancialAdviceFlow = ai.defineFlow(
   {
     name: 'generateFinancialAdviceFlow',
-    inputSchema: promptInputSchema,
+    inputSchema: GenerateFinancialAdviceInputSchema,
     outputSchema: GenerateFinancialAdviceOutputSchema,
   },
   async input => {

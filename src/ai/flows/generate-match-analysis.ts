@@ -19,7 +19,6 @@ const GenerateMatchAnalysisInputSchema = z.object({
   awayTeam: z.string().describe('The name of the away team.'),
   league: z.string().describe('The league the match is being played in.'),
   matchDate: z.string().optional().describe('The date of the match (e.g., YYYY-MM-DD).'),
-  user: z.null().describe('The authenticated user object, or null for guests.'),
 });
 export type GenerateMatchAnalysisInput = z.infer<typeof GenerateMatchAnalysisInputSchema>;
 
@@ -34,32 +33,27 @@ const GenerateMatchAnalysisOutputSchema = z.object({
 export type GenerateMatchAnalysisOutput = z.infer<typeof GenerateMatchAnalysisOutputSchema>;
 
 export async function generateMatchAnalysis(input: GenerateMatchAnalysisInput): Promise<GenerateMatchAnalysisOutput> {
-    const { user, ...analysisInput } = input;
-    const isGuest = !user;
-    
     const headerList = headers();
     const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
     const userId = ip;
 
 
-    const usage = await checkUsage(userId, isGuest);
+    const usage = await checkUsage(userId);
     if (!usage.hasRemaining) {
         throw new Error(`Usage limit exceeded. You have ${usage.remainingCount} requests remaining.`);
     }
 
-    const result = await generateMatchAnalysisFlow(analysisInput);
+    const result = await generateMatchAnalysisFlow(input);
 
     // Record usage only after a successful AI call
-    await recordUsage(userId, isGuest);
+    await recordUsage(userId);
     
     return result;
 }
 
-const promptInputSchema = GenerateMatchAnalysisInputSchema.omit({ user: true });
-
 const prompt = ai.definePrompt({
   name: 'generateMatchAnalysisPrompt',
-  input: {schema: promptInputSchema},
+  input: {schema: GenerateMatchAnalysisInputSchema},
   output: {schema: GenerateMatchAnalysisOutputSchema},
   prompt: `You are a world-class sports analyst specializing in football (soccer). Your task is to provide a detailed, insightful, and unbiased analysis for an upcoming match.
 
@@ -85,7 +79,7 @@ const prompt = ai.definePrompt({
 const generateMatchAnalysisFlow = ai.defineFlow(
   {
     name: 'generateMatchAnalysisFlow',
-    inputSchema: promptInputSchema,
+    inputSchema: GenerateMatchAnalysisInputSchema,
     outputSchema: GenerateMatchAnalysisOutputSchema,
   },
   async input => {

@@ -31,12 +31,9 @@ export async function handleCreateSubmission(submissionData: Omit<Submission, 'i
 }
 
 // --- AI Usage Action ---
-export async function handleCheckUsage(userId: string, isGuest: boolean) {
-    let id = userId;
-    if(isGuest) {
-      const headerList = headers();
-      const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-      id = ip;
-    }
-    return checkUsage(id, isGuest);
+export async function handleCheckUsage() {
+    const headerList = headers();
+    const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
+    const id = ip;
+    return checkUsage(id);
 }

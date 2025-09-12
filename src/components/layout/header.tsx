@@ -3,35 +3,20 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, Bot, Shield, User, LogOut, Bookmark, LogIn, UserPlus, Edit, Moon, Sun } from 'lucide-react';
+import { Menu, GraduationCap, ChevronDown, Bot, Moon, Sun } from 'lucide-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { aiToolsCategories } from '@/lib/data';
 import { useState, useEffect } from 'react';
 import { getAllCategories } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-
-
-const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <Link href={href} className="text-foreground/60 transition-colors hover:text-foreground/80">
-    {children}
-  </Link>
-);
 
 export function Header() {
   const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
@@ -123,7 +108,7 @@ export function Header() {
             </Link>
         </div>
         
-        {/* Right Side: Profile Icon & Theme Toggle */}
+        {/* Right Side: Theme Toggle */}
         <div className="flex items-center">
             <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
                 <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

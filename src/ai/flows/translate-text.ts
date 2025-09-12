@@ -16,7 +16,6 @@ import { headers } from 'next/headers';
 const TranslateTextInputSchema = z.object({
   text: z.string().describe('The text content to be translated.'),
   targetLanguage: z.string().describe('The target language to translate the text into (e.g., "Spanish", "French").'),
-  user: z.null().describe('The user is always null.'),
 });
 export type TranslateTextInput = z.infer<typeof TranslateTextInputSchema>;
 
@@ -26,30 +25,25 @@ const TranslateTextOutputSchema = z.object({
 export type TranslateTextOutput = z.infer<typeof TranslateTextOutputSchema>;
 
 export async function translateText(input: TranslateTextInput): Promise<TranslateTextOutput> {
-  const { user, ...translationInput } = input;
-  const isGuest = !user;
-  
   const headerList = headers();
   const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
   const userId = ip;
 
-  const usage = await checkUsage(userId, isGuest);
+  const usage = await checkUsage(userId);
   if (!usage.hasRemaining) {
       throw new Error(`Usage limit exceeded. You have ${usage.remainingCount} requests remaining.`);
   }
 
-  const result = await translateTextFlow(translationInput);
+  const result = await translateTextFlow(input);
 
-  await recordUsage(userId, isGuest);
+  await recordUsage(userId);
 
   return result;
 }
 
-const promptInputSchema = TranslateTextInputSchema.pick({ text: true, targetLanguage: true });
-
 const prompt = ai.definePrompt({
   name: 'translateTextPrompt',
-  input: {schema: promptInputSchema},
+  input: {schema: TranslateTextInputSchema},
   output: {schema: TranslateTextOutputSchema},
   prompt: `You are an expert translator. Translate the following text into {{{targetLanguage}}}.
   
@@ -65,7 +59,7 @@ const prompt = ai.definePrompt({
 const translateTextFlow = ai.defineFlow(
   {
     name: 'translateTextFlow',
-    inputSchema: promptInputSchema,
+    inputSchema: TranslateTextInputSchema,
     outputSchema: TranslateTextOutputSchema,
   },
   async input => {

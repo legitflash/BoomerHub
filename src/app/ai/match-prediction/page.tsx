@@ -24,7 +24,7 @@ import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
-import { GUEST_LIMIT, USER_LIMIT } from '@/lib/data';
+import { GUEST_LIMIT } from '@/lib/data';
 
 
 const adLinks = [
@@ -124,7 +124,7 @@ export default function MatchPredictionPage() {
   }, []);
 
   const updateUsage = async () => {
-    const usageInfo = await handleCheckUsage('guest', true);
+    const usageInfo = await handleCheckUsage();
     setUsage(usageInfo);
   };
 
@@ -150,7 +150,6 @@ export default function MatchPredictionPage() {
         awayTeam: values.awayTeam,
         league: values.league,
         matchDate: values.matchDate ? format(values.matchDate, 'yyyy-MM-dd') : undefined,
-        user: null,
       });
       setAnalysis(result);
       updateUsage();

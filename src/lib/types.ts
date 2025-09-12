@@ -83,11 +83,6 @@ export type TeamMember = {
   userRole?: 'admin' | 'editor' | 'member';
 };
 
-export type SavedPost = {
-    userId: string;
-    postId: string;
-};
-
 export type Submission = {
     id: string;
     name: string;
@@ -120,22 +115,6 @@ export type Advertisement = {
     placement: 'before-post-content' | 'after-post-content' | 'header' | 'footer' | 'blog-feed' | 'sidebar';
     isActive: boolean;
     createdAt?: string;
-};
-
-export type CategoryFollow = {
-  userId: string;
-  categorySlug: string;
-};
-
-export type Notification = {
-  id: string;
-  userId: string;
-  postId: string;
-  postTitle: string;
-  postSlug: string;
-  categorySlug: string;
-  createdAt: string;
-  isRead: boolean;
 };
 
 export type Usage = {

@@ -18,7 +18,7 @@ import type { TranslateTextOutput } from '@/ai/flows/translate-text';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import { handleCheckUsage } from '@/app/actions';
-import { GUEST_LIMIT, USER_LIMIT } from '@/lib/data';
+import { GUEST_LIMIT } from '@/lib/data';
 
 const adLinks = [
   "https://otieu.com/4/9697212", // Monetag
@@ -60,7 +60,7 @@ export default function TextTranslatorPage() {
   }, []);
   
   const updateUsage = async () => {
-    const usageInfo = await handleCheckUsage('guest', true);
+    const usageInfo = await handleCheckUsage();
     setUsage(usageInfo);
   };
 
@@ -75,10 +75,7 @@ export default function TextTranslatorPage() {
     setTranslation(null);
 
     try {
-      const result = await translateText({
-        ...values,
-        user: null,
-      });
+      const result = await translateText(values);
       setTranslation(result);
       updateUsage();
     } catch (e: any) {
