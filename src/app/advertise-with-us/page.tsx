@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Megaphone, Building, User, Mail, Send, MessageCircle } from "lucide-react";
@@ -44,7 +45,7 @@ export default function AdvertisePage() {
             <p>Partner with us to place your brand in front of a dedicated and motivated audience. Fill out the form or contact us on WhatsApp to get in touch with our partnership team and receive our media kit.</p>
             <Button asChild className="w-full" size="lg" variant="secondary">
                 <Link 
-                    href="https://wa.me/2348060583504?text=Hello!%20I%20have%20a%20question%20about%20advertising%20with%20BoomerHub." 
+                    href="https://whatsapp.com/channel/0029Vb5nwfvInlqQa38G442f" 
                     target="_blank" 
                     rel="noopener noreferrer"
                 >

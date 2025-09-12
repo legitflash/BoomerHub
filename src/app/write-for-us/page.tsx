@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Newspaper, User, Mail, Link as LinkIcon, Send, Share2 } from "lucide-react";
@@ -45,7 +46,7 @@ export default function WriteForUsPage() {
             <p>Use the form to submit your pitch. Please be concise and clearly explain your article idea and why it's a perfect fit for our audience.</p>
              <Button asChild className="w-full" size="lg" variant="secondary">
                 <Link 
-                    href="https://wa.me/2348060583504?text=Hello!%20I'm%20interested%20in%20writing%20for%20BoomerHub." 
+                    href="https://whatsapp.com/channel/0029Vb5nwfvInlqQa38G442f" 
                     target="_blank" 
                     rel="noopener noreferrer"
                 >

@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from "next/link";
@@ -76,7 +77,7 @@ export default function ContactPage() {
                    </Button>
                     <Button asChild className="w-full" size="lg" variant="secondary">
                        <Link 
-                          href="https://wa.me/2348060583504?text=Hello!%20I%20have%20a%20question%20about%20your%20services." 
+                          href="https://whatsapp.com/channel/0029Vb5nwfvInlqQa38G442f" 
                           target="_blank" 
                           rel="noopener noreferrer"
                        >
