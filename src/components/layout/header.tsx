@@ -1,10 +1,8 @@
-
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, GraduationCap, ChevronDown, Bot, Moon, Sun } from 'lucide-react';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu, GraduationCap, Bot, Moon, Sun } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -12,26 +10,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { aiToolsCategories } from '@/lib/data';
-import { useState, useEffect } from 'react';
-import { getAllCategories } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
 import { useTheme } from 'next-themes';
 
-export function Header() {
-  const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
+// This is now a "dumb" client component that receives categories as a prop.
+export function Header({ blogCategories }: { blogCategories: BlogCategory[] }) {
   const { setTheme, theme } = useTheme();
-
-  useEffect(() => {
-    async function fetchCategories() {
-      const categories = await getAllCategories();
-      const uniqueCategories = categories.filter(
-        (category, index, self) =>
-          index === self.findIndex((c) => c.slug === category.slug)
-      );
-      setBlogCategories(uniqueCategories);
-    }
-    fetchCategories();
-  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -46,29 +30,22 @@ export function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="pr-0">
-                <SheetHeader>
-                    <SheetTitle>
-                        <VisuallyHidden>Navigation Menu</VisuallyHidden>
-                    </SheetTitle>
-                </SheetHeader>
                 <Link href="/" className="mr-6 flex items-center space-x-2 p-4">
                   <GraduationCap className="h-6 w-6 text-primary" />
                   <span className="font-bold">BoomerHub</span>
                 </Link>
                 <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
                   <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="home" className="border-b-0">
-                        <Link href="/" className="text-foreground font-semibold py-4 w-full block">Home</Link>
-                    </AccordionItem>
-                    <AccordionItem value="blog" className="border-b-0">
+                    <Link href="/" className="text-foreground font-semibold py-4 w-full block border-b">Home</Link>
+                    <AccordionItem value="blog">
                       <AccordionTrigger>Blog</AccordionTrigger>
                       <AccordionContent className="flex flex-col space-y-2 pl-4">
                           {blogCategories.map((category) => (
-                          <Link key={category.slug} href={`/blog/category/${category.slug}`}>{category.name}</Link>
-                        ))}
+                            <Link key={category.slug} href={`/blog/category/${category.slug}`}>{category.name}</Link>
+                          ))}
                       </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="ai-tools" className="border-b-0">
+                    <AccordionItem value="ai-tools">
                       <AccordionTrigger className="flex items-center gap-2"><Bot className="h-4 w-4" /> Boomerhub AI</AccordionTrigger>
                       <AccordionContent className="flex flex-col space-y-2 pl-4">
                           {aiToolsCategories.map((tool) => (
@@ -79,12 +56,8 @@ export function Header() {
                         ))}
                       </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="about" className="border-b-0">
-                        <Link href="/about" className="text-foreground py-4 w-full block">About</Link>
-                    </AccordionItem>
-                    <AccordionItem value="contact" className="border-b-0">
-                        <Link href="/contact" className="text-foreground py-4 w-full block">Contact</Link>
-                    </AccordionItem>
+                    <Link href="/about" className="text-foreground py-4 w-full block border-b">About</Link>
+                    <Link href="/contact" className="text-foreground py-4 w-full block border-b">Contact</Link>
                   </Accordion>
                 </div>
               </SheetContent>

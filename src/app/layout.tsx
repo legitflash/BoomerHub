@@ -2,13 +2,13 @@
 import type {Metadata, Viewport} from 'next';
 import './globals.css';
 import { Inter } from 'next/font/google';
-import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
 import AdScripts from './ad-scripts';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import PwaInstallBanner from '@/components/pwa/pwa-install-banner';
 import NewsletterSignup from '@/components/layout/newsletter-signup';
+import NavigationMenu from '@/components/layout/navigation-menu';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -47,7 +47,7 @@ export default function RootLayout({
             disableTransitionOnChange
         >
             <div className="relative flex min-h-screen flex-col">
-              <Header />
+              <NavigationMenu />
               <main className="flex-1">{children}</main>
               <NewsletterSignup />
               <Footer />
