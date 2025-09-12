@@ -1,14 +1,12 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
-import Link from 'next/link';
-
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button";
@@ -18,19 +16,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Shield, Users, ArrowRight } from 'lucide-react';
+import { Loader2, Shield, Users } from 'lucide-react';
 import type { GenerateMatchAnalysisOutput } from '@/ai/flows/generate-match-analysis';
 import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
-import { handleCheckUsage } from '@/app/actions';
-import { GUEST_LIMIT } from '@/lib/data';
-
-
-const adLinks = [
-  "https://otieu.com/4/9697212", // Monetag
-  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
-];
 
 const formSchema = z.object({
   country: z.string().min(1, { message: "Please select a country." }),
@@ -102,8 +92,6 @@ export default function MatchPredictionPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [analysis, setAnalysis] = useState<GenerateMatchAnalysisOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
-  const [adUrl, setAdUrl] = useState('');
   
   const { toast } = useToast();
 
@@ -116,22 +104,6 @@ export default function MatchPredictionPage() {
       awayTeam: '',
     },
   });
-
-  useEffect(() => {
-    // This runs only on the client, after hydration, to prevent mismatch
-    const randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
-    setAdUrl(randomLink);
-  }, []);
-
-  const updateUsage = async () => {
-    const usageInfo = await handleCheckUsage();
-    setUsage(usageInfo);
-  };
-
-  useEffect(() => {
-    updateUsage();
-  }, []);
-
 
   const handleCountryChange = (country: string) => {
     form.setValue('country', country);
@@ -152,7 +124,6 @@ export default function MatchPredictionPage() {
         matchDate: values.matchDate ? format(values.matchDate, 'yyyy-MM-dd') : undefined,
       });
       setAnalysis(result);
-      updateUsage();
     } catch (e: any) {
       console.error(e);
       const errorMessage = e.message || 'An error occurred while generating the analysis. Please try again.';
@@ -175,20 +146,6 @@ export default function MatchPredictionPage() {
       setIsLoading(false);
     }
   }
-
-  const renderUsageInfo = () => {
-    if (!usage) return null;
-    const limit = GUEST_LIMIT;
-    
-    return (
-      <p className="text-sm text-muted-foreground text-center mt-2">
-        You have {usage.remainingCount} of {limit} free requests remaining.
-      </p>
-    )
-  }
-
-  const hasUsage = usage ? usage.hasRemaining : true;
-
 
   return (
     <div className="container py-12 md:py-16">
@@ -325,19 +282,9 @@ export default function MatchPredictionPage() {
                         </FormItem>
                       )}
                     />
-                  {hasUsage ? (
-                    <Button type="submit" className="w-full" disabled={isLoading || !hasUsage}>
-                      {isLoading ? <Loader2 className="animate-spin" /> : 'Generate Prediction'}
-                    </Button>
-                  ) : (
-                    <Button asChild className="w-full" variant="secondary">
-                       <Link href={adUrl} target="_blank" rel="noopener noreferrer">
-                        Usage Limit Reached. Click to continue.
-                        <ArrowRight />
-                      </Link>
-                    </Button>
-                  )}
-                  {renderUsageInfo()}
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? <Loader2 className="animate-spin" /> : 'Generate Prediction'}
+                  </Button>
                 </form>
              </Form>
           </CardContent>

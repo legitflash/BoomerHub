@@ -10,9 +10,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { checkUsage, recordUsage } from '@/services/usage-service';
-import { headers } from 'next/headers';
-
 
 const GenerateMatchAnalysisInputSchema = z.object({
   homeTeam: z.string().describe('The name of the home team.'),
@@ -33,22 +30,7 @@ const GenerateMatchAnalysisOutputSchema = z.object({
 export type GenerateMatchAnalysisOutput = z.infer<typeof GenerateMatchAnalysisOutputSchema>;
 
 export async function generateMatchAnalysis(input: GenerateMatchAnalysisInput): Promise<GenerateMatchAnalysisOutput> {
-    const headerList = headers();
-    const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-    const userId = ip;
-
-
-    const usage = await checkUsage(userId);
-    if (!usage.hasRemaining) {
-        throw new Error(`Usage limit exceeded. You have ${usage.remainingCount} requests remaining.`);
-    }
-
-    const result = await generateMatchAnalysisFlow(input);
-
-    // Record usage only after a successful AI call
-    await recordUsage(userId);
-    
-    return result;
+    return generateMatchAnalysisFlow(input);
 }
 
 const prompt = ai.definePrompt({

@@ -10,9 +10,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { checkUsage, recordUsage } from '@/services/usage-service';
-import { headers } from 'next/headers';
-
 
 const GenerateFinancialAdviceInputSchema = z.object({
   query: z.string().describe('The user\'s question or description of their situation.'),
@@ -27,20 +24,7 @@ const GenerateFinancialAdviceOutputSchema = z.object({
 export type GenerateFinancialAdviceOutput = z.infer<typeof GenerateFinancialAdviceOutputSchema>;
 
 export async function generateFinancialAdvice(input: GenerateFinancialAdviceInput): Promise<GenerateFinancialAdviceOutput> {
-  const headerList = headers();
-  const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-  const userId = ip;
-
-  const usage = await checkUsage(userId);
-  if (!usage.hasRemaining) {
-      throw new Error(`Usage limit exceeded. You have ${usage.remainingCount} requests remaining.`);
-  }
-
-  const result = await generateFinancialAdviceFlow(input);
-
-  await recordUsage(userId);
-  
-  return result;
+  return generateFinancialAdviceFlow(input);
 }
 
 const prompt = ai.definePrompt({

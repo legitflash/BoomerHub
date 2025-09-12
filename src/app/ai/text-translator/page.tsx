@@ -1,29 +1,21 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Languages, ArrowRight } from "lucide-react";
+import { Loader2, Languages } from "lucide-react";
 import { translateText } from '@/ai/flows/translate-text';
 import type { TranslateTextOutput } from '@/ai/flows/translate-text';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
-import { handleCheckUsage } from '@/app/actions';
-import { GUEST_LIMIT } from '@/lib/data';
-
-const adLinks = [
-  "https://otieu.com/4/9697212", // Monetag
-  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
-];
 
 const languages = [
   "Arabic", "Bengali", "Chinese (Simplified)", "Dutch", "French", "German", "Greek", "Hausa", "Hebrew", "Hindi", "Igbo", "Indonesian", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swahili", "Swedish", "Thai", "Turkish", "Vietnamese", "Yoruba"
@@ -40,8 +32,6 @@ export default function TextTranslatorPage() {
   const [translation, setTranslation] = useState<TranslateTextOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
-  const [adUrl, setAdUrl] = useState('');
 
   const { toast } = useToast();
 
@@ -53,22 +43,6 @@ export default function TextTranslatorPage() {
     },
   });
 
-  useEffect(() => {
-    // This runs only on the client, after hydration, to prevent mismatch
-    const randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
-    setAdUrl(randomLink);
-  }, []);
-  
-  const updateUsage = async () => {
-    const usageInfo = await handleCheckUsage();
-    setUsage(usageInfo);
-  };
-
-  useEffect(() => {
-    updateUsage();
-  }, []);
-
-
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
     setError(null);
@@ -77,7 +51,6 @@ export default function TextTranslatorPage() {
     try {
       const result = await translateText(values);
       setTranslation(result);
-      updateUsage();
     } catch (e: any) {
       console.error(e);
       const errorMessage = e.message || 'An error occurred during translation. Please try again.';
@@ -101,19 +74,6 @@ export default function TextTranslatorPage() {
     }
   }
   
-  const renderUsageInfo = () => {
-    if (!usage) return null;
-    const limit = GUEST_LIMIT;
-    
-    return (
-      <p className="text-sm text-muted-foreground text-center mt-2">
-        You have {usage.remainingCount} of {limit} free requests remaining.
-      </p>
-    )
-  }
-
-  const hasUsage = usage ? usage.hasRemaining : true;
-
   return (
     <div className="container py-12 md:py-16">
       <header className="text-center mb-12">
@@ -173,19 +133,9 @@ export default function TextTranslatorPage() {
                         </FormItem>
                     )}
                     />
-                {hasUsage ? (
-                  <Button type="submit" className="w-full" disabled={isLoading || !hasUsage}>
+                  <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? <Loader2 className="animate-spin" /> : 'Translate'}
                   </Button>
-                ) : (
-                  <Button asChild className="w-full" variant="secondary">
-                     <Link href={adUrl} target="_blank" rel="noopener noreferrer">
-                      Usage Limit Reached. Click to continue.
-                      <ArrowRight />
-                    </Link>
-                  </Button>
-                )}
-                {renderUsageInfo()}
               </form>
             </Form>
           </CardContent>

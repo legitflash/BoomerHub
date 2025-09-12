@@ -10,8 +10,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { checkUsage, recordUsage } from '@/services/usage-service';
-import { headers } from 'next/headers';
 
 const TranslateTextInputSchema = z.object({
   text: z.string().describe('The text content to be translated.'),
@@ -25,20 +23,7 @@ const TranslateTextOutputSchema = z.object({
 export type TranslateTextOutput = z.infer<typeof TranslateTextOutputSchema>;
 
 export async function translateText(input: TranslateTextInput): Promise<TranslateTextOutput> {
-  const headerList = headers();
-  const ip = (headerList.get('x-forwarded-for') ?? '127.0.0.1').split(',')[0];
-  const userId = ip;
-
-  const usage = await checkUsage(userId);
-  if (!usage.hasRemaining) {
-      throw new Error(`Usage limit exceeded. You have ${usage.remainingCount} requests remaining.`);
-  }
-
-  const result = await translateTextFlow(input);
-
-  await recordUsage(userId);
-
-  return result;
+  return translateTextFlow(input);
 }
 
 const prompt = ai.definePrompt({

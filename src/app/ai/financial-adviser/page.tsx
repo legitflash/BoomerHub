@@ -1,28 +1,20 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, PiggyBank, ArrowRight } from "lucide-react";
+import { Loader2, PiggyBank } from "lucide-react";
 import { generateFinancialAdvice } from '@/ai/flows/generate-financial-advice';
 import type { GenerateFinancialAdviceOutput } from '@/ai/flows/generate-financial-advice';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
-import { handleCheckUsage } from '@/app/actions';
-import { GUEST_LIMIT } from '@/lib/data';
-
-const adLinks = [
-  "https://otieu.com/4/9697212", // Monetag
-  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
-];
 
 const formSchema = z.object({
   query: z.string().min(20, { message: "Please describe your situation in at least 20 characters." }),
@@ -34,9 +26,7 @@ export default function FinancialAdviserPage() {
   const [advice, setAdvice] = useState<GenerateFinancialAdviceOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [usage, setUsage] = useState<{ hasRemaining: boolean, remainingCount: number} | null>(null);
-  const [adUrl, setAdUrl] = useState('');
-
+  
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -45,22 +35,6 @@ export default function FinancialAdviserPage() {
       query: '',
     },
   });
-
-  useEffect(() => {
-    // This runs only on the client, after hydration, to prevent mismatch
-    const randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
-    setAdUrl(randomLink);
-  }, []);
-  
-  const updateUsage = async () => {
-    const usageInfo = await handleCheckUsage();
-    setUsage(usageInfo);
-  };
-
-  useEffect(() => {
-    updateUsage();
-  }, []);
-
 
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
@@ -72,7 +46,6 @@ export default function FinancialAdviserPage() {
         query: values.query,
       });
       setAdvice(result);
-      updateUsage();
     } catch (e: any) {
       console.error(e);
       const errorMessage = e.message || 'An error occurred while generating advice. Please try again.';
@@ -95,19 +68,6 @@ export default function FinancialAdviserPage() {
       setIsLoading(false);
     }
   }
-
-  const renderUsageInfo = () => {
-    if (!usage) return null;
-    const limit = GUEST_LIMIT;
-    
-    return (
-      <p className="text-sm text-muted-foreground text-center mt-2">
-        You have {usage.remainingCount} of {limit} free requests remaining.
-      </p>
-    )
-  }
-
-  const hasUsage = usage ? usage.hasRemaining : true;
 
   return (
     <div className="container py-12 md:py-16">
@@ -148,19 +108,9 @@ export default function FinancialAdviserPage() {
                     </FormItem>
                   )}
                 />
-                {hasUsage ? (
-                  <Button type="submit" className="w-full" disabled={isLoading || !hasUsage}>
-                    {isLoading ? <Loader2 className="animate-spin" /> : 'Get Advice'}
-                  </Button>
-                ) : (
-                  <Button asChild className="w-full" variant="secondary">
-                    <Link href={adUrl} target="_blank" rel="noopener noreferrer">
-                      Usage Limit Reached. Click to continue.
-                      <ArrowRight />
-                    </Link>
-                  </Button>
-                )}
-                {renderUsageInfo()}
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? <Loader2 className="animate-spin" /> : 'Get Advice'}
+                </Button>
               </form>
             </Form>
           </CardContent>

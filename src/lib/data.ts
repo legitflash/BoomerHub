@@ -1,8 +1,6 @@
 
-import type { Prediction, TopCategory, BlogCategory, TeamMember } from './types';
+import type { TopCategory, BlogCategory } from './types';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Bot, AudioLines, PiggyBank, Search, Plane, Languages, Edit } from 'lucide-react';
-
-export const GUEST_LIMIT = 5;
 
 export const topCategories: TopCategory[] = [
   { name: 'Forex', icon: LineChart, slug: 'finance' },
@@ -32,7 +30,3 @@ export const aiToolsCategories = [
     { name: 'AI Financial Advisor', icon: PiggyBank, slug: '/ai/financial-adviser', flowName: 'generateFinancialAdviceFlow' },
     { name: 'AI Text Translator', icon: Languages, slug: '/ai/text-translator', flowName: 'translateTextFlow' },
 ];
-
-export const teamMembers: TeamMember[] = [];
-
-export const predictions: Prediction[] = [];

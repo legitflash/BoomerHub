@@ -114,8 +114,3 @@ export type Advertisement = {
     isActive: boolean;
     createdAt?: string;
 };
-
-export type Usage = {
-    count: number;
-    lastReset: any;
-};
