@@ -9,7 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Share2 } from 'lucide-react';
+import { Share2, ArrowRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/lib/types';
 import CategoryActionBanner from './category-action-banner';
@@ -26,6 +26,29 @@ function slugify(text: string) {
     .replace(/^-+/, '') // Trim - from start of text
     .replace(/-+$/, ''); // Trim - from end of text
 }
+
+const CtaComponent = ({ value }: { value: any }) => {
+    if (!value || !value.url || !value.buttonText) {
+        return null;
+    }
+    return (
+        <div className="my-8 rounded-lg bg-primary/10 p-6 text-center">
+            <h3 className="text-xl font-bold font-headline mb-2">{value.title}</h3>
+            <p className="text-muted-foreground mb-4">{value.description}</p>
+            <Button asChild>
+                <Link href={value.url} target="_blank" rel="noopener noreferrer">
+                    {value.buttonText} <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+            </Button>
+        </div>
+    );
+};
+
+const portableTextComponents = {
+  types: {
+    cta: CtaComponent,
+  },
+};
 
 
 export default function BlogPostContent({ post, relatedPosts }: { post: Post, relatedPosts: Post[] }) {
@@ -62,7 +85,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
     
   const articleBody = (
      <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
-        <PortableText value={post.content} />
+        <PortableText value={post.content} components={portableTextComponents} />
      </div>
   )
 

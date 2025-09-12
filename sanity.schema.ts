@@ -4,7 +4,8 @@ import category from './sanity/schemas/category'
 import post from './sanity/schemas/post'
 import author from './sanity/schemas/author'
 import page from './sanity/schemas/page'
+import cta from './sanity/schemas/cta'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [post, author, category, blockContent, page],
+  types: [post, author, category, blockContent, page, cta],
 }

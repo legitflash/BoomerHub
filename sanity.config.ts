@@ -9,11 +9,8 @@ import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
-import {apiVersion} from './sanity/env'
+import {apiVersion, dataset, projectId} from './sanity/env'
 import {schema} from './sanity.schema'
-
-const projectId = 'qbb85k0a';
-const dataset = 'production';
 
 export default defineConfig({
   basePath: '/admin',

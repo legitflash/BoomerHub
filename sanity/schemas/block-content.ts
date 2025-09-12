@@ -62,5 +62,9 @@ export default defineType({
       type: 'image',
       options: {hotspot: true},
     }),
+    defineArrayMember({
+        type: 'cta',
+        title: 'Call to Action',
+    }),
   ],
 })
