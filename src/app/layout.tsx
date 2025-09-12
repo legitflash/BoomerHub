@@ -1,15 +1,20 @@
 
 import type {Metadata, Viewport} from 'next';
 import './globals.css';
+import { Inter } from 'next/font/google';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
-import Script from 'next/script';
 import AdScripts from './ad-scripts';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import PwaInstallBanner from '@/components/pwa/pwa-install-banner';
 import NewsletterSignup from '@/components/layout/newsletter-signup';
 
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: 'BoomerHub',
@@ -32,13 +37,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        
-      </head>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable}`}>
+      <head />
       <body className="font-body antialiased">
         <ThemeProvider
             attribute="class"

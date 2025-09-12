@@ -15,32 +15,23 @@ import { aiToolsCategories } from '@/lib/data';
 import { useState, useEffect } from 'react';
 import { getAllCategories } from '@/services/category-service';
 import type { BlogCategory } from '@/lib/types';
-import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 
 export function Header() {
   const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
-  const router = useRouter();
   const { setTheme, theme } = useTheme();
 
   useEffect(() => {
     async function fetchCategories() {
       const categories = await getAllCategories();
-      setBlogCategories(categories);
+      const uniqueCategories = categories.filter(
+        (category, index, self) =>
+          index === self.findIndex((c) => c.slug === category.slug)
+      );
+      setBlogCategories(uniqueCategories);
     }
     fetchCategories();
   }, []);
-
-  
-  const handleAIClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
-    e.preventDefault();
-    router.push(slug);
-  };
-  
-  const uniqueCategories = blogCategories.filter(
-    (category, index, self) =>
-      index === self.findIndex((c) => c.slug === category.slug)
-  );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -72,7 +63,7 @@ export function Header() {
                     <AccordionItem value="blog" className="border-b-0">
                       <AccordionTrigger>Blog</AccordionTrigger>
                       <AccordionContent className="flex flex-col space-y-2 pl-4">
-                          {uniqueCategories.map((category) => (
+                          {blogCategories.map((category) => (
                           <Link key={category.slug} href={`/blog/category/${category.slug}`}>{category.name}</Link>
                         ))}
                       </AccordionContent>
@@ -81,7 +72,7 @@ export function Header() {
                       <AccordionTrigger className="flex items-center gap-2"><Bot className="h-4 w-4" /> Boomerhub AI</AccordionTrigger>
                       <AccordionContent className="flex flex-col space-y-2 pl-4">
                           {aiToolsCategories.map((tool) => (
-                            <Link key={tool.slug} href={tool.slug} onClick={(e) => handleAIClick(e, tool.slug)} className="flex items-center gap-2">
+                            <Link key={tool.slug} href={tool.slug} className="flex items-center gap-2">
                             <tool.icon className="h-4 w-4" />
                             {tool.name}
                           </Link>

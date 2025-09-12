@@ -45,7 +45,7 @@ export default function WriteForUsPage() {
             <p>Use the form to submit your pitch. Please be concise and clearly explain your article idea and why it's a perfect fit for our audience.</p>
              <Button asChild className="w-full" size="lg" variant="secondary">
                 <Link 
-                    href="https://wa.me/2348060583504?text=Hello! I'm interested in writing for BoomerHub." 
+                    href="https://wa.me/2348060583504?text=Hello!%20I'm%20interested%20in%20writing%20for%20BoomerHub." 
                     target="_blank" 
                     rel="noopener noreferrer"
                 >

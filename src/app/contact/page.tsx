@@ -76,7 +76,7 @@ export default function ContactPage() {
                    </Button>
                     <Button asChild className="w-full" size="lg" variant="secondary">
                        <Link 
-                          href="https://wa.me/2348060583504?text=Hello! I have a question about your services." 
+                          href="https://wa.me/2348060583504?text=Hello!%20I%20have%20a%20question%20about%20your%20services." 
                           target="_blank" 
                           rel="noopener noreferrer"
                        >
@@ -91,9 +91,9 @@ export default function ContactPage() {
                     <CardTitle>Follow us on social media</CardTitle>
                 </CardHeader>
                 <CardContent className="flex justify-center gap-6">
-                    <Link href="#" className="text-muted-foreground hover:text-primary"><Twitter className="h-8 w-8" /></Link>
-                    <Link href="#" className="text-muted-foreground hover:text-primary"><Facebook className="h-8 w-8" /></Link>
-                    <Link href="#" className="text-muted-foreground hover:text-primary"><Instagram className="h-8 w-8" /></Link>
+                    <Link href="https://twitter.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Twitter className="h-8 w-8" /></Link>
+                    <Link href="https://facebook.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-8 w-8" /></Link>
+                    <Link href="https://instagram.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Instagram className="h-8 w-8" /></Link>
                 </CardContent>
             </Card>
         </div>
