@@ -1,11 +1,7 @@
 {
   "name": "BoomerHub",
   "short_name": "BoomerHub",
-  "description": "Learn Skills. Earn Income. Get Certified.",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2563eb",
+  "description": "Your all-in-one platform for insightful articles, powerful AI tools, and skill development.",
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -17,5 +13,10 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
 }
