@@ -1,8 +1,9 @@
 
 'use client';
 
-import { Megaphone, Building, User, Mail, Send, MessageCircle } from "lucide-react";
+import { Megaphone, Building, User, Mail, Send, MessageCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { z } from 'zod';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,11 +15,30 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+import { useNetlifyForm } from '@/hooks/use-netlify-form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormSuccess } from "@/components/form-success";
 
+const formSchema = z.object({
+    companyName: z.string().min(1, 'Company name is required'),
+    contactName: z.string().min(1, 'Your name is required'),
+    email: z.string().email('Please enter a valid email address'),
+    message: z.string().min(10, 'Message must be at least 10 characters'),
+});
 
 export default function AdvertisePage() {
+  const { form, onSubmit, isLoading, isSuccess } = useNetlifyForm({
+    formName: 'advertising',
+    schema: formSchema,
+    defaultValues: {
+      companyName: '',
+      contactName: '',
+      email: '',
+      message: '',
+    },
+  });
+
   return (
     <div className="container py-12 md:py-24">
       <section className="text-center mb-16 max-w-3xl mx-auto">
@@ -60,30 +80,71 @@ export default function AdvertisePage() {
                     <CardDescription>Fill out the form below and we'll get back to you.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form name="advertising" method="POST" data-netlify="true" className="space-y-4">
-                    <input type="hidden" name="form-name" value="advertising" />
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="companyName">Company Name</Label>
-                        <Input id="companyName" name="companyName" placeholder="Your Company, Inc." icon={Building} required />
-                      </div>
-                      <div>
-                        <Label htmlFor="contactName">Your Name</Label>
-                        <Input id="contactName" name="contactName" placeholder="John Doe" icon={User} required />
-                      </div>
-                    </div>
-                    <div>
-                        <Label htmlFor="email">Email Address</Label>
-                        <Input id="email" name="email" type="email" placeholder="your@company.com" icon={Mail} required />
-                    </div>
-                    <div>
-                        <Label htmlFor="message">Your Message</Label>
-                        <Textarea id="message" name="message" placeholder="Tell us about your advertising goals..." className="min-h-[150px]" required />
-                    </div>
-                    <Button type="submit" className="w-full">
-                       Send Inquiry <Send className="ml-2"/>
-                    </Button>
-                  </form>
+                    {isSuccess ? (
+                        <FormSuccess title="Inquiry Sent!" message="Thank you for your interest. Our team will get back to you shortly." />
+                    ) : (
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <div className="grid sm:grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="companyName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Company Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Your Company, Inc." icon={Building} {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="contactName"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Your Name</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="John Doe" icon={User} {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                </div>
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Email Address</FormLabel>
+                                            <FormControl>
+                                                <Input type="email" placeholder="your@company.com" icon={Mail} {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="message"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Your Message</FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder="Tell us about your advertising goals..." className="min-h-[150px]" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="submit" className="w-full" disabled={isLoading}>
+                                    {isLoading ? <Loader2 className="animate-spin" /> : <>Send Inquiry <Send className="ml-2"/></>}
+                                </Button>
+                            </form>
+                        </Form>
+                    )}
                 </CardContent>
             </Card>
         </div>

@@ -1,9 +1,10 @@
 
 'use client';
 
-import { Newspaper, User, Mail, Link as LinkIcon, Send, Share2 } from "lucide-react";
+import { Newspaper, User, Mail, Link as LinkIcon, Send, Share2, Loader2 } from "lucide-react";
 import Link from 'next/link';
 import { MessageCircle } from 'lucide-react';
+import { z } from 'zod';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,10 +16,31 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { useNetlifyForm } from '@/hooks/use-netlify-form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormSuccess } from "@/components/form-success";
+
+const formSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required'),
+  email: z.string().email('Please enter a valid email address'),
+  portfolioLink: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+  socialProfileLink: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
+  pitch: z.string().min(20, 'Your pitch must be at least 20 characters'),
+});
 
 
 export default function WriteForUsPage() {
+    const { form, onSubmit, isLoading, isSuccess } = useNetlifyForm({
+        formName: 'writer-pitch',
+        schema: formSchema,
+        defaultValues: {
+            fullName: '',
+            email: '',
+            portfolioLink: '',
+            socialProfileLink: '',
+            pitch: '',
+        },
+    });
   return (
     <div className="container py-12 md:py-24">
       <section className="text-center mb-16 max-w-3xl mx-auto">
@@ -61,34 +83,84 @@ export default function WriteForUsPage() {
                     <CardDescription>Tell us your article idea. We review submissions weekly.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form name="writer-pitch" method="POST" data-netlify="true" className="space-y-4">
-                    <input type="hidden" name="form-name" value="writer-pitch" />
-                    <div className="grid sm:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="fullName">Full Name</Label>
-                          <Input id="fullName" name="fullName" placeholder="Jane Doe" icon={User} required />
-                        </div>
-                        <div>
-                           <Label htmlFor="email">Email Address</Label>
-                           <Input id="email" name="email" type="email" placeholder="your@email.com" icon={Mail} required />
-                        </div>
-                    </div>
-                    <div>
-                        <Label htmlFor="portfolioLink">Portfolio/Website (Optional)</Label>
-                        <Input id="portfolioLink" name="portfolioLink" placeholder="https://your-blog.com" icon={LinkIcon} />
-                    </div>
-                    <div>
-                        <Label htmlFor="socialProfileLink">Social Profile (Optional)</Label>
-                        <Input id="socialProfileLink" name="socialProfileLink" placeholder="https://facebook.com/yourprofile" icon={Share2} />
-                    </div>
-                    <div>
-                        <Label htmlFor="pitch">Your Pitch</Label>
-                        <Textarea id="pitch" name="pitch" placeholder="Briefly describe your article idea and outline the key points..." className="min-h-[150px]" required />
-                    </div>
-                    <Button type="submit" className="w-full">
-                       Submit Pitch <Send className="ml-2"/>
-                    </Button>
-                  </form>
+                    {isSuccess ? (
+                        <FormSuccess title="Pitch Submitted!" message="Thank you for your submission! Our editorial team will review your pitch and get back to you if it's a good fit." />
+                    ) : (
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <div className="grid sm:grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="fullName"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Full Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Jane Doe" icon={User} {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Email Address</FormLabel>
+                                                <FormControl>
+                                                    <Input type="email" placeholder="your@email.com" icon={Mail} {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <FormField
+                                    control={form.control}
+                                    name="portfolioLink"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Portfolio/Website (Optional)</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="https://your-blog.com" icon={LinkIcon} {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="socialProfileLink"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Social Profile (Optional)</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="https://facebook.com/yourprofile" icon={Share2} {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="pitch"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Your Pitch</FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder="Briefly describe your article idea and outline the key points..." className="min-h-[150px]" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="submit" className="w-full" disabled={isLoading}>
+                                    {isLoading ? <Loader2 className="animate-spin" /> : <>Submit Pitch <Send className="ml-2"/></>}
+                                </Button>
+                            </form>
+                        </Form>
+                    )}
                 </CardContent>
             </Card>
         </div>

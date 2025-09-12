@@ -2,7 +2,8 @@
 'use client';
 
 import Link from "next/link";
-import { Mail, MessageCircle, Youtube, Facebook, Instagram, Send, Twitter } from "lucide-react";
+import { Mail, MessageCircle, Youtube, Facebook, Instagram, Send, Twitter, User, FileText, Loader2 } from "lucide-react";
+import { z } from 'zod';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,8 +15,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+import { useNetlifyForm } from '@/hooks/use-netlify-form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { FormSuccess } from "@/components/form-success";
+
 
 const TikTokIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -25,7 +29,26 @@ const TikTokIcon = () => (
     </svg>
 );
 
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Please enter a valid email address'),
+  subject: z.string().min(1, 'Subject is required'),
+  message: z.string().min(10, 'Message must be at least 10 characters'),
+});
+
 export default function ContactPage() {
+    const { form, onSubmit, isLoading, isSuccess } = useNetlifyForm({
+        formName: 'contact',
+        schema: formSchema,
+        defaultValues: {
+            name: '',
+            email: '',
+            subject: '',
+            message: '',
+        },
+    });
+
   return (
     <div className="container py-12 md:py-24">
       <section className="text-center mb-16">
@@ -43,30 +66,71 @@ export default function ContactPage() {
                     <CardDescription>Fill out the form and we'll get back to you as soon as possible.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form name="contact" method="POST" data-netlify="true" className="space-y-4">
-                    <input type="hidden" name="form-name" value="contact" />
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="name">Name</Label>
-                        <Input id="name" name="name" placeholder="Your Name" required />
-                      </div>
-                      <div>
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" placeholder="your@email.com" required />
-                      </div>
-                    </div>
-                    <div>
-                        <Label htmlFor="subject">Subject</Label>
-                        <Input id="subject" name="subject" placeholder="Question about a post" required />
-                    </div>
-                    <div>
-                        <Label htmlFor="message">Message</Label>
-                        <Textarea id="message" name="message" placeholder="Your message..." className="min-h-[150px]" required />
-                    </div>
-                    <Button type="submit" className="w-full">
-                       Send Message <Send className="ml-2"/>
-                    </Button>
-                  </form>
+                    {isSuccess ? (
+                        <FormSuccess title="Message Sent!" message="Thank you for reaching out. We will get back to you as soon as possible." />
+                    ) : (
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <div className="grid sm:grid-cols-2 gap-4">
+                                     <FormField
+                                        control={form.control}
+                                        name="name"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Name</FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Your Name" icon={User} {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Email</FormLabel>
+                                                <FormControl>
+                                                    <Input type="email" placeholder="your@email.com" icon={Mail} {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+                                <FormField
+                                    control={form.control}
+                                    name="subject"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Subject</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Question about a post" icon={FileText} {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="message"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Message</FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder="Your message..." className="min-h-[150px]" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="submit" className="w-full" disabled={isLoading}>
+                                    {isLoading ? <Loader2 className="animate-spin" /> : <>Send Message <Send className="ml-2"/></>}
+                                </Button>
+                            </form>
+                        </Form>
+                    )}
                 </CardContent>
             </Card>
         </div>
