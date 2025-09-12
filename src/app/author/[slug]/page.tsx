@@ -2,12 +2,11 @@
 import { notFound } from 'next/navigation';
 import { getTeamMemberBySlug } from '@/services/team-service';
 import { getPostsByAuthorSlug } from '@/services/post-service';
-import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Rss } from 'lucide-react';
+import PostGrid from '@/components/blog/post-grid';
 
 export default async function AuthorPage({ params }: { params: { slug: string } }) {
   const author = await getTeamMemberBySlug(params.slug);
@@ -48,36 +47,7 @@ export default async function AuthorPage({ params }: { params: { slug: string } 
           <Rss /> Articles by {author.name}
         </h2>
         
-        {authorPosts.length > 0 ? (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {authorPosts.map((post) => (
-              <Card key={post.slug} className="group flex flex-col">
-                <Link href={`/blog/${post.slug}`} className="block">
-                  <Image
-                    src={post.image}
-                    alt={post.title}
-                    width={600}
-                    height={400}
-                    data-ai-hint={post.dataAiHint}
-                    className="w-full rounded-t-lg object-cover aspect-video"
-                  />
-                </Link>
-                <CardContent className="p-4 space-y-2 flex-grow flex flex-col">
-                  <span className="text-xs font-semibold text-primary uppercase">{post.category}</span>
-                  <Link href={`/blog/${post.slug}`} className="block">
-                    <h3 className="text-lg font-semibold group-hover:text-primary transition-colors flex-grow">{post.title}</h3>
-                  </Link>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{post.description}</p>
-                  <div className="flex items-center gap-2 pt-4 mt-auto text-xs text-muted-foreground">
-                    <span>{post.date}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <p className="text-muted-foreground">No articles found for this author yet.</p>
-        )}
+        <PostGrid posts={authorPosts} />
       </main>
     </div>
   );

@@ -1,19 +1,17 @@
 
 import Link from 'next/link';
-import Image from 'next/image';
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import SearchBar from '@/components/search/search-bar';
 import { DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit } from 'lucide-react';
 import { getAllPosts } from '@/services/post-service';
 import { getAllCategories } from '@/services/category-service';
+import SearchBar from '@/components/search/search-bar';
 import PaginationControls from '@/components/blog/pagination-controls';
+import PostGrid from '@/components/blog/post-grid';
 
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
   DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit,
 };
 
-const POSTS_PER_PAGE = 10;
+const POSTS_PER_PAGE = 9; // Changed to 9 to make a 3x3 grid with an ad
 
 export default async function BlogPage({ searchParams }: { searchParams: { page?: string } }) {
   const allPosts = await getAllPosts();
@@ -61,38 +59,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
         })}
       </div>
       
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {paginatedPosts.map((post) => (
-          <Card key={post.slug} className="group flex flex-col">
-            <Link href={`/blog/${post.slug}`} className="block">
-              <Image
-                src={post.image}
-                alt={post.title}
-                width={600}
-                height={400}
-                data-ai-hint={post.dataAiHint}
-                className="w-full rounded-t-lg object-cover aspect-video"
-              />
-            </Link>
-            <CardContent className="p-4 space-y-2 flex-grow flex flex-col">
-              <span className="text-xs font-semibold text-primary uppercase">{post.category}</span>
-              <Link href={`/blog/${post.slug}`} className="block">
-                <h3 className="text-lg font-semibold group-hover:text-primary transition-colors flex-grow">{post.title}</h3>
-              </Link>
-              <p className="text-sm text-muted-foreground line-clamp-2">{post.description}</p>
-              <div className="flex items-center gap-2 pt-4 mt-auto text-xs text-muted-foreground">
-                <Avatar className="h-6 w-6">
-                  <AvatarImage src={post.authorImage} alt={post.author} />
-                  <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="font-medium">{post.author}</div>
-                <span>&middot;</span>
-                <span>{post.date}</span>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <PostGrid posts={paginatedPosts} includeAd={true} />
       
       <div className="mt-12">
         <PaginationControls

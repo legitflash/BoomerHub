@@ -14,9 +14,9 @@ import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/lib/types';
 import CategoryActionBanner from './category-action-banner';
 import AdsterraBanner from '../ads/adsterra-banner';
-import SearchAdCard from '../ads/search-ad-card';
 import CodeBlock from './code-block';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import PostGrid from './post-grid';
 
 const CtaComponent = ({ value }: { value: any }) => {
     if (!value || !value.url || !value.buttonText) {
@@ -47,9 +47,10 @@ export default function BlogPostContent({ post, allPosts }: { post: Post, allPos
   const { toast } = useToast();
   const [postUrl, setPostUrl] = useState('');
 
+  // Use the reliable categorySlug for filtering related posts
   const relatedPosts = allPosts
     .filter((p) => p.categorySlug === post.categorySlug && p.slug !== post.slug)
-    .slice(0, 5); // Show 5 related posts
+    .slice(0, 2); // Show up to 2 related posts so there's room for an ad
 
   useEffect(() => {
     // Ensure this runs only on the client
@@ -78,9 +79,6 @@ export default function BlogPostContent({ post, allPosts }: { post: Post, allPos
         <PortableText value={post.content} components={portableTextComponents} />
      </div>
   )
-
-  const finalRelatedPosts = relatedPosts.slice(0, 2);
-  const showAdCard = finalRelatedPosts.length > 0;
 
   return (
     <>
@@ -164,32 +162,10 @@ export default function BlogPostContent({ post, allPosts }: { post: Post, allPos
         <CategoryActionBanner category={post.category} />
       </div>
 
-      {(finalRelatedPosts.length > 0) && (
+      {(relatedPosts.length > 0) && (
         <aside className="container max-w-4xl py-16">
           <h2 className="text-3xl font-bold tracking-tighter mb-8 text-center font-headline">Related Articles</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {finalRelatedPosts.map((relatedPost) => (
-              <Card key={relatedPost.slug} className="group flex flex-col">
-                <Link href={`/blog/${relatedPost.slug}`} className="block">
-                  <Image
-                    src={relatedPost.image}
-                    alt={relatedPost.title}
-                    width={600}
-                    height={400}
-                    data-ai-hint={relatedPost.dataAiHint}
-                    className="rounded-t-lg object-cover aspect-video"
-                  />
-                </Link>
-                <CardContent className="p-4 space-y-2 flex-grow flex flex-col">
-                   <Badge variant="outline" className="w-fit">{relatedPost.category}</Badge>
-                   <Link href={`/blog/${relatedPost.slug}`} className="block">
-                    <h3 className="text-lg font-semibold group-hover:text-primary transition-colors flex-grow">{relatedPost.title}</h3>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-             {showAdCard && <SearchAdCard key="related-ad-card" />}
-          </div>
+          <PostGrid posts={relatedPosts} includeAd={true} />
         </aside>
       )}
     </>
