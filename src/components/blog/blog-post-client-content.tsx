@@ -135,7 +135,6 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
           data-ai-hint={post.dataAiHint}
           className="rounded-lg object-cover aspect-video mb-8"
           priority
-          crossOrigin="anonymous" 
         />
 
         <AdsterraBanner />

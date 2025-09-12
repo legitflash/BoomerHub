@@ -76,10 +76,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     publisher: {
       '@type': 'Organization',
       name: 'BoomerHub',
-      logo: {
-        '@type': 'ImageObject',
-        url: '/logo.png', // Assuming you have a logo in /public/logo.png
-      },
     },
   };
 
