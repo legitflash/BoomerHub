@@ -47,7 +47,7 @@ export default async function BlogPage({ searchParams }: { searchParams: { page?
 
       <div className="mb-12 flex flex-wrap items-center justify-center gap-4">
         {uniqueCategories.map(category => {
-          const Icon = iconMap[category.iconName];
+          const Icon = iconMap[category.iconName] || DollarSign;
           return (
             <Link 
               key={category.slug}

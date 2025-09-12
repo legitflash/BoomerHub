@@ -1,16 +1,21 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { topCategories } from '@/lib/data';
 import { getAllPosts } from '@/services/post-service';
+import { getAllCategories } from '@/services/category-service';
 import HeroSearch from '@/components/home/hero-search';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import type { Post } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import SearchAdCard from '@/components/ads/search-ad-card';
+
+const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
+  DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit,
+};
 
 // Helper function to get the top 3 recent posts for a specific category slug
 const getRecentPostsByCategory = (posts: Post[], categorySlug: string, count: number): Post[] => {
@@ -22,6 +27,7 @@ const getRecentPostsByCategory = (posts: Post[], categorySlug: string, count: nu
 
 export default async function Home({ searchParams }: { searchParams: { page?: string } }) {
   const allPosts = await getAllPosts();
+  const allCategories = await getAllCategories();
   
   const featuredPost = allPosts[0]; // The latest post is the featured one
   const otherPosts = allPosts.slice(1);
@@ -103,21 +109,23 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
       <section className="container px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter text-center mb-8 font-headline">Top Categories</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-          {topCategories.map((category) => (
+          {allCategories.slice(0, 4).map((category) => {
+            const Icon = iconMap[category.iconName] || DollarSign;
+            return (
              <Link key={category.slug} href={`/blog/category/${category.slug}`}>
               <Card className="flex flex-col items-center justify-center p-6 text-center hover:shadow-lg transition-shadow h-full">
-                <category.icon className="h-12 w-12 mb-4 text-primary" />
+                <Icon className="h-12 w-12 mb-4 text-primary" />
                 <h3 className="font-semibold">{category.name}</h3>
               </Card>
             </Link>
-          ))}
+          )})}
         </div>
       </section>
       
       <AdsterraBanner />
 
       {/* Category Sections */}
-      {topCategories.map(category => {
+      {allCategories.map(category => {
         const recentPosts = getRecentPostsByCategory(otherPosts, category.slug, 3);
         if (recentPosts.length === 0) return null;
 
