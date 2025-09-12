@@ -13,5 +13,4 @@ export const aiToolsCategories = [
     { name: 'AI Match Prediction', icon: Search, slug: '/ai/match-prediction', flowName: 'generateMatchAnalysisFlow' },
     { name: 'AI Financial Advisor', icon: PiggyBank, slug: '/ai/financial-adviser', flowName: 'generateFinancialAdviceFlow' },
     { name: 'AI Text Translator', icon: Languages, slug: '/ai/text-translator', flowName: 'translateTextFlow' },
-    { name: 'AI Keyword Generator', icon: KeyRound, slug: '/ai/keyword-generator', flowName: 'generateKeywordsFlow' },
 ];

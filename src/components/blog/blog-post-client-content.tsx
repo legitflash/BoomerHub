@@ -9,13 +9,14 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Share2, ArrowRight } from 'lucide-react';
+import { Share2, ArrowRight, Twitter, Facebook, Linkedin, Mail, MessageCircle, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { Post } from '@/lib/types';
 import CategoryActionBanner from './category-action-banner';
 import AdsterraBanner from '../ads/adsterra-banner';
 import SearchAdCard from '../ads/search-ad-card';
 import CodeBlock from './code-block';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 function slugify(text: string) {
   return text
@@ -55,35 +56,29 @@ const portableTextComponents = {
 
 export default function BlogPostContent({ post, relatedPosts }: { post: Post, relatedPosts: Post[] }) {
   const { toast } = useToast();
-  
-  const fallbackCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+  const [postUrl, setPostUrl] = useState('');
+
+  useEffect(() => {
+    // Ensure this runs only on the client
+    setPostUrl(window.location.href);
+  }, []);
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(postUrl);
     toast({
       title: "Link Copied",
       description: "The article URL has been copied to your clipboard.",
     });
   };
 
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: post.title,
-          text: `${post.description}`,
-          url: window.location.href,
-        });
-      } catch (error: any) {
-        // If the user cancels the share dialog, do nothing.
-        if (error.name === 'AbortError') {
-          return;
-        }
-        console.error('Error sharing, using fallback:', error);
-        fallbackCopyLink();
-      }
-    } else {
-      fallbackCopyLink();
-    }
-  };
+  const shareActions = [
+    { name: 'Copy Link', icon: Copy, action: handleCopyLink },
+    { name: 'Twitter', icon: Twitter, href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(postUrl)}&text=${encodeURIComponent(post.title)}` },
+    { name: 'Facebook', icon: Facebook, href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}` },
+    { name: 'LinkedIn', icon: Linkedin, href: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(postUrl)}&title=${encodeURIComponent(post.title)}&summary=${encodeURIComponent(post.description)}` },
+    { name: 'WhatsApp', icon: MessageCircle, href: `https://api.whatsapp.com/send?text=${encodeURIComponent(post.title + ' ' + postUrl)}` },
+    { name: 'Email', icon: Mail, href: `mailto:?subject=${encodeURIComponent(post.title)}&body=${encodeURIComponent(post.description + '\n\nRead more at: ' + postUrl)}` },
+  ];
     
   const articleBody = (
      <div className="prose prose-lg dark:prose-invert max-w-none mx-auto">
@@ -113,7 +108,30 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
               </div>
           </div>
           <div className="mt-6 flex items-center justify-center flex-wrap gap-2 border-t border-b py-4">
-              <Button variant="ghost" size="sm" onClick={handleShare}><Share2 className="mr-2"/> Share</Button>
+              <TooltipProvider>
+                {shareActions.map(({ name, icon: Icon, action, href }) => (
+                  <Tooltip key={name}>
+                    <TooltipTrigger asChild>
+                      {action ? (
+                        <Button variant="ghost" size="icon" onClick={action}>
+                          <Icon className="h-5 w-5" />
+                          <span className="sr-only">{`Share on ${name}`}</span>
+                        </Button>
+                      ) : (
+                        <Button variant="ghost" size="icon" asChild>
+                          <a href={href} target="_blank" rel="noopener noreferrer">
+                            <Icon className="h-5 w-5" />
+                            <span className="sr-only">{`Share on ${name}`}</span>
+                          </a>
+                        </Button>
+                      )}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{name}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                ))}
+              </TooltipProvider>
           </div>
         </header>
 
