@@ -11,8 +11,7 @@ const memberFields = `
   role,
   image,
   description,
-  email,
-  userRole
+  email
 `;
 
 function formatMember(member: any): TeamMember {
@@ -24,7 +23,6 @@ function formatMember(member: any): TeamMember {
         image: urlFor(member.image).width(200).height(200).url(),
         description: member.description,
         email: member.email,
-        userRole: member.userRole,
     };
 }
 

@@ -80,7 +80,6 @@ export type TeamMember = {
   image: string;
   description: string;
   email?: string;
-  userRole?: 'admin' | 'editor' | 'member';
 };
 
 export type Submission = {

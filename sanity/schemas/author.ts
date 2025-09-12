@@ -50,20 +50,6 @@ export default defineType({
       type: 'string',
       description: 'Optional: Email address for internal use.',
     }),
-     defineField({
-      name: 'userRole',
-      title: 'User Role',
-      type: 'string',
-      options: {
-        list: [
-            { title: 'Member', value: 'member' },
-            { title: 'Editor', value: 'editor' },
-            { title: 'Admin', value: 'admin' },
-        ],
-        layout: 'radio'
-      },
-      description: 'Assign a role for potential future app permissions.',
-    }),
   ],
   preview: {
     select: {
