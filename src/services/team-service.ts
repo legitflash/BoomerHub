@@ -65,19 +65,3 @@ export async function updateTeamMember(id: string, memberData: Partial<TeamMembe
 export async function deleteTeamMember(id: string): Promise<void> {
     console.warn("deleteTeamMember is deprecated. Please use Sanity Studio.");
 }
-
-export async function findUserByEmail(email: string): Promise<{ uid: string, email: string } | null> {
-     const query = `*[_type == "author" && email == $email][0] {
-        _id,
-        email
-    }`;
-    const result = await client.fetch(query, { email });
-    if (result) {
-        return { uid: result._id, email: result.email };
-    }
-    return null;
-}
-
-export async function updateUserRole(uid: string, role: 'admin' | 'editor' | 'member'): Promise<void> {
-    console.warn("updateUserRole is deprecated. Please use Sanity Studio.");
-}
