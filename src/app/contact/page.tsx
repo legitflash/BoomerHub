@@ -2,7 +2,7 @@
 'use client';
 
 import Link from "next/link";
-import { Mail, MessageCircle, Twitter, Facebook, Instagram, Send } from "lucide-react";
+import { Mail, MessageCircle, Youtube, Facebook, Instagram, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +17,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 
+const TikTokIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16.5 6.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+        <path d="M7.5 12.5v7" />
+        <path d="M7.5 12.5a4.5 4.5 0 1 0-4.5-4.5" />
+    </svg>
+);
 
 export default function ContactPage() {
   return (
@@ -92,9 +99,10 @@ export default function ContactPage() {
                     <CardTitle>Follow us on social media</CardTitle>
                 </CardHeader>
                 <CardContent className="flex justify-center gap-6">
-                    <Link href="https://twitter.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Twitter className="h-8 w-8" /></Link>
-                    <Link href="https://facebook.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-8 w-8" /></Link>
-                    <Link href="https://instagram.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Instagram className="h-8 w-8" /></Link>
+                    <Link href="https://facebook.com/share/1DJFJQBCet/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-8 w-8" /></Link>
+                    <Link href="https://www.instagram.com/legitflash01?igsh=MWczZHgxejAza2pjMw%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Instagram className="h-8 w-8" /></Link>
+                    <Link href="https://www.youtube.com/@LegitFlash01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Youtube className="h-8 w-8" /></Link>
+                    <Link href="https://www.tiktok.com/@legitflash01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><TikTokIcon /></Link>
                 </CardContent>
             </Card>
         </div>

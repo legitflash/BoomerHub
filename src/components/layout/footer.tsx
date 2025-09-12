@@ -1,11 +1,20 @@
 
 'use server';
 import Link from 'next/link';
-import { Mail, MessageCircle, Twitter, Facebook, Instagram, Send } from 'lucide-react';
+import { Mail, MessageCircle, Twitter, Facebook, Instagram, Send, Youtube, /*TikTok is not in lucide-react*/ } from 'lucide-react';
 import { aiToolsCategories } from '@/lib/data';
 import type { BlogCategory } from '@/lib/types';
 import { getAllCategories } from '@/services/category-service';
 import { Logo } from './logo';
+
+const TikTokIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16.5 6.5a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+        <path d="M7.5 12.5v7" />
+        <path d="M7.5 12.5a4.5 4.5 0 1 0-4.5-4.5" />
+    </svg>
+);
+
 
 export async function Footer() {
   const categories = await getAllCategories();
@@ -24,10 +33,11 @@ export async function Footer() {
               <span className="font-bold">BoomerHub</span>
             </div>
             <p>Insights for Growth.</p>
-            <div className="flex gap-4 mt-2">
-                <Link href="https://twitter.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Twitter className="h-5 w-5" /></Link>
-                <Link href="https://facebook.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-5 w-5" /></Link>
-                <Link href="https://instagram.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Instagram className="h-5 w-5" /></Link>
+            <div className="flex gap-4 mt-2 items-center">
+                <Link href="https://facebook.com/share/1DJFJQBCet/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-5 w-5" /></Link>
+                <Link href="https://www.instagram.com/legitflash01?igsh=MWczZHgxejAza2pjMw%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Instagram className="h-5 w-5" /></Link>
+                <Link href="https://www.youtube.com/@LegitFlash01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Youtube className="h-5 w-5" /></Link>
+                <Link href="https://www.tiktok.com/@legitflash01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><TikTokIcon /></Link>
                 <Link href="https://whatsapp.com/channel/0029Vb5nwfvInlqQa38G442f"  target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><MessageCircle className="h-5 w-5 hover:text-primary" /></Link>
                 <Link href="https://t.me/Boomerhub" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary" aria-label="Telegram"><Send className="h-5 w-5"/></Link>
                 <Link href="mailto:support@boomerhub.com" aria-label="Email"><Mail className="h-5 w-5 hover:text-primary" /></Link>
