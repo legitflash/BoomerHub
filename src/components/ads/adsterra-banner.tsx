@@ -9,7 +9,7 @@ export default function AdsterraBanner() {
       <Script
         async
         data-cfasync={false}
-        src="//chickenadjacent.com/2c5e03b2597c3bd82333c06d7e9dd6e0/invoke.js"
+        src="https://chickenadjacent.com/2c5e03b2597c3bd82333c06d7e9dd6e0/invoke.js"
       />
     </div>
   );

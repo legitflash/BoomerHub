@@ -53,7 +53,7 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
               </div>
             </div>
             <Image
-              src="https://picsum.photos/1200/800"
+              src="https://picsum.photos/seed/hero-image/1200/800"
               alt="Hero"
               width={1200}
               height={800}

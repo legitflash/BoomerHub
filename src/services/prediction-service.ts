@@ -26,14 +26,17 @@ const predictionFields = `
 `;
 
 function formatPrediction(prediction: any): Prediction {
+    const homeTeamName = prediction.homeTeam || 'home';
+    const awayTeamName = prediction.awayTeam || 'away';
+
     return {
         id: prediction._id,
         league: prediction.league,
-        match: `${prediction.homeTeam} vs. ${prediction.awayTeam}`,
-        homeTeam: prediction.homeTeam,
-        awayTeam: prediction.awayTeam,
-        homeTeamLogo: prediction.homeTeamLogo ? urlFor(prediction.homeTeamLogo).width(64).height(64).url() : `https://logo.clearbit.com/${prediction.homeTeam.toLowerCase().replace(/ /g, '')}.com`,
-        awayTeamLogo: prediction.awayTeamLogo ? urlFor(prediction.awayTeamLogo).width(64).height(64).url() : `https://logo.clearbit.com/${prediction.awayTeam.toLowerCase().replace(/ /g, '')}.com`,
+        match: `${homeTeamName} vs. ${awayTeamName}`,
+        homeTeam: homeTeamName,
+        awayTeam: awayTeamName,
+        homeTeamLogo: prediction.homeTeamLogo ? urlFor(prediction.homeTeamLogo).width(64).height(64).url() : `https://logo.clearbit.com/${homeTeamName.toLowerCase().replace(/\s+/g, '')}.com`,
+        awayTeamLogo: prediction.awayTeamLogo ? urlFor(prediction.awayTeamLogo).width(64).height(64).url() : `https://logo.clearbit.com/${awayTeamName.toLowerCase().replace(/\s+/g, '')}.com`,
         homeTeamForm: prediction.homeTeamForm || [],
         awayTeamForm: prediction.awayTeamForm || [],
         prediction: prediction.prediction,
