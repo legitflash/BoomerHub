@@ -10,20 +10,7 @@ import { getAllCategories } from '@/services/category-service';
 import PaginationControls from '@/components/blog/pagination-controls';
 
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
-  DollarSign,
-  Tv,
-  Code,
-  Briefcase,
-  Clock,
-  Rocket,
-  BarChart,
-  Newspaper,
-  Droplets,
-  Gamepad,
-  Trophy,
-  TrendingUp,
-  Plane,
-  Edit,
+  DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit,
 };
 
 const POSTS_PER_PAGE = 10;
