@@ -2,6 +2,11 @@
 import type { TopCategory } from './types';
 import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Bot, AudioLines, PiggyBank, Search, Plane, Languages, Edit, KeyRound } from 'lucide-react';
 
+export const adLinks = [
+  "https://otieu.com/4/9697212", // Monetag
+  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
+]; 
+
 export const topCategories: TopCategory[] = [
   { name: 'Finance', icon: DollarSign, slug: 'finance' },
   { name: 'AI/Tech', icon: BrainCircuit, slug: 'ai-tech' },

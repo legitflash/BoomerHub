@@ -7,11 +7,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-
-const adLinks = [
-  "https://otieu.com/4/9697212", // Monetag
-  "https://chickenadjacent.com/ebjb0w2rm?key=7bf3c280c5f98c617913935e30c2fb3c" // Adsterra Smart Link
-]; 
+import { adLinks } from '@/lib/data';
 
 const adCreatives = [
   {

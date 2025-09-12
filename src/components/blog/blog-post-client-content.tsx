@@ -76,6 +76,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
   )
 
   const finalRelatedPosts = relatedPosts.slice(0, 4);
+  const showAdCard = finalRelatedPosts.length > 0;
 
   return (
     <>
@@ -184,7 +185,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
                 </CardContent>
               </Card>
             ))}
-             <SearchAdCard />
+             {showAdCard && <SearchAdCard key="related-ad-card" />}
           </div>
         </aside>
       )}

@@ -28,36 +28,32 @@ const IntelligentSearchOutputSchema = z.object({
 });
 export type IntelligentSearchOutput = z.infer<typeof IntelligentSearchOutputSchema>;
 
-// This tool allows the AI to search through the actual blog posts in the database.
+// This tool allows the AI to get a list of all available blog posts.
 const blogPostSearchTool = ai.defineTool(
   {
     name: 'blogPostSearch',
-    description: 'Search for blog posts based on a query.',
-    inputSchema: z.object({
-      query: z.string(),
-    }),
+    description: 'Gets a list of all available blog posts to search through.',
+    inputSchema: z.object({}), // No input needed
     outputSchema: z.array(
       z.object({
         title: z.string(),
         slug: z.string(),
         description: z.string(),
+        category: z.string(),
+        keywords: z.string().optional(),
       })
     ),
   },
-  async (input) => {
-    // In a real application, this would be a more sophisticated search,
-    // perhaps using a vector database or full-text search.
-    // For this example, we'll filter based on title and description.
+  async () => {
+    // Return all posts with relevant fields for the AI to analyze.
     const allPosts = await getAllPosts();
-    const query = input.query.toLowerCase();
-    return allPosts
-      .filter(
-        (post) =>
-          post.title.toLowerCase().includes(query) ||
-          post.description.toLowerCase().includes(query)
-      )
-      .map(({ title, slug, description }) => ({ title, slug, description }))
-      .slice(0, 10); // Limit to 10 results to keep the context small
+    return allPosts.map(({ title, slug, description, category, keywords }) => ({
+      title,
+      slug,
+      description,
+      category,
+      keywords,
+    }));
   }
 );
 
@@ -69,10 +65,12 @@ const intelligentSearchPrompt = ai.definePrompt({
   tools: [blogPostSearchTool],
   prompt: `
     You are an expert search assistant for a blog. A user has provided a search query.
-    Your task is to use the 'blogPostSearch' tool to find the most relevant blog posts.
+    Your task is to use the 'blogPostSearch' tool to get a list of all blog posts.
     
-    Analyze the search results and return a list of the top 5 most relevant blog posts that best answer the user's query.
+    From that list, analyze the titles, descriptions, categories, and keywords to find the top 5 most relevant blog posts that best answer the user's query.
+    
     Return the results in the requested JSON format, including both the title and the slug for each post.
+    If no relevant posts are found, return an empty array.
     
     User Query: {{{query}}}
   `,
