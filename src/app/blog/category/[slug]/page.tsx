@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Post } from '@/lib/types';
 import BlogCategoryClientPage from '@/components/blog/category-client-page';
 import { getAllPosts } from '@/services/post-service';
-import { getAllCategories } from '@/services/category-service';
+import { getCategoryBySlug } from '@/services/category-service';
 
 export default async function BlogCategoryPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
@@ -13,8 +13,7 @@ export default async function BlogCategoryPage({ params }: { params: { slug: str
       return null; 
   }
 
-  const allCategories = await getAllCategories();
-  const category = allCategories.find((c) => c.slug === slug);
+  const category = await getCategoryBySlug(slug);
   
   if (!category) {
     notFound();

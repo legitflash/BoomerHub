@@ -28,11 +28,11 @@ export async function getAllCategories(): Promise<BlogCategory[]> {
     return results.map(formatCategory);
 }
 
-export async function getCategoryById(id: string): Promise<BlogCategory | null> {
-    const query = `*[_type == "category" && _id == $id][0] {
+export async function getCategoryBySlug(slug: string): Promise<BlogCategory | null> {
+    const query = `*[_type == "category" && slug.current == $slug][0] {
         ${categoryFields}
     }`;
-    const result = await client.fetch(query, { id });
+    const result = await client.fetch(query, { slug });
     return result ? formatCategory(result) : null;
 }
 
