@@ -28,15 +28,20 @@ export default defineType({
         {title: 'H2', value: 'h2'},
         {title: 'H3', value: 'h3'},
         {title: 'H4', value: 'h4'},
+        {title: 'H5', value: 'h5'},
+        {title: 'H6', value: 'h6'},
         {title: 'Quote', value: 'blockquote'},
       ],
-      lists: [{title: 'Bullet', value: 'bullet'}],
+      lists: [{title: 'Bullet', value: 'bullet'}, {title: 'Numbered', value: 'number'}],
       // Marks let you mark up inline text in the block editor.
       marks: {
         // Decorators render inline text styles
         decorators: [
           {title: 'Strong', value: 'strong'},
           {title: 'Emphasis', value: 'em'},
+          {title: 'Code', value: 'code'},
+          {title: 'Underline', value: 'underline'},
+          {title: 'Strike', value: 'strike-through'},
         ],
         // Annotations can be any object structure – e.g. a link or a footnote.
         annotations: [
@@ -61,10 +66,33 @@ export default defineType({
     defineArrayMember({
       type: 'image',
       options: {hotspot: true},
+      fields: [
+        {
+          name: 'caption',
+          type: 'string',
+          title: 'Caption',
+          options: {
+            isHighlighted: true
+          }
+        },
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative text',
+          description: 'Important for SEO and accessibility.',
+          options: {
+            isHighlighted: true
+          }
+        }
+      ]
     }),
     defineArrayMember({
         type: 'cta',
         title: 'Call to Action',
+    }),
+    defineArrayMember({
+      type: 'code',
+      title: 'Code Block',
     }),
   ],
 })

@@ -32,7 +32,7 @@ const CtaComponent = ({ value }: { value: any }) => {
         return null;
     }
     return (
-        <div className="my-8 rounded-lg bg-primary/10 p-6 text-center">
+        <div className="my-8 rounded-lg bg-primary/10 p-6 text-center not-prose">
             <h3 className="text-xl font-bold font-headline mb-2">{value.title}</h3>
             <p className="text-muted-foreground mb-4">{value.description}</p>
             <Button asChild>
@@ -94,7 +94,9 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
       <article className="container max-w-4xl py-12 md:py-24">
         <header className="mb-8">
           <div className="text-center">
-              <Badge variant="outline" className="mb-4">{post.category}</Badge>
+              <Link href={`/blog/category/${post.categorySlug}`} className="inline-block">
+                <Badge variant="outline" className="mb-4">{post.category}</Badge>
+              </Link>
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline mb-4">{post.title}</h1>
               <div className="flex items-center justify-center gap-4 text-muted-foreground">
                   <div className="flex items-center gap-2">
