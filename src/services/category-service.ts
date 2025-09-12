@@ -25,10 +25,35 @@ export async function getAllCategories(): Promise<BlogCategory[]> {
         ${categoryFields}
     }`;
     const results = await client.fetch(query);
-    return results.map(formatCategory);
+    const sanityCategories = results.map(formatCategory);
+
+    // Manually add the special "Betting Predictions" category
+    const allCategories = [
+      ...sanityCategories,
+      {
+        id: 'betting-predictions-category',
+        name: 'Betting Predictions',
+        slug: 'betting-predictions',
+        iconName: 'Trophy',
+      }
+    ];
+
+    // Sort alphabetically
+    allCategories.sort((a, b) => a.name.localeCompare(b.name));
+
+    return allCategories;
 }
 
 export async function getCategoryBySlug(slug: string): Promise<BlogCategory | null> {
+    if (slug === 'betting-predictions') {
+      return {
+        id: 'betting-predictions-category',
+        name: 'Betting Predictions',
+        slug: 'betting-predictions',
+        iconName: 'Trophy',
+      }
+    }
+
     const query = `*[_type == "category" && slug.current == $slug][0] {
         ${categoryFields}
     }`;

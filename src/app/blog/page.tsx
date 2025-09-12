@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import SearchBar from '@/components/search/search-bar';
-import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Plane, Edit } from 'lucide-react';
+import { DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit } from 'lucide-react';
 import { getAllPosts } from '@/services/post-service';
 import { getAllCategories } from '@/services/category-service';
 import PaginationControls from '@/components/blog/pagination-controls';
