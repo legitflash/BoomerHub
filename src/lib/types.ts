@@ -79,7 +79,6 @@ export type TeamMember = {
   role: string;
   image: string;
   description: string;
-  email?: string;
 };
 
 export type Submission = {

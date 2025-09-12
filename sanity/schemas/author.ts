@@ -44,12 +44,6 @@ export default defineType({
       description: 'A short bio for the author page.',
        validation: (Rule) => Rule.required(),
     }),
-     defineField({
-      name: 'email',
-      title: 'Email',
-      type: 'string',
-      description: 'Optional: Email address for internal use.',
-    }),
   ],
   preview: {
     select: {

@@ -10,8 +10,7 @@ const memberFields = `
   "slug": slug.current,
   role,
   image,
-  description,
-  email
+  description
 `;
 
 function formatMember(member: any): TeamMember {
@@ -22,7 +21,6 @@ function formatMember(member: any): TeamMember {
         role: member.role,
         image: urlFor(member.image).width(200).height(200).url(),
         description: member.description,
-        email: member.email,
     };
 }
 
