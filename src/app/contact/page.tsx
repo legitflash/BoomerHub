@@ -1,9 +1,5 @@
-
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import Link from "next/link";
 import { Mail, MessageCircle, Twitter, Facebook, Instagram, Send } from "lucide-react";
 
@@ -17,58 +13,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
-import { useToast } from '@/hooks/use-toast';
-import { handleCreateSubmission } from '../actions';
+import { Label } from "@/components/ui/label";
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email." }),
-  subject: z.string().min(5, { message: "Subject must be at least 5 characters." }),
-  message: z.string().min(10, { message: "Message must be at least 10 characters." }),
-});
-
-
 export default function ContactPage() {
-  const { toast } = useToast();
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const submissionData = {
-        ...values,
-        type: 'Contact',
-    };
-    
-    const result = await handleCreateSubmission(submissionData);
-
-    if(result.success){
-        toast({
-            title: "Message Sent!",
-            description: "Thanks for reaching out. We'll get back to you soon.",
-            variant: "success"
-        });
-        form.reset();
-    } else {
-        toast({
-            title: "Submission Failed",
-            description: "There was a problem sending your message. Please try again later.",
-            variant: "destructive",
-        });
-    }
-  }
-
-
   return (
     <div className="container py-12 md:py-24">
       <section className="text-center mb-16">
@@ -86,68 +35,30 @@ export default function ContactPage() {
                     <CardDescription>Fill out the form and we'll get back to you as soon as possible.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" name="contact" data-netlify="true">
-                        <input type="hidden" name="form-name" value="contact" />
-                        <div className="grid sm:grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Name</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Your Name" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="your@email.com" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                         <FormField
-                            control={form.control}
-                            name="subject"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Subject</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Question about a post" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="message"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Message</FormLabel>
-                                <FormControl>
-                                  <Textarea placeholder="Your message..." className="min-h-[150px]" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                           {form.formState.isSubmitting ? 'Sending...' : 'Send Message'} <Send className="ml-2"/>
-                        </Button>
-                      </form>
-                    </Form>
+                  <form name="contact" method="POST" data-netlify="true" className="space-y-4">
+                    <input type="hidden" name="form-name" value="contact" />
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="name">Name</Label>
+                        <Input id="name" name="name" placeholder="Your Name" required />
+                      </div>
+                      <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" name="email" type="email" placeholder="your@email.com" required />
+                      </div>
+                    </div>
+                    <div>
+                        <Label htmlFor="subject">Subject</Label>
+                        <Input id="subject" name="subject" placeholder="Question about a post" required />
+                    </div>
+                    <div>
+                        <Label htmlFor="message">Message</Label>
+                        <Textarea id="message" name="message" placeholder="Your message..." className="min-h-[150px]" required />
+                    </div>
+                    <Button type="submit" className="w-full">
+                       Send Message <Send className="ml-2"/>
+                    </Button>
+                  </form>
                 </CardContent>
             </Card>
         </div>

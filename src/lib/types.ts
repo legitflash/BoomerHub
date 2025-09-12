@@ -81,19 +81,6 @@ export type TeamMember = {
   description: string;
 };
 
-export type Submission = {
-    id: string;
-    name: string;
-    email: string;
-    subject?: string;
-    message: string;
-    type: 'Contact' | 'Advertising' | 'Writer Pitch';
-    createdAt: string;
-    companyName?: string;
-    portfolioLink?: string;
-    socialProfileLink?: string;
-}
-
 export type Livescore = {
     idEvent: string;
     strEvent: string;

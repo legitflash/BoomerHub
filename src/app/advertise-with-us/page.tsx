@@ -1,9 +1,5 @@
-
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { Megaphone, Building, User, Mail, Send, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
@@ -17,60 +13,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
-import { useToast } from '@/hooks/use-toast';
-import { handleCreateSubmission } from '../actions';
+import { Label } from "@/components/ui/label";
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 
 
-const formSchema = z.object({
-  companyName: z.string().min(2, { message: "Company name must be at least 2 characters." }),
-  contactName: z.string().min(2, { message: "Contact name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email." }),
-  message: z.string().min(20, { message: "Message must be at least 20 characters." }),
-});
-
-
 export default function AdvertisePage() {
-  const { toast } = useToast();
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      companyName: "",
-      contactName: "",
-      email: "",
-      message: "",
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const submissionData = {
-        ...values,
-        name: values.contactName,
-        subject: `Advertising Inquiry from ${values.companyName}`,
-        type: 'Advertising',
-    };
-    
-    const result = await handleCreateSubmission(submissionData);
-
-    if(result.success){
-        toast({
-            title: "Inquiry Sent!",
-            description: "Thank you for your interest. Our sales manager will be in touch shortly.",
-            variant: "success",
-        });
-        form.reset();
-    } else {
-        toast({
-            title: "Submission Failed",
-            description: "There was a problem sending your inquiry. Please try again later.",
-            variant: "destructive",
-        });
-    }
-  }
-
-
   return (
     <div className="container py-12 md:py-24">
       <section className="text-center mb-16 max-w-3xl mx-auto">
@@ -112,68 +59,30 @@ export default function AdvertisePage() {
                     <CardDescription>Fill out the form below and we'll get back to you.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" name="advertising" data-netlify="true">
-                        <input type="hidden" name="form-name" value="advertising" />
-                        <div className="grid sm:grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="companyName"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Company Name</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="Your Company, Inc." icon={Building} {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="contactName"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Your Name</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="John Doe" icon={User} {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                         <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Email Address</FormLabel>
-                                <FormControl>
-                                  <Input type="email" placeholder="your@company.com" icon={Mail} {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="message"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Your Message</FormLabel>
-                                <FormControl>
-                                  <Textarea placeholder="Tell us about your advertising goals..." className="min-h-[150px]" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                           {form.formState.isSubmitting ? 'Sending...' : 'Send Inquiry'} <Send className="ml-2"/>
-                        </Button>
-                      </form>
-                    </Form>
+                  <form name="advertising" method="POST" data-netlify="true" className="space-y-4">
+                    <input type="hidden" name="form-name" value="advertising" />
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="companyName">Company Name</Label>
+                        <Input id="companyName" name="companyName" placeholder="Your Company, Inc." icon={Building} required />
+                      </div>
+                      <div>
+                        <Label htmlFor="contactName">Your Name</Label>
+                        <Input id="contactName" name="contactName" placeholder="John Doe" icon={User} required />
+                      </div>
+                    </div>
+                    <div>
+                        <Label htmlFor="email">Email Address</Label>
+                        <Input id="email" name="email" type="email" placeholder="your@company.com" icon={Mail} required />
+                    </div>
+                    <div>
+                        <Label htmlFor="message">Your Message</Label>
+                        <Textarea id="message" name="message" placeholder="Tell us about your advertising goals..." className="min-h-[150px]" required />
+                    </div>
+                    <Button type="submit" className="w-full">
+                       Send Inquiry <Send className="ml-2"/>
+                    </Button>
+                  </form>
                 </CardContent>
             </Card>
         </div>
