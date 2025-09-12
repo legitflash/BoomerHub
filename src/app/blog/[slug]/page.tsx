@@ -69,9 +69,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   }
   
   const allPosts = await getAllPosts();
-  const relatedPosts = allPosts
-    .filter((p) => p.category === post.category && p.slug !== post.slug)
-    .slice(0, 6);
 
   // JSON-LD structured data for rich snippets
   const jsonLd = {
@@ -99,7 +96,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <BlogPostContent post={post} relatedPosts={relatedPosts} />
+        <BlogPostContent post={post} allPosts={allPosts} />
     </>
   );
 }

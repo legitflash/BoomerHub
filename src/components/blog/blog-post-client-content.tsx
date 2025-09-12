@@ -43,9 +43,13 @@ const portableTextComponents = {
 };
 
 
-export default function BlogPostContent({ post, relatedPosts }: { post: Post, relatedPosts: Post[] }) {
+export default function BlogPostContent({ post, allPosts }: { post: Post, allPosts: Post[] }) {
   const { toast } = useToast();
   const [postUrl, setPostUrl] = useState('');
+
+  const relatedPosts = allPosts
+    .filter((p) => p.categorySlug === post.categorySlug && p.slug !== post.slug)
+    .slice(0, 5); // Show 5 related posts
 
   useEffect(() => {
     // Ensure this runs only on the client
@@ -75,7 +79,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
      </div>
   )
 
-  const finalRelatedPosts = relatedPosts.slice(0, 4);
+  const finalRelatedPosts = relatedPosts.slice(0, 2);
   const showAdCard = finalRelatedPosts.length > 0;
 
   return (

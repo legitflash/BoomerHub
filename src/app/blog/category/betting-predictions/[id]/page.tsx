@@ -1,14 +1,38 @@
 
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Check, TrendingUp, Users, Shield, X, Flame } from 'lucide-react';
+import { ArrowLeft, Check, TrendingUp, Users, Shield, X, Flame, Calendar } from 'lucide-react';
 import Image from 'next/image';
-import { getPredictionById } from '@/services/prediction-service';
+import { getPredictionById, getAllPredictions } from '@/services/prediction-service';
 import { PortableText } from 'next-sanity';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+import type { Prediction } from '@/lib/types';
+
+
+const getConfidenceBadge = (confidence: string) => {
+    switch (confidence) {
+        case "high":
+            return <Badge variant="destructive">High Confidence</Badge>;
+        case "medium":
+            return <Badge variant="secondary">Medium Confidence</Badge>;
+        default:
+            return <Badge variant="outline">Low Confidence</Badge>;
+    }
+}
+
+const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "Won":
+        return <Check className="h-5 w-5 text-green-500" />;
+      case "Lost":
+        return <X className="h-5 w-5 text-red-500" />;
+      default:
+        return <TrendingUp className="h-5 w-5 text-yellow-500" />;
+    }
+};
 
 export default async function MatchAnalysisPage({ params: { id } }: { params: { id: string } }) {
   const prediction = await getPredictionById(id);
@@ -16,6 +40,9 @@ export default async function MatchAnalysisPage({ params: { id } }: { params: { 
   if (!prediction) {
     notFound();
   }
+  
+  const allPredictions = await getAllPredictions();
+  const relatedPredictions = allPredictions.filter(p => p.id !== id).slice(0, 3);
   
   const { homeTeam, awayTeam } = prediction;
 
@@ -33,6 +60,7 @@ export default async function MatchAnalysisPage({ params: { id } }: { params: { 
   const { icon: statusIcon, color: statusColor } = getStatusInfo(prediction.status);
 
   return (
+    <>
     <div className="container max-w-4xl py-12 md:py-16">
       <div className="mb-8">
         <Button variant="outline" asChild>
@@ -128,5 +156,45 @@ export default async function MatchAnalysisPage({ params: { id } }: { params: { 
         </div>
       </div>
     </div>
+    
+    {relatedPredictions.length > 0 && (
+        <aside className="container max-w-4xl py-16">
+            <h2 className="text-3xl font-bold tracking-tighter mb-8 text-center font-headline">More Predictions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {relatedPredictions.map((p: Prediction) => (
+                    <Card key={p.id} className={`flex flex-col ${p.isHot ? 'border-primary border-2' : ''}`}>
+                         {p.isHot && (
+                            <div className="bg-primary text-primary-foreground text-sm font-bold flex items-center justify-center p-2 rounded-t-lg">
+                                <Flame className="mr-2 h-5 w-5"/>
+                                Hot Tip
+                            </div>
+                        )}
+                        <CardHeader>
+                            <CardTitle className="text-lg">{p.match}</CardTitle>
+                            <CardDescription>{p.league}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex-grow space-y-4">
+                            <div>
+                                <p className="text-sm font-semibold text-muted-foreground">Prediction</p>
+                                <p className="text-md font-bold">{p.prediction}</p>
+                            </div>
+                        </CardContent>
+                        <CardFooter className="bg-muted/50 p-4 flex justify-between items-center">
+                            <div className="flex items-center gap-2 font-bold">
+                                {getStatusIcon(p.status)}
+                                <span>{p.status}</span>
+                            </div>
+                            {p.analysis && p.analysis.length > 0 && (
+                                <Button variant="secondary" size="sm" asChild>
+                                    <Link href={`/blog/category/betting-predictions/${p.id}`}>Details</Link>
+                                </Button>
+                            )}
+                        </CardFooter>
+                    </Card>
+                ))}
+            </div>
+        </aside>
+    )}
+    </>
   );
 }
