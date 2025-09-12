@@ -1,4 +1,3 @@
-
 'use client';
 
 import * as React from 'react';
@@ -18,8 +17,12 @@ export default function SearchBar({ initialQuery = '' }: SearchBarProps) {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!query.trim()) return;
-    router.push(`/search?q=${encodeURIComponent(query)}`);
+    const trimmedQuery = query.trim();
+    if (!trimmedQuery) return;
+    
+    // Use router.push for client-side navigation to the search results page.
+    // This avoids a full-page reload and provides a smoother user experience.
+    router.push(`/search?q=${encodeURIComponent(trimmedQuery)}`);
   };
 
   return (
@@ -27,7 +30,7 @@ export default function SearchBar({ initialQuery = '' }: SearchBarProps) {
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
         <Input
-          placeholder="Search articles..."
+          placeholder="Ask me anything..."
           className="pl-10 h-12 text-base"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
