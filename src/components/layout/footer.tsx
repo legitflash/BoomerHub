@@ -3,16 +3,13 @@
 import Link from 'next/link';
 import { GraduationCap, Mail, MessageCircle, Twitter, Facebook, Instagram, Send } from 'lucide-react';
 import { aiToolsCategories, blogCategories as staticBlogCategories } from '@/lib/data';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
 
 export function Footer() {
   return (
     <footer className="border-t bg-secondary/50">
       <div className="container py-12 text-sm">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-          <div className="flex flex-col gap-4 col-span-1 md:col-span-1">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="flex flex-col gap-4 col-span-1">
             <div className="flex items-center gap-2">
               <GraduationCap className="h-6 w-6 text-primary" />
               <span className="font-bold">BoomerHub</span>
@@ -76,20 +73,6 @@ export function Footer() {
                 </div>
               </div>
           </div>
-          
-          <div className="col-span-1">
-             <h4 className="font-semibold mb-4">Subscribe to our Newsletter</h4>
-             <p className="text-muted-foreground mb-4">Get the latest posts and insights delivered to your inbox.</p>
-             <form name="newsletter" method="POST" data-netlify="true" className="space-y-2">
-                <input type="hidden" name="form-name" value="newsletter" />
-                <div>
-                  <Label htmlFor="newsletter-email" className="sr-only">Email</Label>
-                  <Input id="newsletter-email" name="email" type="email" placeholder="Enter your email" required />
-                </div>
-                <Button type="submit" className="w-full">Subscribe</Button>
-            </form>
-          </div>
-
         </div>
         <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} BoomerHub. All Rights Reserved.</p>
