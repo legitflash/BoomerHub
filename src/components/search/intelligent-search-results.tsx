@@ -1,6 +1,8 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { intelligentSearch } from '@/ai/flows/intelligent-search-with-slugs';
 import { getAllPosts } from '@/services/post-service';
 
@@ -45,6 +47,15 @@ export default async function IntelligentSearchResults({ query }: { query: strin
                     <h3 className="text-lg font-semibold group-hover:text-primary transition-colors flex-grow">{post.title}</h3>
                   </Link>
                   <p className="text-sm text-muted-foreground line-clamp-2">{post.description}</p>
+                  <div className="flex items-center gap-2 pt-4 mt-auto text-xs text-muted-foreground">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src={post.authorImage} alt={post.author} />
+                      <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="font-medium">{post.author}</div>
+                    <span>&middot;</span>
+                    <span>{post.date}</span>
+                  </div>
                 </CardContent>
               </Card>
             )

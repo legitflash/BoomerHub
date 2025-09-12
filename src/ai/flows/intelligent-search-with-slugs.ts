@@ -41,18 +41,20 @@ const blogPostSearchTool = ai.defineTool(
         description: z.string(),
         category: z.string(),
         keywords: z.string().optional(),
+        date: z.string(), // Add the date field to the schema
       })
     ),
   },
   async () => {
     // Return all posts with relevant fields for the AI to analyze.
     const allPosts = await getAllPosts();
-    return allPosts.map(({ title, slug, description, category, keywords }) => ({
+    return allPosts.map(({ title, slug, description, category, keywords, date }) => ({
       title,
       slug,
       description,
       category,
       keywords,
+      date, // Ensure the date is returned by the tool
     }));
   }
 );
