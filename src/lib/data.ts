@@ -1,6 +1,6 @@
 
 import type { TopCategory } from './types';
-import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Bot, AudioLines, PiggyBank, Search, Plane, Languages, Edit } from 'lucide-react';
+import { Briefcase, Clock, Code, LineChart, DollarSign, BrainCircuit, Tv, Megaphone, Users, Rocket, BarChart, Newspaper, Droplets, Gamepad, Trophy, TrendingUp, Bot, AudioLines, PiggyBank, Search, Plane, Languages, Edit, KeyRound } from 'lucide-react';
 
 export const topCategories: TopCategory[] = [
   { name: 'Finance', icon: DollarSign, slug: 'finance' },
@@ -13,4 +13,5 @@ export const aiToolsCategories = [
     { name: 'AI Match Prediction', icon: Search, slug: '/ai/match-prediction', flowName: 'generateMatchAnalysisFlow' },
     { name: 'AI Financial Advisor', icon: PiggyBank, slug: '/ai/financial-adviser', flowName: 'generateFinancialAdviceFlow' },
     { name: 'AI Text Translator', icon: Languages, slug: '/ai/text-translator', flowName: 'translateTextFlow' },
+    { name: 'AI Keyword Generator', icon: KeyRound, slug: '/ai/keyword-generator', flowName: 'generateKeywordsFlow' },
 ];

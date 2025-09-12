@@ -64,7 +64,7 @@ export function Footer() {
                 <div>
                     <h4 className="font-semibold mb-4">AI Tools</h4>
                     <ul className="space-y-2">
-                    {aiToolsCategories.filter(tool => tool.slug !== '/ai/audio-transcriber').map((tool) => (
+                    {aiToolsCategories.map((tool) => (
                         <li key={tool.slug}>
                         <Link href={tool.slug} className="text-muted-foreground hover:text-primary">
                             {tool.name}
