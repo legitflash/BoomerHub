@@ -1,30 +1,17 @@
 
-'use client';
+'use server';
 import Link from 'next/link';
 import { GraduationCap, Mail, MessageCircle, Twitter, Facebook, Instagram, Send } from 'lucide-react';
 import { aiToolsCategories } from '@/lib/data';
-import { useEffect, useState } from 'react';
 import type { BlogCategory } from '@/lib/types';
 import { getAllCategories } from '@/services/category-service';
 
-export function Footer() {
-  const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
-  
-  useEffect(() => {
-    async function fetchCategories() {
-        try {
-            const categories = await getAllCategories();
-            const uniqueCategories = categories.filter(
-                (category, index, self) =>
-                index === self.findIndex((c) => c.slug === category.slug)
-            );
-            setBlogCategories(uniqueCategories);
-        } catch (error) {
-            console.error("Failed to fetch categories for footer:", error);
-        }
-    }
-    fetchCategories();
-  }, []);
+export async function Footer() {
+  const categories = await getAllCategories();
+  const uniqueCategories = categories.filter(
+      (category, index, self) =>
+      index === self.findIndex((c) => c.slug === category.slug)
+  );
 
   return (
     <footer className="border-t bg-secondary/50">
@@ -51,7 +38,7 @@ export function Footer() {
                 <div>
                     <h4 className="font-semibold mb-4">Blog Categories</h4>
                     <ul className="space-y-2">
-                    {blogCategories.map((category) => (
+                    {uniqueCategories.map((category) => (
                         <li key={category.slug}>
                         <Link href={`/blog/category/${category.slug}`} className="text-muted-foreground hover:text-primary">
                             {category.name}
