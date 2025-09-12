@@ -48,6 +48,7 @@ export default function FinancialAdviserPage() {
       setAdvice(result);
     } catch (e: any) {
       console.error(e);
+      setAdvice(null); // Clear previous results on error
       const errorMessage = e.message || 'An error occurred while generating advice. Please try again.';
       if (errorMessage.includes('Rate limit exceeded')) {
            toast({
@@ -122,6 +123,17 @@ export default function FinancialAdviserPage() {
             <p className="mt-4 text-muted-foreground">Our AI is crafting your personalized advice...</p>
           </div>
         )}
+
+        {error && (
+            <Card className="border-destructive">
+                <CardHeader>
+                    <CardTitle className="text-destructive">Request Failed</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-destructive">{error}</p>
+                </CardContent>
+            </Card>
+        )}
         
         {advice && (
           <Card className="animate-in fade-in">
@@ -129,7 +141,7 @@ export default function FinancialAdviserPage() {
               <CardTitle>Your Personalized Advice</CardTitle>
             </CardHeader>
             <CardContent>
-               <div className="prose prose-sm dark:prose-invert max-w-none">
+               <div className="prose dark:prose-invert max-w-none">
                  <h4>Summary</h4>
                  <p>{advice.summary}</p>
                  <h4>Actionable Steps</h4>

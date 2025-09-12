@@ -53,6 +53,7 @@ export default function TextTranslatorPage() {
       setTranslation(result);
     } catch (e: any) {
       console.error(e);
+      setTranslation(null); // Clear previous results on error
       const errorMessage = e.message || 'An error occurred during translation. Please try again.';
        if (errorMessage.includes('Rate limit exceeded')) {
            toast({
@@ -145,7 +146,7 @@ export default function TextTranslatorPage() {
             <CardHeader>
               <CardTitle>Translation Result</CardTitle>
             </CardHeader>
-            <CardContent className="flex-grow">
+            <CardContent className="flex-grow flex items-center justify-center">
                 {isLoading && (
                     <div className="flex items-center justify-center h-full">
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -157,8 +158,8 @@ export default function TextTranslatorPage() {
                         <p>{translation.translatedText}</p>
                     </div>
                 )}
-                 {!isLoading && !translation && (
-                    <div className="flex items-center justify-center h-full text-muted-foreground">
+                 {!isLoading && !translation && !error && (
+                    <div className="text-muted-foreground text-center">
                         <p>Your translation will appear here.</p>
                     </div>
                 )}

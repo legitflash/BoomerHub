@@ -126,6 +126,7 @@ export default function MatchPredictionPage() {
       setAnalysis(result);
     } catch (e: any) {
       console.error(e);
+      setAnalysis(null); // Clear previous results on error
       const errorMessage = e.message || 'An error occurred while generating the analysis. Please try again.';
        if (errorMessage.includes('Rate limit exceeded')) {
            toast({
@@ -295,6 +296,17 @@ export default function MatchPredictionPage() {
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
             <p className="mt-4 text-muted-foreground">Our AI is analyzing the match... this may take a moment.</p>
           </div>
+        )}
+
+        {error && (
+            <Card className="border-destructive">
+                <CardHeader>
+                    <CardTitle className="text-destructive">Prediction Failed</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-destructive">{error}</p>
+                </CardContent>
+            </Card>
         )}
         
         {analysis && (
