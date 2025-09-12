@@ -72,7 +72,12 @@ export async function getAllPredictions(): Promise<Prediction[]> {
 }
 
 export async function getPredictionById(id:string): Promise<Prediction | null> {
-    return predictions.find(p => p.id === id) || null;
+    const prediction = predictions.find(p => p.id === id);
+    if (!prediction) return null;
+    return {
+        ...prediction,
+        matchDate: prediction.matchDate ? format(toDate(new Date(prediction.matchDate)), 'PPP') : undefined,
+    }
 }
 
 export async function updatePrediction(id: string, predictionData: Partial<Omit<Prediction, 'id' | 'createdAt'>>): Promise<void> {
