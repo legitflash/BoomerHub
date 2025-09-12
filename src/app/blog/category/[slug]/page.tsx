@@ -21,7 +21,7 @@ export default async function BlogCategoryPage({ params }: { params: { slug: str
   }
 
   const allPosts = await getAllPosts();
-  const postsForCategory: Post[] = allPosts.filter((p) => p.category.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === slug);
+  const postsForCategory: Post[] = allPosts.filter((p) => p.categorySlug === slug);
 
   return <BlogCategoryClientPage category={category} initialPosts={postsForCategory} />;
 }
