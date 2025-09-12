@@ -1,5 +1,5 @@
 
-import type {Metadata} from 'next';
+import type {Metadata, Viewport} from 'next';
 import './globals.css';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -15,12 +15,15 @@ export const metadata: Metadata = {
   title: 'BoomerHub',
   description: 'Learn Skills. Earn Income. Get Certified.',
   manifest: '/manifest.json',
-  themeColor: '#2563eb',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'BoomerHub',
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#2563eb',
 };
 
 export default function RootLayout({
