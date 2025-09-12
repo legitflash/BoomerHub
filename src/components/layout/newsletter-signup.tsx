@@ -18,25 +18,25 @@ export default function NewsletterSignup() {
     e.preventDefault();
     setIsLoading(true);
 
-    const formData = new FormData(e.target as HTMLFormElement);
-    
     try {
-      const response = await fetch('/', {
+      const response = await fetch('/.netlify/functions/newsletter-signup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData as any).toString(),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       });
 
       if (response.ok) {
         setIsSuccess(true);
+        setEmail('');
       } else {
-        throw new Error('Submission failed');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Subscription failed');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
-        title: 'Submission Error',
-        description: 'Something went wrong. Please try again.',
+        title: 'Subscription Error',
+        description: error.message || 'Something went wrong. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -62,19 +62,9 @@ export default function NewsletterSignup() {
                     </div>
                 ) : (
                     <form 
-                        name="newsletter" 
-                        method="POST" 
-                        data-netlify="true" 
-                        data-netlify-honeypot="bot-field"
                         onSubmit={handleSubmit}
                         className="flex items-center space-x-2"
                     >
-                        <input type="hidden" name="form-name" value="newsletter" />
-                        <p className="hidden">
-                            <label>
-                            Don’t fill this out if you’re human: <input name="bot-field" />
-                            </label>
-                        </p>
                         <div className="flex-grow">
                             <Label htmlFor="newsletter-email" className="sr-only">Email</Label>
                             <Input 
