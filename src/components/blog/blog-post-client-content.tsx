@@ -18,17 +18,6 @@ import SearchAdCard from '../ads/search-ad-card';
 import CodeBlock from './code-block';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
-function slugify(text: string) {
-  return text
-    .toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/[^\w-]+/g, '') // Remove all non-word chars
-    .replace(/--+/g, '-') // Replace multiple - with single -
-    .replace(/^-+/, '') // Trim - from start of text
-    .replace(/-+$/, ''); // Trim - from end of text
-}
-
 const CtaComponent = ({ value }: { value: any }) => {
     if (!value || !value.url || !value.buttonText) {
         return null;
@@ -156,7 +145,7 @@ export default function BlogPostContent({ post, relatedPosts }: { post: Post, re
             <h3 className="text-lg font-semibold mb-4">READ MORE</h3>
             <div className="flex flex-wrap gap-2">
                 <Button variant="outline" asChild>
-                    <Link href={`/blog/category/${slugify(post.category)}`}>
+                    <Link href={`/blog/category/${post.categorySlug}`}>
                         {post.category}
                     </Link>
                 </Button>
