@@ -40,8 +40,8 @@ export function Footer() {
                 <Link href="https://twitter.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Twitter className="h-5 w-5" /></Link>
                 <Link href="https://facebook.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-5 w-5" /></Link>
                 <Link href="https://instagram.com/your-profile" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Instagram className="h-5 w-5" /></Link>
-                <Link href="https://whatsapp.com/channel/0029Vb5nwfvInlqQa38G442f"  target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><MessageCircle className="h-5 w-5 hover:text-primary" /></Link>
-                <Link href="https://t.me/your-channel" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary" aria-label="Telegram"><Send className="h-5 w-5"/></Link>
+                <Link href="https://wa.me/2348060583504"  target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><MessageCircle className="h-5 w-5 hover:text-primary" /></Link>
+                <Link href="https://t.me/Boomerhub" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary" aria-label="Telegram"><Send className="h-5 w-5"/></Link>
                 <Link href="mailto:support@boomerhub.com" aria-label="Email"><Mail className="h-5 w-5 hover:text-primary" /></Link>
             </div>
           </div>

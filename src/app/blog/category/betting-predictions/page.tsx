@@ -110,7 +110,7 @@ export default async function BettingPredictionsPage() {
             <h2 className="text-2xl font-bold font-headline mb-2">Join Our Community</h2>
             <p className="text-muted-foreground mb-4">Get more tips, live updates, and engage with other members on our Telegram channel.</p>
             <Button asChild size="lg">
-                <Link href="#" target="_blank" rel="noopener noreferrer">
+                <Link href="https://t.me/Boomerhub" target="_blank" rel="noopener noreferrer">
                     <Send className="mr-2 h-5 w-5" /> Join Telegram for More Tips
                 </Link>
             </Button>
