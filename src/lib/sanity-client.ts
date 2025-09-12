@@ -5,7 +5,7 @@ import { apiVersion, dataset, projectId, useCdn } from '../../sanity/env';
 
 
 if (!projectId || !dataset) {
-  throw new Error('Sanity project ID and dataset must be defined in .env');
+  throw new Error('Sanity project ID and dataset must be defined.');
 }
 
 export const client = createClient({
