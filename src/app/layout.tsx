@@ -16,8 +16,14 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
+
 export const metadata: Metadata = {
-  title: 'BoomerHub - Insights for Growth',
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'BoomerHub - Insights for Growth',
+    template: '%s | BoomerHub',
+  },
   description: 'Your all-in-one platform for insightful articles, powerful AI tools, and skill development.',
   manifest: '/manifest.json',
   appleWebApp: {
@@ -25,7 +31,31 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'BoomerHub',
   },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
+    title: 'BoomerHub - Insights for Growth',
+    description: 'Your all-in-one platform for insightful articles, powerful AI tools, and skill development.',
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'BoomerHub Hero Image',
+      },
+    ],
+    siteName: 'BoomerHub',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BoomerHub - Insights for Growth',
+    description: 'Your all-in-one platform for insightful articles, powerful AI tools, and skill development.',
+    images: [`${siteUrl}/og-image.png`],
+    creator: '@legitflash_',
+  },
 };
+
 
 export const viewport: Viewport = {
   themeColor: '#2563eb',

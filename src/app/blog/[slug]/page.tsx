@@ -8,6 +8,8 @@ type Props = {
   params: { slug: string }
 }
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
+
 // Generate dynamic metadata for each blog post
 export async function generateMetadata(
   { params }: Props,
@@ -18,29 +20,41 @@ export async function generateMetadata(
   if (!post) {
     return {
       title: 'Post Not Found',
-      description: 'The post you are looking for does not exist.',
     }
   }
 
-  // Use custom keywords if available, otherwise fall back to category
   const keywords = post.keywords ? post.keywords.split(',').map(k => k.trim()) : [post.category];
-
-  // Optionally, you can add more metadata here
-  const previousImages = (await parent).openGraph?.images || []
+  const previousImages = (await parent).openGraph?.images || [];
+  const postImageUrl = post.image; // Already a full URL
 
   return {
     title: post.title,
     description: post.description,
-    authors: [{ name: post.author }],
     keywords: keywords,
+    authors: [{ name: post.author, url: `${siteUrl}/author/${post.authorSlug}` }],
     openGraph: {
       title: post.title,
       description: post.description,
       url: `/blog/${post.slug}`,
-      images: [post.image, ...previousImages],
+      siteName: 'BoomerHub',
+      images: [
+        {
+          url: postImageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+        ...previousImages,
+      ],
       type: 'article',
-      publishedTime: new Date(post.rawDate).toISOString(), // Use rawDate
-      authors: [post.author],
+      publishedTime: new Date(post.rawDate).toISOString(),
+      authors: [`${siteUrl}/author/${post.authorSlug}`],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description,
+      images: [postImageUrl],
     },
   }
 }

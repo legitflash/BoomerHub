@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
+import type { Metadata } from 'next';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,12 @@ import type { GenerateMatchAnalysisOutput } from '@/ai/flows/generate-match-anal
 import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+
+// Note: This metadata is commented out as it cannot be used in a Client Component.
+// export const metadata: Metadata = {
+//   title: 'AI Match Prediction',
+//   description: 'Get AI-powered football (soccer) match predictions, analysis, and correct scores for leagues worldwide.',
+// };
 
 const formSchema = z.object({
   country: z.string().min(1, { message: "Please select a country." }),
@@ -127,20 +134,19 @@ export default function MatchPredictionPage() {
     } catch (e: any) {
       console.error(e);
       const errorMessage = e.message || 'An error occurred while generating the analysis. Please try again.';
+      setError(errorMessage);
        if (errorMessage.includes('Rate limit exceeded')) {
            toast({
             title: "Daily Limit Reached",
             description: "You have exceeded your daily request limit. Please try again tomorrow.",
             variant: "destructive",
           });
-          setError("You have exceeded your daily request limit. Please try again tomorrow.");
       } else {
           toast({
             title: "Prediction Failed",
             description: errorMessage,
             variant: "destructive",
           });
-          setError(errorMessage);
       }
     } finally {
       setIsLoading(false);
@@ -297,7 +303,7 @@ export default function MatchPredictionPage() {
           </div>
         )}
 
-        {error && (
+        {error && !isLoading && (
             <Card className="border-destructive">
                 <CardHeader>
                     <CardTitle className="text-destructive">Prediction Failed</CardTitle>
@@ -308,7 +314,7 @@ export default function MatchPredictionPage() {
             </Card>
         )}
         
-        {analysis && !isLoading && (
+        {analysis && !isLoading && !error && (
           <Card className="animate-in fade-in">
             <CardHeader className="text-center bg-muted/50">
               <CardTitle className="text-2xl text-primary">{analysis.prediction}</CardTitle>

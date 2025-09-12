@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import type { Metadata } from 'next';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -16,6 +17,13 @@ import { translateText } from '@/ai/flows/translate-text';
 import type { TranslateTextOutput } from '@/ai/flows/translate-text';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+
+// Note: This metadata is commented out as it cannot be used in a Client Component.
+// export const metadata: Metadata = {
+//   title: 'AI Text Translator',
+//   description: 'Translate text into dozens of languages with our powerful and accurate AI translator tool.',
+// };
+
 
 const languages = [
   "Arabic", "Bengali", "Chinese (Simplified)", "Dutch", "French", "German", "Greek", "Hausa", "Hebrew", "Hindi", "Igbo", "Indonesian", "Italian", "Japanese", "Korean", "Polish", "Portuguese", "Russian", "Spanish", "Swahili", "Swedish", "Thai", "Turkish", "Vietnamese", "Yoruba"
@@ -54,20 +62,19 @@ export default function TextTranslatorPage() {
     } catch (e: any) {
       console.error(e);
       const errorMessage = e.message || 'An error occurred during translation. Please try again.';
+      setError(errorMessage);
        if (errorMessage.includes('Rate limit exceeded')) {
            toast({
             title: "Daily Limit Reached",
             description: "You have exceeded your daily request limit. Please try again tomorrow.",
             variant: "destructive",
           });
-          setError("You have exceeded your daily request limit. Please try again tomorrow.");
       } else {
           toast({
             title: "Request Failed",
             description: errorMessage,
             variant: "destructive",
           });
-          setError(errorMessage);
       }
     } finally {
       setIsLoading(false);
@@ -152,8 +159,8 @@ export default function TextTranslatorPage() {
                             <Loader2 className="h-8 w-8 animate-spin text-primary" />
                         </div>
                     )}
-                    {error && <p className="text-destructive text-center">{error}</p>}
-                    {translation && !isLoading && (
+                    {error && !isLoading && <p className="text-destructive text-center">{error}</p>}
+                    {translation && !isLoading && !error && (
                         <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
                             <p>{translation.translatedText}</p>
                         </div>
@@ -167,8 +174,8 @@ export default function TextTranslatorPage() {
             </Card>
         </div>
 
-        {error && (
-             <Card className="border-destructive">
+        {error && !isLoading && (
+             <Card className="border-destructive mt-8">
                 <CardHeader>
                     <CardTitle className="text-destructive">Request Failed</CardTitle>
                 </CardHeader>

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import type { Metadata } from 'next';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -15,6 +16,13 @@ import { generateFinancialAdvice } from '@/ai/flows/generate-financial-advice';
 import type { GenerateFinancialAdviceOutput } from '@/ai/flows/generate-financial-advice';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+
+// Note: This metadata is commented out as it cannot be used in a Client Component.
+// It should be defined in a parent layout or page if this page were server-rendered.
+// export const metadata: Metadata = {
+//   title: 'AI Financial Adviser',
+//   description: 'Get personalized financial advice on investing, savings, and more from our AI-powered tool.',
+// };
 
 const formSchema = z.object({
   query: z.string().min(20, { message: "Please describe your situation in at least 20 characters." }),
@@ -49,20 +57,19 @@ export default function FinancialAdviserPage() {
     } catch (e: any) {
       console.error(e);
       const errorMessage = e.message || 'An error occurred while generating advice. Please try again.';
+      setError(errorMessage); // Set the error state
       if (errorMessage.includes('Rate limit exceeded')) {
            toast({
             title: "Daily Limit Reached",
             description: "You have exceeded your daily request limit. Please try again tomorrow.",
             variant: "destructive",
           });
-          setError("You have exceeded your daily request limit. Please try again tomorrow.");
       } else {
           toast({
             title: "Request Failed",
             description: errorMessage,
             variant: "destructive",
           });
-          setError(errorMessage);
       }
     } finally {
       setIsLoading(false);
@@ -123,7 +130,7 @@ export default function FinancialAdviserPage() {
           </div>
         )}
 
-        {error && (
+        {error && !isLoading && (
             <Card className="border-destructive">
                 <CardHeader>
                     <CardTitle className="text-destructive">Request Failed</CardTitle>
@@ -134,7 +141,7 @@ export default function FinancialAdviserPage() {
             </Card>
         )}
         
-        {advice && !isLoading && (
+        {advice && !isLoading && !error && (
           <Card className="animate-in fade-in">
             <CardHeader>
               <CardTitle>Your Personalized Advice</CardTitle>

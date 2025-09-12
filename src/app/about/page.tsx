@@ -7,6 +7,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAllTeamMembers } from "@/services/team-service";
 import AdsterraBanner from "@/components/ads/adsterra-banner";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'About Us',
+  description: 'Learn more about the BoomerHub team and our mission to provide insightful articles and intelligent AI-powered tools for growth in the digital world.',
+};
+
 
 export default async function AboutPage() {
   const teamMembers = await getAllTeamMembers();
