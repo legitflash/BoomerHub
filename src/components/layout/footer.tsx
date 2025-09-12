@@ -33,9 +33,10 @@ export async function Footer() {
               <span className="font-bold">BoomerHub</span>
             </div>
             <p>Insights for Growth.</p>
-            <div className="flex gap-4 mt-2 items-center">
+            <div className="flex gap-4 mt-2 items-center flex-wrap">
                 <Link href="https://facebook.com/share/1DJFJQBCet/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-5 w-5" /></Link>
                 <Link href="https://www.instagram.com/legitflash01?igsh=MWczZHgxejAza2pjMw%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Instagram className="h-5 w-5" /></Link>
+                <Link href="https://x.com/legitflash_?s=21" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Twitter className="h-5 w-5" /></Link>
                 <Link href="https://www.youtube.com/@LegitFlash01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Youtube className="h-5 w-5" /></Link>
                 <Link href="https://www.tiktok.com/@legitflash01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><TikTokIcon /></Link>
                 <Link href="https://whatsapp.com/channel/0029Vb5nwfvInlqQa38G442f"  target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><MessageCircle className="h-5 w-5 hover:text-primary" /></Link>

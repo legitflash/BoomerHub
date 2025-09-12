@@ -2,7 +2,7 @@
 'use client';
 
 import Link from "next/link";
-import { Mail, MessageCircle, Youtube, Facebook, Instagram, Send } from "lucide-react";
+import { Mail, MessageCircle, Youtube, Facebook, Instagram, Send, Twitter } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -101,6 +101,7 @@ export default function ContactPage() {
                 <CardContent className="flex justify-center gap-6">
                     <Link href="https://facebook.com/share/1DJFJQBCet/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Facebook className="h-8 w-8" /></Link>
                     <Link href="https://www.instagram.com/legitflash01?igsh=MWczZHgxejAza2pjMw%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Instagram className="h-8 w-8" /></Link>
+                    <Link href="https://x.com/legitflash_?s=21" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Twitter className="h-8 w-8" /></Link>
                     <Link href="https://www.youtube.com/@LegitFlash01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><Youtube className="h-8 w-8" /></Link>
                     <Link href="https://www.tiktok.com/@legitflash01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><TikTokIcon /></Link>
                 </CardContent>
