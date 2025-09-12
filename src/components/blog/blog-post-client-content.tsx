@@ -15,6 +15,7 @@ import type { Post } from '@/lib/types';
 import CategoryActionBanner from './category-action-banner';
 import AdsterraBanner from '../ads/adsterra-banner';
 import SearchAdCard from '../ads/search-ad-card';
+import CodeBlock from './code-block';
 
 function slugify(text: string) {
   return text
@@ -47,6 +48,7 @@ const CtaComponent = ({ value }: { value: any }) => {
 const portableTextComponents = {
   types: {
     cta: CtaComponent,
+    code: CodeBlock,
   },
 };
 

@@ -1,0 +1,61 @@
+
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Check, Copy } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+interface CodeBlockProps {
+  value: {
+    code: string;
+    language?: string;
+    filename?: string;
+  };
+}
+
+export default function CodeBlock({ value }: CodeBlockProps) {
+  const { code, language, filename } = value;
+  const [hasCopied, setHasCopied] = useState(false);
+  const { toast } = useToast();
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setHasCopied(true);
+    toast({
+        title: "Copied to clipboard",
+        description: "The code has been copied successfully.",
+    });
+    setTimeout(() => {
+      setHasCopied(false);
+    }, 2000);
+  };
+
+  if (!code) {
+    return null;
+  }
+
+  return (
+    <div className="my-6 not-prose rounded-lg border bg-secondary/50 text-sm font-code">
+      {filename && (
+        <div className="flex items-center justify-between px-4 py-2 border-b">
+          <p className="text-muted-foreground">{filename}</p>
+        </div>
+      )}
+      <div className="relative p-4 overflow-x-auto">
+        <Button
+            size="icon"
+            variant="ghost"
+            className="absolute top-2 right-2 h-8 w-8"
+            onClick={handleCopy}
+        >
+            {hasCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            <span className="sr-only">Copy code</span>
+        </Button>
+        <pre>
+          <code>{code}</code>
+        </pre>
+      </div>
+    </div>
+  );
+}
