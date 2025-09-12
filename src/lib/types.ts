@@ -15,6 +15,7 @@ export type Post = {
   authorSlug: string;
   authorImage?: string;
   date: string;
+  rawDate: string; // Add raw date for reliable parsing
   keywords?: string;
 };
 

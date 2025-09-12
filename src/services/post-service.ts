@@ -37,6 +37,7 @@ function formatPost(post: any): Post {
         authorSlug: post.authorSlug,
         authorImage: post.authorImage ? urlFor(post.authorImage).width(40).height(40).url() : undefined,
         date: format(new Date(post.date), 'PPP'),
+        rawDate: post.date, // Pass the raw date string
         keywords: post.keywords?.join(', ') || '',
     };
 }

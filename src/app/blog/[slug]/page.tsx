@@ -39,7 +39,7 @@ export async function generateMetadata(
       url: `/blog/${post.slug}`,
       images: [post.image, ...previousImages],
       type: 'article',
-      publishedTime: new Date(post.date).toISOString(),
+      publishedTime: new Date(post.rawDate).toISOString(), // Use rawDate
       authors: [post.author],
     },
   }
@@ -67,7 +67,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     name: post.title,
     description: post.description,
     image: post.image,
-    datePublished: new Date(post.date).toISOString(),
+    datePublished: new Date(post.rawDate).toISOString(), // Use rawDate
     author: {
       '@type': 'Person',
       name: post.author,
