@@ -113,7 +113,8 @@ export default function AdvertisePage() {
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" name="advertising" data-netlify="true">
+                        <input type="hidden" name="form-name" value="advertising" />
                         <div className="grid sm:grid-cols-2 gap-4">
                           <FormField
                             control={form.control}

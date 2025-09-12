@@ -119,7 +119,8 @@ export default function WriteForUsPage() {
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" name="writer-pitch" data-netlify="true">
+                        <input type="hidden" name="form-name" value="writer-pitch" />
                         <div className="grid sm:grid-cols-2 gap-4">
                           <FormField
                             control={form.control}
