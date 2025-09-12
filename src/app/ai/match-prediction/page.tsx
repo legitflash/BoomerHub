@@ -126,7 +126,6 @@ export default function MatchPredictionPage() {
       setAnalysis(result);
     } catch (e: any) {
       console.error(e);
-      setAnalysis(null); // Clear previous results on error
       const errorMessage = e.message || 'An error occurred while generating the analysis. Please try again.';
        if (errorMessage.includes('Rate limit exceeded')) {
            toast({
@@ -309,7 +308,7 @@ export default function MatchPredictionPage() {
             </Card>
         )}
         
-        {analysis && (
+        {analysis && !isLoading && (
           <Card className="animate-in fade-in">
             <CardHeader className="text-center bg-muted/50">
               <CardTitle className="text-2xl text-primary">{analysis.prediction}</CardTitle>

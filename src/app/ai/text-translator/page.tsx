@@ -53,7 +53,6 @@ export default function TextTranslatorPage() {
       setTranslation(result);
     } catch (e: any) {
       console.error(e);
-      setTranslation(null); // Clear previous results on error
       const errorMessage = e.message || 'An error occurred during translation. Please try again.';
        if (errorMessage.includes('Rate limit exceeded')) {
            toast({
@@ -87,84 +86,98 @@ export default function TextTranslatorPage() {
         </p>
       </header>
 
-      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle>Enter Text</CardTitle>
-            <CardDescription>Enter the text you want to translate and select the target language.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="text"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Text to Translate</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="e.g., 'Hello, how are you?'"
-                          className="min-h-[150px]"
-                          {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                 <FormField
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="grid md:grid-cols-2 gap-8">
+            <Card>
+            <CardHeader>
+                <CardTitle>Enter Text</CardTitle>
+                <CardDescription>Enter the text you want to translate and select the target language.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
                     control={form.control}
-                    name="targetLanguage"
+                    name="text"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Translate To</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a language" />
-                            </Trigger>
-                            </FormControl>
-                            <SelectContent>
-                            {languages.map((lang) => (
-                                <SelectItem key={lang} value={lang}>{lang}</SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
+                        <FormLabel>Text to Translate</FormLabel>
+                        <FormControl>
+                            <Textarea 
+                            placeholder="e.g., 'Hello, how are you?'"
+                            className="min-h-[150px]"
+                            {...field} />
+                        </FormControl>
                         <FormMessage />
                         </FormItem>
                     )}
                     />
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="animate-spin" /> : 'Translate'}
-                  </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-
-        <Card className="flex flex-col">
-            <CardHeader>
-              <CardTitle>Translation Result</CardTitle>
-            </CardHeader>
-            <CardContent className="flex-grow flex items-center justify-center">
-                {isLoading && (
-                    <div className="flex items-center justify-center h-full">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    </div>
-                )}
-                {error && <p className="text-destructive text-center">{error}</p>}
-                {translation && (
-                    <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
-                        <p>{translation.translatedText}</p>
-                    </div>
-                )}
-                 {!isLoading && !translation && !error && (
-                    <div className="text-muted-foreground text-center">
-                        <p>Your translation will appear here.</p>
-                    </div>
-                )}
+                    <FormField
+                        control={form.control}
+                        name="targetLanguage"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Translate To</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a language" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                {languages.map((lang) => (
+                                    <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                                ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                        {isLoading ? <Loader2 className="animate-spin" /> : 'Translate'}
+                    </Button>
+                </form>
+                </Form>
             </CardContent>
-        </Card>
+            </Card>
+
+            <Card className="flex flex-col">
+                <CardHeader>
+                <CardTitle>Translation Result</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-grow flex items-center justify-center">
+                    {isLoading && (
+                        <div className="flex items-center justify-center h-full">
+                            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        </div>
+                    )}
+                    {error && <p className="text-destructive text-center">{error}</p>}
+                    {translation && !isLoading && (
+                        <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
+                            <p>{translation.translatedText}</p>
+                        </div>
+                    )}
+                    {!isLoading && !translation && !error && (
+                        <div className="text-muted-foreground text-center">
+                            <p>Your translation will appear here.</p>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </div>
+
+        {error && (
+             <Card className="border-destructive">
+                <CardHeader>
+                    <CardTitle className="text-destructive">Request Failed</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-destructive">{error}</p>
+                </CardContent>
+            </Card>
+        )}
+
       </div>
       <AdsterraBanner />
     </div>
