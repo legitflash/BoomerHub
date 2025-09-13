@@ -23,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic pages from Sanity (under the /p/ route)
   const pages = await getAllPages();
   const pageRoutes = pages.map(page => ({
-    url: `${siteUrl}/p/${page.slug}`,
+    url: `${siteUrl}/${page.slug}`,
     lastModified: new Date(page.updatedAt),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
@@ -56,9 +56,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // Filter out any Sanity pages that might conflict with static routes
+  const staticSlugs = staticRoutes.map(r => r.url.replace(siteUrl, '').substring(1));
+  const uniquePageRoutes = pageRoutes.filter(p => !staticSlugs.includes(p.url.replace(siteUrl, '').substring(1)));
+
   return [
       ...staticRoutes,
-      ...pageRoutes,
+      ...uniquePageRoutes,
       ...postRoutes,
       ...categoryRoutes,
       ...authorRoutes,
