@@ -17,7 +17,7 @@ const POSTS_PER_PAGE = 9; // Use 9 for a 3x3 grid with ad
 
 type Props = {
   params: { slug: string };
-  searchParams: { page?: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 export async function generateStaticParams() {
