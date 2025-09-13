@@ -2,7 +2,6 @@
 import { MetadataRoute } from 'next'
 import { getAllPosts } from '@/services/post-service'
 import { getAllCategories } from '@/services/category-service'
-import { getAllTeamMembers } from '@/services/team-service'
 import { getAllPages } from '@/services/page-service'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -47,20 +46,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-   // Authors
-  const authors = await getAllTeamMembers();
-  const authorRoutes = authors.map(author => ({
-    url: `${siteUrl}/author/${author.slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-  }));
-
   return [
       ...staticRoutes,
       ...pageRoutes,
       ...postRoutes,
       ...categoryRoutes,
-      ...authorRoutes,
     ];
 }

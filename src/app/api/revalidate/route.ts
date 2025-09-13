@@ -1,3 +1,4 @@
+
 // src/app/api/revalidate/route.ts
 import {NextRequest, NextResponse} from 'next/server';
 import {revalidatePath} from 'next/cache';
@@ -34,10 +35,8 @@ export async function POST(req: NextRequest) {
         pathsToRevalidate.push('/blog');
         break;
       case 'author':
-         if (slug?.current) {
-          pathsToRevalidate.push(`/author/${slug.current}`);
-        }
-        pathsToRevalidate.push('/about'); // Team members are on the about page
+        // When an author is updated, revalidate the about page where they are listed.
+        pathsToRevalidate.push('/about');
         break;
       case 'category':
         if (slug?.current) {
@@ -47,7 +46,7 @@ export async function POST(req: NextRequest) {
         break;
       case 'page':
         if (slug?.current) {
-          pathsToRevalidate.push(`/${slug.current}`);
+          pathsToRevalidate.push(`/p/${slug.current}`);
         }
         break;
     }

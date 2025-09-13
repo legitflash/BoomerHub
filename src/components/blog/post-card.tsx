@@ -40,7 +40,7 @@ export default function PostCard({ post }: PostCardProps) {
                 <AvatarImage src={post.authorImage} alt={post.author} />
                 <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
               </Avatar>
-              <Link href={`/author/${post.authorSlug}`} className="hover:underline font-medium">{post.author}</Link>
+              <span className="font-medium">{post.author}</span>
               <span>&middot;</span>
             </>
           )}

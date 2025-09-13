@@ -93,16 +93,16 @@ export default async function Home() {
                         </Link>
                         <p className="text-muted-foreground line-clamp-3">{featuredPost.description}</p>
                         <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground">
-                            <Link href={`/author/${featuredPost.authorSlug}`} className="flex items-center gap-2 group/author">
+                            <div className="flex items-center gap-2">
                                 <Avatar className="h-8 w-8">
                                     <AvatarImage src={featuredPost.authorImage} alt={featuredPost.author} />
                                     <AvatarFallback>{featuredPost.author.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                    <p className="font-semibold group-hover/author:underline">{featuredPost.author}</p>
+                                    <p className="font-semibold">{featuredPost.author}</p>
                                     <p>{featuredPost.date}</p>
                                 </div>
-                           </Link>
+                           </div>
                         </div>
                     </CardContent>
                 </div>

@@ -40,21 +40,23 @@ const blogPostSearchTool = ai.defineTool(
         slug: z.string(),
         description: z.string(),
         category: z.string(),
+        author: z.string(), // Add author to the schema
         keywords: z.string().optional(),
-        date: z.string(), // Add the date field to the schema
+        date: z.string(),
       })
     ),
   },
   async () => {
     // Return all posts with relevant fields for the AI to analyze.
     const allPosts = await getAllPosts();
-    return allPosts.map(({ title, slug, description, category, keywords, date }) => ({
+    return allPosts.map(({ title, slug, description, category, author, keywords, date }) => ({
       title,
       slug,
       description,
       category,
+      author, // Ensure the author is returned by the tool
       keywords,
-      date, // Ensure the date is returned by the tool
+      date,
     }));
   }
 );
@@ -69,8 +71,10 @@ const intelligentSearchPrompt = ai.definePrompt({
     You are an expert search assistant for a blog. A user has provided a search query.
     Your task is to use the 'blogPostSearch' tool to get a list of all blog posts.
     
-    From that list, analyze the titles, descriptions, categories, and keywords to find the top 5 most relevant blog posts that best answer the user's query.
+    From that list, analyze the titles, descriptions, categories, authors, and keywords to find the top 5 most relevant blog posts that best answer the user's query.
     
+    If the query seems to be an author's name, prioritize posts by that author.
+
     Return the results in the requested JSON format, including both the title and the slug for each post.
     If no relevant posts are found, return an empty array.
     

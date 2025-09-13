@@ -13,7 +13,6 @@ export type Post = {
   image: string;
   dataAiHint: string;
   author: string;
-  authorSlug: string;
   authorImage?: string;
   date: string;
   rawDate: string; // Add raw date for reliable parsing

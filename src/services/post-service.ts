@@ -16,7 +16,6 @@ const postFields = `
   "image": mainImage,
   "dataAiHint": mainImage.aiHint,
   "author": author->name,
-  "authorSlug": author->slug.current,
   "authorImage": author->image,
   "date": publishedAt,
   keywords
@@ -34,7 +33,6 @@ function formatPost(post: any): Post {
         image: urlFor(post.image).width(600).height(400).url(),
         dataAiHint: post.dataAiHint || 'article image',
         author: post.author,
-        authorSlug: post.authorSlug,
         authorImage: post.authorImage ? urlFor(post.authorImage).width(40).height(40).url() : undefined,
         date: format(new Date(post.date), 'PPP'),
         rawDate: post.date, // Pass the raw date string
@@ -56,14 +54,6 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     }`;
     const result = await client.fetch(query, { slug });
     return result ? formatPost(result) : null;
-}
-
-export async function getPostsByAuthorSlug(authorSlug: string): Promise<Post[]> {
-    const query = `*[_type == "post" && author->slug.current == $authorSlug] | order(publishedAt desc) {
-        ${postFields}
-    }`;
-    const results = await client.fetch(query, { authorSlug });
-    return results.map(formatPost);
 }
 
 // These functions below are no longer used for fetching but might be adapted for mutations if needed.
