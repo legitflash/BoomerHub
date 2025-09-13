@@ -56,13 +56,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  // Filter out any Sanity pages that might conflict with hardcoded routes
-  const staticSlugs = ['terms-of-use', 'privacy-policy'];
-  const uniquePageRoutes = pageRoutes.filter(p => !staticSlugs.includes(p.url.replace(`${siteUrl}/p/`, '')));
-
   return [
       ...staticRoutes,
-      ...uniquePageRoutes,
+      ...pageRoutes,
       ...postRoutes,
       ...categoryRoutes,
       ...authorRoutes,
