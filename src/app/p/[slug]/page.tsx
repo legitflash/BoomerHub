@@ -7,13 +7,14 @@ import type { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
   params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
 
 // Generate dynamic metadata for each page
 export async function generateMetadata(
-  { params }: { params: { slug: string } },
+  { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const page = await getPageBySlug(params.slug);
