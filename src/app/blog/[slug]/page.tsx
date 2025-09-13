@@ -6,6 +6,7 @@ import type { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
   params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
