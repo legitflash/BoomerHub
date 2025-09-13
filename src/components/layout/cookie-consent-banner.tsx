@@ -77,7 +77,7 @@ export default function CookieConsentBanner() {
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-secondary-foreground">
             We use cookies to improve your experience and display relevant ads. By clicking "Accept," you agree to our use of cookies. Read our{' '}
-            <Link href="/p/privacy-policy" className="underline hover:text-primary">
+            <Link href="/privacy-policy" className="underline hover:text-primary">
               Privacy Policy
             </Link>
             .

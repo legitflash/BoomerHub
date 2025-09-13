@@ -16,6 +16,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteUrl}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
     { url: `${siteUrl}/advertise-with-us`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${siteUrl}/write-for-us`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
+    { url: `${siteUrl}/terms-of-use`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.4 },
+    { url: `${siteUrl}/privacy-policy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.4 },
   ];
 
   // Dynamic pages from Sanity (under the /p/ route)

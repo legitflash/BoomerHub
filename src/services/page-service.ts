@@ -40,10 +40,7 @@ export async function getPageBySlug(slug: string): Promise<Page | null> {
 }
 
 export async function getAllPages(): Promise<Page[]> {
-    // This function should return all pages for the sitemap.
-    // It should not exclude any slugs.
     const query = `*[_type == "page"] { ${pageFields} }`;
     const results = await client.fetch(query);
     return results.map(formatPage).filter(Boolean);
 }
-
