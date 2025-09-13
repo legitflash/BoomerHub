@@ -1,0 +1,59 @@
+The Netlify deploy errored, with the following guidance provided:
+
+**Diagnosis:**
+The build failed with a type error in the file `src/app/blog/page.tsx` at line 171 due to incompatible types in the `searchParams` property.
+
+**Solution:**
+To fix this error, the user needs to ensure that the `searchParams` property in the file `src/app/blog/page.tsx` has the correct type that satisfies the constraint. The `searchParams` property should include the properties `then`, `catch`, `finally`, and other properties required by the `Promise` type. Verify that the type of `searchParams` includes all the necessary properties for a `Promise<any>` type.
+
+The relevant error logs are:
+
+Line 157: ./node_modules/dotprompt/dist/index.js
+Line 158: ./node_modules/@genkit-ai/core/lib/registry.js
+Line 159: ./node_modules/genkit/lib/registry.js
+Line 160: ./node_modules/genkit/lib/genkit.js
+Line 161: ./node_modules/genkit/lib/index.mjs
+Line 162: ./src/ai/flows/intelligent-search-with-slugs.ts
+Line 163: ./src/components/search/intelligent-search-results.tsx
+Line 164: ./src/app/search/page.tsx
+Line 165:  [32m[1m✓[22m[39m Compiled successfully in 38.0s
+Line 166:  [37m[1m [22m[39m Linting and checking validity of types ...
+Line 167: Failed during stage 'building site': Build script returned non-zero exit code: 2
+Line 168: [31mFailed to compile.
+Line 169: [39m
+Line 170: [36msrc/app/blog/page.tsx[39m
+Line 171: [31m[1mType error[22m[39m: Type '{ searchParams: { page?: string | undefined; }; }' does not satisfy the constraint 'PagePro
+Line 172:   Types of property 'searchParams' are incompatible.
+Line 173:     Type '{ page?: string | undefined; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [S
+Line 174: Next.js build worker exited with code: 1 and signal: null
+Line 175: [91m[1m​[22m[39m
+Line 176: [91m[1m"build.command" failed                                        [22m[39m
+Line 177: [91m[1m────────────────────────────────────────────────────────────────[22m[39m
+Line 178: ​
+Line 179:   [31m[1mError message[22m[39m
+Line 180:   Command failed with exit code 1: npm run build
+Line 181: ​
+Line 182:   [31m[1mError location[22m[39m
+Line 183:   In build.command from netlify.toml:
+Line 184:   npm run build
+Line 185: ​
+Line 186:   [31m[1mResolved config[22m[39m
+Line 187:   build:
+Line 188:     command: npm run build
+Line 189:     commandOrigin: config
+Line 190:     environment:
+Line 191:       - GEMINI_API_KEY
+Line 192:       - NEXT_PUBLIC_SANITY_DATASET
+Line 201:   plugins:
+Line 202:     - inputs: {}
+Line 203:       origin: config
+Line 204:       package: "@netlify/plugin-nextjs"
+Line 205:     - inputs: {}
+Line 206:       origin: ui
+Line 207:       package: "@netlify/plugin-lighthouse"
+Line 208:     - inputs: {}
+Line 209:       origin: ui
+Line 210:       package: netlify-plugin-formspree
+Line 211: Build failed due to a user error: Build script returned non-zero exit code: 2
+Line 212: Failing build: Failed to build site
+Line 213: Finished processing build request in 1m33.201s

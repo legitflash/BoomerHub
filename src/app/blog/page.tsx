@@ -13,11 +13,12 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
 
 const POSTS_PER_PAGE = 9; // Changed to 9 to make a 3x3 grid with an ad
 
-export default async function BlogPage({ searchParams }: { searchParams: { page?: string } }) {
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const allPosts = await getAllPosts();
   const blogCategories = await getAllCategories();
+  const sp = await searchParams;
 
-  const currentPage = Number(searchParams?.page) || 1;
+  const currentPage = Number(sp?.page) || 1;
   const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
 
   const paginatedPosts = allPosts.slice(
