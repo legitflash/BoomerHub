@@ -28,18 +28,6 @@ function formatPage(page: any): Page {
 
 
 export async function getPageBySlug(slug: string): Promise<Page | null> {
-    // These slugs are handled by dedicated pages in the app directory, not the generic page renderer.
-    // This prevents a page created in Sanity from overriding a core application route.
-    const excludedSlugs = [
-        'about', 'contact', 'admin', 'blog', 'search',
-        'advertise-with-us', 'write-for-us',
-        'privacy-policy', 'terms-of-use'
-    ];
-    
-    if (excludedSlugs.includes(slug) || slug.startsWith('ai/') || slug.startsWith('admin/') || slug.startsWith('blog/')) {
-        return null;
-    }
-    
     const query = `*[_type == "page" && slug.current == $slug][0] {
         ${pageFields}
     }`;
@@ -52,17 +40,9 @@ export async function getPageBySlug(slug: string): Promise<Page | null> {
 }
 
 export async function getAllPages(): Promise<Page[]> {
+    // This function should return all pages for the sitemap.
+    // It should not exclude any slugs.
     const query = `*[_type == "page"] { ${pageFields} }`;
     const results = await client.fetch(query);
     return results.map(formatPage).filter(Boolean);
-}
-
-// Deprecated functions
-export async function createPage(pageData: Omit<Page, 'id' | 'slug' | 'createdAt' | 'updatedAt'>): Promise<string> {
-    console.warn("createPage is deprecated. Please use Sanity Studio.");
-    return '';
-}
-
-export async function deletePage(id: string): Promise<void> {
-    console.warn("deletePage is deprecated. Please use Sanity Studio.");
 }

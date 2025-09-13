@@ -87,8 +87,8 @@ export async function Footer() {
                 <div>
                     <h4 className="font-semibold mb-4">Legal</h4>
                     <ul className="space-y-2">
-                    <li><Link href="/terms-of-use" className="text-muted-foreground hover:text-primary">Terms of Use</Link></li>
-                    <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
+                    <li><Link href="/p/terms-of-use" className="text-muted-foreground hover:text-primary">Terms of Use</Link></li>
+                    <li><Link href="/p/privacy-policy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
                     </ul>
                 </div>
               </div>

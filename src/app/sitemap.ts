@@ -26,13 +26,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
-  
-  // Explicitly add static pages now rendered via Sanity to ensure they're in the sitemap
-  const staticSanityPages: MetadataRoute.Sitemap = [
-      { url: `${siteUrl}/privacy-policy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-      { url: `${siteUrl}/terms-of-use`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-  ];
-
 
   // Blog posts
   const posts = await getAllPosts();
@@ -64,7 +57,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
       ...staticRoutes,
       ...pageRoutes,
-      ...staticSanityPages,
       ...postRoutes,
       ...categoryRoutes,
       ...authorRoutes,
