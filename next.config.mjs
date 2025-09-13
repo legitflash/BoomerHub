@@ -14,6 +14,7 @@ const nextConfig = {
     experimental: {
         allowedHosts: true,
     },
+    allowedDevOrigins: ['127.0.0.1'],
     images: {
         remotePatterns: [
             {
