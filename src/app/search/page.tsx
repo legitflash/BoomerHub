@@ -18,12 +18,13 @@ function SearchResultsFallback() {
   );
 }
 
-export default function SearchPage({
+export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }) {
-  const searchQuery = searchParams.q || '';
+  const sp = await searchParams;
+  const searchQuery = sp.q || '';
 
   return (
     <div className="container py-12 md:py-16">
