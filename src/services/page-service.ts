@@ -46,3 +46,4 @@ export async function getAllPages(): Promise<Page[]> {
     const results = await client.fetch(query);
     return results.map(formatPage).filter(Boolean);
 }
+
