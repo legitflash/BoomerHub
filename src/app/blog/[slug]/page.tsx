@@ -6,7 +6,6 @@ import type { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
   params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
@@ -32,7 +31,7 @@ export async function generateMetadata(
     title: post.title,
     description: post.description,
     keywords: keywords,
-    authors: [{ name: post.author, url: `${siteUrl}/author/${post.authorSlug}` }],
+    authors: [{ name: post.author }], // No longer linking to a separate author page
     openGraph: {
       title: post.title,
       description: post.description,
@@ -49,7 +48,7 @@ export async function generateMetadata(
       ],
       type: 'article',
       publishedTime: new Date(post.rawDate).toISOString(),
-      authors: [`${siteUrl}/author/${post.authorSlug}`],
+      authors: [post.author], // No longer a URL
     },
     twitter: {
       card: 'summary_large_image',
@@ -82,8 +81,7 @@ export default async function BlogPostPage({ params }: Props) {
     datePublished: new Date(post.rawDate).toISOString(), // Use rawDate
     author: {
       '@type': 'Person',
-      name: post.author,
-      url: `/author/${post.authorSlug}`,
+      name: post.author, // No URL here
     },
     publisher: {
       '@type': 'Organization',
