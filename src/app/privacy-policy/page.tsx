@@ -1,7 +1,17 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function PrivacyPolicyPage() {
+  const [lastUpdated, setLastUpdated] = useState('');
+
+  useEffect(() => {
+    // Set date on client to avoid hydration mismatch
+    setLastUpdated(new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }));
+  }, []);
+
   return (
     <div className="container max-w-4xl py-12 md:py-24">
       <Card>
@@ -9,7 +19,7 @@ export default function PrivacyPolicyPage() {
           <CardTitle className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">
             Privacy Policy
           </CardTitle>
-          <p className="text-muted-foreground pt-2">Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+          <p className="text-muted-foreground pt-2">Last Updated: {lastUpdated || '...'}</p>
         </CardHeader>
         <CardContent>
           <div className="prose prose-lg dark:prose-invert max-w-none space-y-4">
