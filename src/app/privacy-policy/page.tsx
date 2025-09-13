@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
             
             <h4>Personal Data</h4>
             <p>
-              Personally identifiable information, such as your name and email address, that you voluntarily give to us when you use our contact form. You are under no obligation to provide us with personal information of any kind; however, your refusal to do so may prevent you from using certain features of the Site.
+              Personally identifiable information, such as your name and email address, that you voluntarily give to us when you subscribe to our newsletter or use our contact forms. You are under no obligation to provide us with personal information of any kind; however, your refusal to do so may prevent you from using certain features of the Site.
             </p>
             
             <h4>AI Tool Interaction Data</h4>
@@ -40,24 +40,28 @@ export default function PrivacyPolicyPage() {
             <ul>
                 <li><strong>AI Financial Adviser:</strong> The questions and descriptions of your financial situation you provide.</li>
                 <li><strong>AI Match Prediction:</strong> The team names, leagues, and dates you input for analysis.</li>
-                <li><strong>AI Audio Transcriber:</strong> The audio files you upload for transcription. This data is processed to provide the service and is not stored on our servers after the transcription is complete.</li>
+                <li><strong>AI Text Translator:</strong> The text you submit for translation.</li>
             </ul>
              <p>This information is sent to our third-party AI service provider (Google AI) to generate the output. We do not store the specific inputs or outputs from your interactions with these tools on our servers long-term.</p>
             
-            <h4>Automatically Collected Information</h4>
+            <h4>Usage Data & IP Address</h4>
             <p>
-              Our servers automatically collect standard log data when you access the Site, such as your IP address, browser type, and access times. This information is used for analytical purposes to improve our service.
+              Our servers automatically collect standard log data when you access the Site, such as your IP address, browser type, and access times. We use your IP address for the following purposes:
             </p>
+            <ul>
+              <li><strong>Rate Limiting:</strong> To prevent abuse and ensure service availability for all users, we monitor the number of AI requests from a single IP address and enforce a daily limit. This is a security measure.</li>
+              <li><strong>Analytics:</strong> To monitor and analyze usage and trends to improve your experience with the Site.</li>
+            </ul>
 
             <h2>2. How We Use Your Information</h2>
             <p>
               Having accurate information permits us to provide you with a smooth, efficient, and customized experience. Specifically, we may use information collected about you via the Site to:
             </p>
             <ul>
-              <li>Respond to your comments, questions, and requests and provide customer service via our contact form.</li>
-              <li>Operate and maintain our AI-powered tools.</li>
-              <li>Monitor and analyze usage and trends to improve your experience with the Site.</li>
-              <li>Provide and deliver the products and services you request, process transactions, and send you related information.</li>
+              <li>Respond to your comments, questions, and requests and provide customer service.</li>
+              <li>Send you our newsletter if you have subscribed.</li>
+              <li>Operate and maintain our AI-powered tools and protect them from abuse.</li>
+              <li>Monitor and analyze usage and trends to improve our Service.</li>
             </ul>
 
             <h2>3. Disclosure of Your Information</h2>
@@ -66,7 +70,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul>
                 <li><strong>By Law or to Protect Rights:</strong> If we believe the release of information about you is necessary to respond to legal process, to investigate or remedy potential violations of our policies, or to protect the rights, property, and safety of others, we may share your information as permitted or required by any applicable law, rule, or regulation.</li>
-                <li><strong>Third-Party Service Providers:</strong> We may share your information with third parties that perform services for us or on our behalf, including data analysis, and AI model hosting (such as Google AI).</li>
+                <li><strong>Third-Party Service Providers:</strong> We may share your information with third parties that perform services for us or on our behalf. This includes our AI model provider (Google AI) for operating the AI tools, our email service provider (Resend) for newsletters, and our hosting provider (Netlify) for form submissions.</li>
             </ul>
             
              <h2>4. Security of Your Information</h2>
