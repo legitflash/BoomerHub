@@ -5,6 +5,8 @@ import { Header } from './header';
 // This is a Server Component that fetches data and passes it to the client.
 export default async function NavigationMenu() {
   const categories = await getAllCategories();
+  
+  // This ensures we only show unique categories, even if they share posts.
   const uniqueCategories = categories.filter(
     (category, index, self) =>
       index === self.findIndex((c) => c.slug === category.slug)
