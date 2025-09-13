@@ -15,6 +15,11 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
 
 const POSTS_PER_PAGE = 9; // Use 9 for a 3x3 grid with ad
 
+type Props = {
+  params: { slug: string };
+  searchParams: { page?: string };
+};
+
 export async function generateStaticParams() {
   const categories = await getAllCategories();
   return categories.map((category) => ({
@@ -22,7 +27,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function BlogCategoryPage({ params, searchParams }: { params: { slug: string }, searchParams: { page?: string } }) {
+export default async function BlogCategoryPage({ params, searchParams }: Props) {
   const { slug } = params;
   
   if (slug === 'betting-predictions') {

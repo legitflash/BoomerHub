@@ -5,8 +5,8 @@ import { getAllPosts, getPostBySlug } from '@/services/post-service';
 import type { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
-  params: { slug: string }
-}
+  params: { slug: string };
+};
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
 
@@ -61,7 +61,7 @@ export async function generateMetadata(
 
 // This is the main page component, which is a Server Component.
 // It fetches the data and passes it to the Client Component.
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: Props) {
   const post = await getPostBySlug(params.slug);
 
   if (!post) {

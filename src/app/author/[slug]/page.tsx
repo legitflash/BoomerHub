@@ -8,7 +8,11 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Rss } from 'lucide-react';
 import PostGrid from '@/components/blog/post-grid';
 
-export default async function AuthorPage({ params }: { params: { slug: string } }) {
+type Props = {
+  params: { slug: string };
+};
+
+export default async function AuthorPage({ params }: Props) {
   const author = await getTeamMemberBySlug(params.slug);
   
   if (!author) {

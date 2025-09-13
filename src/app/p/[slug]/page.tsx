@@ -1,13 +1,13 @@
 
 import { notFound } from 'next/navigation';
-import { getPageBySlug } from '@/services/page-service';
+import { getAllPages, getPageBySlug } from '@/services/page-service';
 import { PortableText } from 'next-sanity';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import type { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
-  params: { slug: string }
-}
+  params: { slug: string };
+};
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
 
@@ -68,4 +68,13 @@ export default async function SanityPage({ params }: Props) {
       </Card>
     </div>
   );
+}
+
+
+export async function generateStaticParams() {
+  const pages = await getAllPages();
+ 
+  return pages.map((page) => ({
+    slug: page.slug,
+  }));
 }
