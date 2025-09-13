@@ -90,13 +90,13 @@ export default function BlogPostContent({ post, allPosts }: { post: Post, allPos
               </Link>
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline mb-4">{post.title}</h1>
               <div className="flex items-center justify-center gap-4 text-muted-foreground">
-                  <div className="flex items-center gap-2">
+                  <Link href={`/author/${post.authorSlug}`} className="flex items-center gap-2 group">
                       <Avatar className="h-8 w-8">
-                      <AvatarImage src={post.authorImage} alt={post.author} />
-                      <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                        <AvatarImage src={post.authorImage} alt={post.author} />
+                        <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <Link href={`/author/${post.authorSlug}`} className="hover:underline">{post.author}</Link>
-                  </div>
+                      <span className="group-hover:underline">{post.author}</span>
+                  </Link>
                   <span>&middot;</span>
                   <span>{post.date}</span>
               </div>
