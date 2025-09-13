@@ -5,24 +5,15 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import type { Metadata } from 'next';
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Loader2, PiggyBank } from "lucide-react";
-import { generateFinancialAdvice } from '@/ai/flows/generate-financial-advice';
 import type { GenerateFinancialAdviceOutput } from '@/ai/flows/generate-financial-advice';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
-
-// Note: This metadata is commented out as it cannot be used in a Client Component.
-// It should be defined in a parent layout or page if this page were server-rendered.
-// export const metadata: Metadata = {
-//   title: 'AI Financial Adviser',
-//   description: 'Get personalized financial advice on investing, savings, and more from our AI-powered tool.',
-// };
+import { getFinancialAdvice } from './actions';
 
 const formSchema = z.object({
   query: z.string().min(20, { message: "Please describe your situation in at least 20 characters." }),
@@ -50,7 +41,7 @@ export default function FinancialAdviserPage() {
     setAdvice(null);
 
     try {
-      const result = await generateFinancialAdvice({ 
+      const result = await getFinancialAdvice({ 
         query: values.query,
       });
       setAdvice(result);

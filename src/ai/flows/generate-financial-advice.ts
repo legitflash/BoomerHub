@@ -10,7 +10,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { headers } from 'next/headers';
 import { checkAndIncrementRateLimit } from '@/services/rate-limit-service';
 
 
@@ -26,8 +25,7 @@ const GenerateFinancialAdviceOutputSchema = z.object({
 });
 export type GenerateFinancialAdviceOutput = z.infer<typeof GenerateFinancialAdviceOutputSchema>;
 
-export async function generateFinancialAdvice(input: GenerateFinancialAdviceInput): Promise<GenerateFinancialAdviceOutput> {
-  const ip = headers().get('x-forwarded-for') || headers().get('x-real-ip');
+export async function generateFinancialAdvice(input: GenerateFinancialAdviceInput, ip: string | null): Promise<GenerateFinancialAdviceOutput> {
   await checkAndIncrementRateLimit(ip);
   return generateFinancialAdviceFlow(input);
 }

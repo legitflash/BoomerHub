@@ -5,24 +5,16 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import type { Metadata } from 'next';
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Languages } from "lucide-react";
-import { translateText } from '@/ai/flows/translate-text';
 import type { TranslateTextOutput } from '@/ai/flows/translate-text';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
-
-// Note: This metadata is commented out as it cannot be used in a Client Component.
-// export const metadata: Metadata = {
-//   title: 'AI Text Translator',
-//   description: 'Translate text into dozens of languages with our powerful and accurate AI translator tool.',
-// };
+import { getTranslation } from './actions';
 
 
 const languages = [
@@ -57,7 +49,7 @@ export default function TextTranslatorPage() {
     setTranslation(null);
 
     try {
-      const result = await translateText(values);
+      const result = await getTranslation(values);
       setTranslation(result);
     } catch (e: any) {
       console.error(e);

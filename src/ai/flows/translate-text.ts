@@ -10,7 +10,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { headers } from 'next/headers';
 import { checkAndIncrementRateLimit } from '@/services/rate-limit-service';
 
 
@@ -25,8 +24,7 @@ const TranslateTextOutputSchema = z.object({
 });
 export type TranslateTextOutput = z.infer<typeof TranslateTextOutputSchema>;
 
-export async function translateText(input: TranslateTextInput): Promise<TranslateTextOutput> {
-  const ip = headers().get('x-forwarded-for') || headers().get('x-real-ip');
+export async function translateText(input: TranslateTextInput, ip: string | null): Promise<TranslateTextOutput> {
   await checkAndIncrementRateLimit(ip);
   return translateTextFlow(input);
 }

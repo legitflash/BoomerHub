@@ -19,9 +19,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Shield, Users } from 'lucide-react';
 import type { GenerateMatchAnalysisOutput } from '@/ai/flows/generate-match-analysis';
-import { generateMatchAnalysis } from '@/ai/flows/generate-match-analysis';
 import { useToast } from '@/hooks/use-toast';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
+import { getMatchAnalysis } from './actions';
 
 // Note: This metadata is commented out as it cannot be used in a Client Component.
 // export const metadata: Metadata = {
@@ -124,7 +124,7 @@ export default function MatchPredictionPage() {
     setAnalysis(null);
 
     try {
-      const result = await generateMatchAnalysis({ 
+      const result = await getMatchAnalysis({ 
         homeTeam: values.homeTeam, 
         awayTeam: values.awayTeam,
         league: values.league,
