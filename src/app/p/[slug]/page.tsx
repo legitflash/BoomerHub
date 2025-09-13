@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import type { Metadata, ResolvingMetadata } from 'next';
 
 type Props = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
@@ -17,7 +17,8 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const page = await getPageBySlug(params.slug);
+  const { slug } = await params;
+  const page = await getPageBySlug(slug);
 
   if (!page) {
     return {
@@ -42,7 +43,8 @@ export async function generateMetadata(
 }
 
 export default async function SanityPage({ params }: Props) {
-  const page = await getPageBySlug(params.slug);
+  const { slug } = await params;
+  const page = await getPageBySlug(slug);
 
   if (!page) {
     notFound();

@@ -34,7 +34,8 @@ const getStatusIcon = (status: string) => {
     }
 };
 
-export default async function MatchAnalysisPage({ params: { id } }: { params: { id: string } }) {
+export default async function MatchAnalysisPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const prediction = await getPredictionById(id);
 
   if (!prediction) {

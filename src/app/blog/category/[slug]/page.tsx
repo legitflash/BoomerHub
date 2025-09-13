@@ -16,8 +16,8 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
 const POSTS_PER_PAGE = 9; // Use 9 for a 3x3 grid with ad
 
 type Props = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export async function generateStaticParams() {
@@ -28,7 +28,8 @@ export async function generateStaticParams() {
 }
 
 export default async function BlogCategoryPage({ params, searchParams }: Props) {
-  const { slug } = params;
+  const { slug } = await params;
+  const sp = await searchParams;
   
   if (slug === 'betting-predictions') {
     // This is handled by a dedicated page, but we add a check here as a safeguard.
@@ -45,7 +46,7 @@ export default async function BlogCategoryPage({ params, searchParams }: Props) 
   const postsForCategory = allPosts.filter((p) => p.categorySlug === slug);
   const Icon = iconMap[category.iconName] || DollarSign;
 
-  const currentPage = Number(searchParams?.page) || 1;
+  const currentPage = Number(sp?.page) || 1;
   const totalPages = Math.ceil(postsForCategory.length / POSTS_PER_PAGE);
 
   const paginatedPosts = postsForCategory.slice(
