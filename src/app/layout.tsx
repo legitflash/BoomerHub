@@ -4,11 +4,11 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 import { Footer } from '@/components/layout/footer';
 import { Toaster } from '@/components/ui/toaster';
-import AdScripts from './ad-scripts';
 import { ThemeProvider } from '@/components/layout/theme-provider';
 import PwaInstallBanner from '@/components/pwa/pwa-install-banner';
 import NewsletterSignup from '@/components/layout/newsletter-signup';
 import NavigationMenu from '@/components/layout/navigation-menu';
+import CookieConsentBanner from '@/components/layout/cookie-consent-banner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -84,7 +84,7 @@ export default function RootLayout({
             </div>
             <Toaster />
             <PwaInstallBanner />
-          <AdScripts />
+            <CookieConsentBanner />
         </ThemeProvider>
       </body>
     </html>

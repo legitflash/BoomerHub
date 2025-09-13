@@ -6,6 +6,9 @@ import { useEffect } from 'react';
 
 export default function AdScripts() {
   useEffect(() => {
+    // This effect will run only on the client side, after the component mounts
+    // and after consent has been given.
+    
     // Hilltop Ads Pop-under Script
     const popUnder = document.createElement('script');
     (popUnder as any).settings = {};
@@ -14,24 +17,29 @@ export default function AdScripts() {
     popUnder.referrerPolicy = 'no-referrer-when-downgrade';
     document.body.appendChild(popUnder);
 
+    // Monetag Script
+    const monetagScript = document.createElement('script');
+    monetagScript.innerHTML = `(s=>{s.dataset.zone='9810543',s.src='https://vemtoutcheeg.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`;
+    document.body.appendChild(monetagScript);
+
+    // Monetag Interstitial Ad Script
+    const interstitialScript = document.createElement('script');
+    interstitialScript.innerHTML = `(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`;
+    document.body.appendChild(interstitialScript);
+
     return () => {
       // Cleanup scripts on component unmount
       if (document.body.contains(popUnder)) {
         document.body.removeChild(popUnder);
       }
+       if (document.body.contains(monetagScript)) {
+        document.body.removeChild(monetagScript);
+      }
+       if (document.body.contains(interstitialScript)) {
+        document.body.removeChild(interstitialScript);
+      }
     };
   }, []);
 
-  return (
-    <>
-      {/* Monetag Script */}
-      <Script id="monetag-script">
-        {`(s=>{s.dataset.zone='9810543',s.src='https://vemtoutcheeg.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
-      </Script>
-       {/* Monetag Interstitial Ad Script */}
-      <Script id="monetag-interstitial-script">
-        {`(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`}
-      </Script>
-    </>
-  );
+  return null; // This component does not render any visible content
 }

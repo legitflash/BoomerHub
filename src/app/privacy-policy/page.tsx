@@ -53,7 +53,17 @@ export default function PrivacyPolicyPage() {
               <li><strong>Analytics:</strong> To monitor and analyze usage and trends to improve your experience with the Site.</li>
             </ul>
 
-            <h2>2. How We Use Your Information</h2>
+            <h2>2. Cookies and Tracking Technologies</h2>
+            <p>
+                We use cookies and similar tracking technologies to operate and personalize our website. A cookie is a small file stored on your device. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
+            </p>
+            <ul>
+                <li><strong>Essential Cookies:</strong> These cookies are necessary for the website to function. For example, we use a cookie to remember your consent choices regarding other cookies.</li>
+                <li><strong>Advertising Cookies:</strong> If you provide consent, our third-party advertising partners (like Monetag and Adsterra) will use cookies to display personalized advertisements based on your visits to this and other sites on the Internet. We do not have access to or control over these third-party cookies.</li>
+            </ul>
+            <p>You have the choice to accept or decline non-essential cookies through the consent banner that appears on your first visit.</p>
+
+            <h2>3. How We Use Your Information</h2>
             <p>
               Having accurate information permits us to provide you with a smooth, efficient, and customized experience. Specifically, we may use information collected about you via the Site to:
             </p>
@@ -62,28 +72,29 @@ export default function PrivacyPolicyPage() {
               <li>Send you our newsletter if you have subscribed.</li>
               <li>Operate and maintain our AI-powered tools and protect them from abuse.</li>
               <li>Monitor and analyze usage and trends to improve our Service.</li>
+              <li>Serve personalized advertising, if you have given consent.</li>
             </ul>
 
-            <h2>3. Disclosure of Your Information</h2>
+            <h2>4. Disclosure of Your Information</h2>
             <p>
               We do not share, sell, rent, or trade your information with third parties for their commercial purposes. We may share information about you in the following situations:
             </p>
             <ul>
                 <li><strong>By Law or to Protect Rights:</strong> If we believe the release of information about you is necessary to respond to legal process, to investigate or remedy potential violations of our policies, or to protect the rights, property, and safety of others, we may share your information as permitted or required by any applicable law, rule, or regulation.</li>
-                <li><strong>Third-Party Service Providers:</strong> We may share your information with third parties that perform services for us or on our behalf. This includes our AI model provider (Google AI) for operating the AI tools, our email service provider (Resend) for newsletters, and our hosting provider (Netlify) for form submissions.</li>
+                <li><strong>Third-Party Service Providers:</strong> We may share your information with third parties that perform services for us or on our behalf. This includes our AI model provider (Google AI) for operating the AI tools, our email service provider (Resend) for newsletters, and our hosting provider (Netlify) for form submissions. Advertising partners may also collect data via cookies as described above.</li>
             </ul>
             
-             <h2>4. Security of Your Information</h2>
+             <h2>5. Security of Your Information</h2>
             <p>
               We use administrative, technical, and physical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable, and no method of data transmission can be guaranteed against any interception or other type of misuse.
             </p>
 
-            <h2>5. Policy for Children</h2>
+            <h2>6. Policy for Children</h2>
             <p>
               We do not knowingly solicit information from or market to children under the age of 13. If we learn that we have collected personal information from a child under age 13 without verification of parental consent, we will delete that information as quickly as possible.
             </p>
             
-            <h2>6. Contact Us</h2>
+            <h2>7. Contact Us</h2>
             <p>
               If you have questions or comments about this Privacy Policy, please contact us through our <a href="/contact">contact page</a>.
             </p>
