@@ -48,7 +48,7 @@ export default function FinancialAdviserPage() {
     } catch (e: any) {
       console.error(e);
       const errorMessage = e.message || 'An error occurred while generating advice. Please try again.';
-      setError(errorMessage); // Set the error state
+      setError(errorMessage);
       if (errorMessage.includes('Rate limit exceeded')) {
            toast({
             title: "Daily Limit Reached",
@@ -121,18 +121,7 @@ export default function FinancialAdviserPage() {
           </div>
         )}
 
-        {error && !isLoading && (
-            <Card className="border-destructive">
-                <CardHeader>
-                    <CardTitle className="text-destructive">Request Failed</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-destructive">{error}</p>
-                </CardContent>
-            </Card>
-        )}
-        
-        {advice && !isLoading && !error && (
+        {advice && !isLoading && (
           <Card className="animate-in fade-in">
             <CardHeader>
               <CardTitle>Your Personalized Advice</CardTitle>

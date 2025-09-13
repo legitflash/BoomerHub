@@ -302,19 +302,8 @@ export default function MatchPredictionPage() {
             <p className="mt-4 text-muted-foreground">Our AI is analyzing the match... this may take a moment.</p>
           </div>
         )}
-
-        {error && !isLoading && (
-            <Card className="border-destructive">
-                <CardHeader>
-                    <CardTitle className="text-destructive">Prediction Failed</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-destructive">{error}</p>
-                </CardContent>
-            </Card>
-        )}
         
-        {analysis && !isLoading && !error && (
+        {analysis && !isLoading && (
           <Card className="animate-in fade-in">
             <CardHeader className="text-center bg-muted/50">
               <CardTitle className="text-2xl text-primary">{analysis.prediction}</CardTitle>

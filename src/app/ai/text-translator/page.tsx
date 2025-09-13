@@ -151,13 +151,12 @@ export default function TextTranslatorPage() {
                             <Loader2 className="h-8 w-8 animate-spin text-primary" />
                         </div>
                     )}
-                    {error && !isLoading && <p className="text-destructive text-center">{error}</p>}
-                    {translation && !isLoading && !error && (
+                    {translation && !isLoading && (
                         <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
                             <p>{translation.translatedText}</p>
                         </div>
                     )}
-                    {!isLoading && !translation && !error && (
+                    {!isLoading && !translation && (
                         <div className="text-muted-foreground text-center">
                             <p>Your translation will appear here.</p>
                         </div>
@@ -165,17 +164,6 @@ export default function TextTranslatorPage() {
                 </CardContent>
             </Card>
         </div>
-
-        {error && !isLoading && (
-             <Card className="border-destructive mt-8">
-                <CardHeader>
-                    <CardTitle className="text-destructive">Request Failed</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-destructive">{error}</p>
-                </CardContent>
-            </Card>
-        )}
 
       </div>
       <AdsterraBanner />
