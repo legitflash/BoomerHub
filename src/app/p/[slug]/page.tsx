@@ -4,6 +4,9 @@ import { getPageBySlug } from '@/services/page-service';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PortableText } from 'next-sanity';
 
+// This new route is dedicated to rendering generic pages from Sanity.
+// It avoids conflict with all other application routes.
+
 export default async function CustomPage({ params }: { params: { slug: string } }) {
   const page = await getPageBySlug(params.slug);
 

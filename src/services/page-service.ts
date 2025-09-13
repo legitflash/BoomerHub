@@ -15,6 +15,7 @@ const pageFields = `
 `;
 
 function formatPage(page: any): Page {
+    if (!page) return null as any;
     return {
         id: page._id,
         title: page.title,
@@ -27,8 +28,13 @@ function formatPage(page: any): Page {
 
 
 export async function getPageBySlug(slug: string): Promise<Page | null> {
-    const excludedSlugs = ['about', 'contact', 'admin', 'blog', 'privacy-policy', 'terms-of-use', 'advertise-with-us', 'write-for-us', 'login', 'signup', 'profile'];
-    if (excludedSlugs.includes(slug) || slug.startsWith('ai/') || slug.startsWith('admin/')) {
+    // These are reserved slugs for application routes and should never be queried as a generic page.
+    const excludedSlugs = [
+        'about', 'contact', 'admin', 'blog', 'privacy-policy', 
+        'terms-of-use', 'advertise-with-us', 'write-for-us', 'login', 'signup', 'profile', 'search'
+    ];
+    
+    if (excludedSlugs.includes(slug) || slug.startsWith('ai/') || slug.startsWith('admin/') || slug.startsWith('blog/')) {
         return null;
     }
     
@@ -43,16 +49,16 @@ export async function getPageBySlug(slug: string): Promise<Page | null> {
     return formatPage(page);
 }
 
+export async function getAllPages(): Promise<Page[]> {
+    const query = `*[_type == "page"] { ${pageFields} }`;
+    const results = await client.fetch(query);
+    return results.map(formatPage).filter(Boolean);
+}
+
 // Deprecated functions
 export async function createPage(pageData: Omit<Page, 'id' | 'slug' | 'createdAt' | 'updatedAt'>): Promise<string> {
     console.warn("createPage is deprecated. Please use Sanity Studio.");
     return '';
-}
-
-export async function getAllPages(): Promise<Page[]> {
-    const query = `*[_type == "page"] { ${pageFields} }`;
-    const results = await client.fetch(query);
-    return results.map(formatPage);
 }
 
 export async function deletePage(id: string): Promise<void> {
