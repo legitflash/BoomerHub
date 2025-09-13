@@ -1,0 +1,46 @@
+
+{
+  "about": {
+    "src": "https://picsum.photos/seed/data-analytics/600/400",
+    "width": 600,
+    "height": 400,
+    "alt": "BoomerHub Team reviewing data analytics on a screen",
+    "dataAiHint": "data analytics"
+  },
+  "hero": {
+    "src": "https://picsum.photos/seed/hero-image/1200/800",
+    "width": 1200,
+    "height": 800,
+    "alt": "A person learning online with a laptop",
+    "dataAiHint": "learning online"
+  },
+  "ads": [
+    {
+      "title": "Unlock Your Earning Potential Today",
+      "description": "Discover proven strategies and tools to boost your income. Your journey to financial freedom starts here. Click to learn more.",
+      "image": "https://picsum.photos/seed/ad-potential/600/400",
+      "width": 600,
+      "height": 400,
+      "alt": "A graph showing financial growth and potential",
+      "dataAiHint": "financial growth"
+    },
+    {
+      "title": "The AI Tools That Will Change Your Workflow",
+      "description": "Work smarter, not harder. Explore a curated list of AI tools that automate tasks and boost productivity.",
+      "image": "https://picsum.photos/seed/ad-ai-tools/600/400",
+      "width": 600,
+      "height": 400,
+      "alt": "An illustration of artificial intelligence and machine learning",
+      "dataAiHint": "artificial intelligence"
+    },
+    {
+      "title": "Start a Profitable Side Hustle in 30 Days",
+      "description": "Looking for extra income? We have the guide you need to launch a successful side business from the ground up.",
+      "image": "https://picsum.photos/seed/ad-side-hustle/600/400",
+      "width": 600,
+      "height": 400,
+      "alt": "A person working on their small business from home",
+      "dataAiHint": "small business"
+    }
+  ]
+}

@@ -11,7 +11,8 @@ import HeroSearch from '@/components/home/hero-search';
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import type { Post } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
-import SearchAdCard from '@/components/ads/search-ad-card';
+import PostCard from '@/components/blog/post-card';
+import placeholderImageData from '@/lib/placeholder-images.json';
 
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
   DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit,
@@ -25,12 +26,13 @@ const getRecentPostsByCategory = (posts: Post[], categorySlug: string, count: nu
 };
 
 
-export default async function Home({ searchParams }: { searchParams: { page?: string } }) {
+export default async function Home() {
   const allPosts = await getAllPosts();
   const allCategories = await getAllCategories();
   
   const featuredPost = allPosts[0]; // The latest post is the featured one
   const otherPosts = allPosts.slice(1);
+  const heroImage = placeholderImageData.hero;
 
   return (
     <>
@@ -53,12 +55,13 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
               </div>
             </div>
             <Image
-              src="https://picsum.photos/seed/hero-image/1200/800"
-              alt="Hero"
-              width={1200}
-              height={800}
-              data-ai-hint="learning online"
+              src={heroImage.src}
+              alt={heroImage.alt}
+              width={heroImage.width}
+              height={heroImage.height}
+              data-ai-hint={heroImage.dataAiHint}
               className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
+              priority
             />
           </div>
         </div>
@@ -106,10 +109,10 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
       )}
 
       {/* Top Categories Section */}
-      <section className="container px-4 md:px-6">
+      <section className="container px-4 md-px-6">
         <h2 className="text-3xl font-bold tracking-tighter text-center mb-8 font-headline">Top Categories</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-          {allCategories.slice(0, 4).map((category) => {
+          {allCategories.filter(c => !c.isAiTool).slice(0, 4).map((category) => {
             const Icon = iconMap[category.iconName] || DollarSign;
             return (
              <Link key={category.slug} href={`/blog/category/${category.slug}`}>
@@ -125,7 +128,7 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
       <AdsterraBanner />
 
       {/* Category Sections */}
-      {allCategories.map(category => {
+      {allCategories.filter(c => !c.isAiTool).map(category => {
         const recentPosts = getRecentPostsByCategory(otherPosts, category.slug, 3);
         if (recentPosts.length === 0) return null;
 
@@ -139,33 +142,7 @@ export default async function Home({ searchParams }: { searchParams: { page?: st
             </div>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {recentPosts.map((post) => (
-                <Card key={post.slug} className="group">
-                  <Link href={`/blog/${post.slug}`}>
-                    <Image
-                      src={post.image}
-                      alt={post.title}
-                      width={600}
-                      height={400}
-                      data-ai-hint={post.dataAiHint}
-                      className="w-full rounded-t-lg object-cover aspect-video"
-                    />
-                  </Link>
-                  <CardContent className="p-4 space-y-2">
-                    <Link href={`/blog/${post.slug}`}>
-                      <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">{post.title}</h3>
-                    </Link>
-                    <p className="text-sm text-muted-foreground line-clamp-2">{post.description}</p>
-                    <div className="flex items-center gap-2 pt-2 text-xs text-muted-foreground">
-                      <Avatar className="h-6 w-6">
-                        <AvatarImage src={post.authorImage} alt={post.author} />
-                        <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <span>{post.author}</span>
-                      <span>&middot;</span>
-                      <span>{post.date}</span>
-                    </div>
-                  </CardContent>
-                </Card>
+                <PostCard key={post.slug} post={post} />
               ))}
             </div>
           </section>

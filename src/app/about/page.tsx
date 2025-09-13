@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAllTeamMembers } from "@/services/team-service";
 import AdsterraBanner from "@/components/ads/adsterra-banner";
 import type { Metadata } from 'next';
+import placeholderImageData from '@/lib/placeholder-images.json';
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -17,6 +18,8 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
   const teamMembers = await getAllTeamMembers();
+  const aboutImage = placeholderImageData.about;
+
   return (
     <div className="container py-12 md:py-24 space-y-16">
       <section className="text-center">
@@ -29,11 +32,11 @@ export default async function AboutPage() {
       <section className="grid md:grid-cols-2 gap-12 items-center">
         <div>
           <Image 
-            src="https://picsum.photos/seed/data-analytics/600/400" 
-            alt="BoomerHub Team Presentation" 
-            width={600} 
-            height={400} 
-            data-ai-hint="data analytics"
+            src={aboutImage.src}
+            alt={aboutImage.alt}
+            width={aboutImage.width}
+            height={aboutImage.height}
+            data-ai-hint={aboutImage.dataAiHint}
             className="rounded-lg shadow-md"
           />
         </div>

@@ -16,7 +16,7 @@ export default function PostCard({ post }: PostCardProps) {
       <Link href={`/blog/${post.slug}`} className="block">
         <Image
           src={post.image}
-          alt={post.title}
+          alt={post.title} // Using post title as alt text is a good default for SEO
           width={600}
           height={400}
           data-ai-hint={post.dataAiHint}
@@ -25,7 +25,9 @@ export default function PostCard({ post }: PostCardProps) {
       </Link>
       <CardContent className="p-4 space-y-2 flex-grow flex flex-col">
         {post.category && (
-            <Badge variant="outline" className="w-fit">{post.category}</Badge>
+            <Link href={`/blog/category/${post.categorySlug}`} className="w-fit">
+              <Badge variant="outline">{post.category}</Badge>
+            </Link>
         )}
         <Link href={`/blog/${post.slug}`} className="block">
           <h3 className="text-lg font-semibold group-hover:text-primary transition-colors flex-grow">{post.title}</h3>

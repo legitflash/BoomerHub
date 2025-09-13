@@ -8,31 +8,23 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { adLinks } from '@/lib/data';
+import placeholderImageData from '@/lib/placeholder-images.json';
 
-const adCreatives = [
-  {
-    title: 'Unlock Your Earning Potential Today',
-    description: 'Discover proven strategies and tools to boost your income. Your journey to financial freedom starts here. Click to learn more.',
-    image: 'https://picsum.photos/seed/ad-potential/600/400',
-    dataAiHint: 'financial growth',
-  },
-  {
-    title: 'The AI Tools That Will Change Your Workflow',
-    description: 'Work smarter, not harder. Explore a curated list of AI tools that automate tasks and boost productivity.',
-    image: 'https://picsum.photos/seed/ad-ai-tools/600/400',
-    dataAiHint: 'artificial intelligence',
-  },
-  {
-    title: 'Start a Profitable Side Hustle in 30 Days',
-    description: 'Looking for extra income? We have the guide you need to launch a successful side business from the ground up.',
-    image: 'https://picsum.photos/seed/ad-side-hustle/600/400',
-    dataAiHint: 'small business',
-  },
-];
+const adCreatives = placeholderImageData.ads;
+
+interface AdCreative {
+  title: string;
+  description: string;
+  image: string;
+  width: number;
+  height: number;
+  alt: string;
+  dataAiHint: string;
+}
 
 
 export default function SearchAdCard() {
-  const [ad, setAd] = useState<{ title: string; description: string; image: string; dataAiHint: string; } | null>(null);
+  const [ad, setAd] = useState<AdCreative | null>(null);
   const [adUrl, setAdUrl] = useState<string>('');
   
   useEffect(() => {
@@ -63,9 +55,9 @@ export default function SearchAdCard() {
         <div className="relative">
             <Image
                 src={ad.image}
-                alt={ad.title}
-                width={600}
-                height={400}
+                alt={ad.alt}
+                width={ad.width}
+                height={ad.height}
                 data-ai-hint={ad.dataAiHint}
                 className="w-full rounded-t-lg object-cover aspect-video"
             />
