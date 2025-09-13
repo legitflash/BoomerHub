@@ -25,8 +25,9 @@ export type Page = {
   slug: string;
   title: string;
   content: any; // Sanity Portable Text
-  createdAt: any;
-  updatedAt: any;
+  createdAt: string;
+  updatedAt: string;
+  rawUpdatedAt: string;
 }
 
 export type Category = {

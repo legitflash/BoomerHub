@@ -22,10 +22,10 @@ function formatPage(page: any): Page {
         slug: page.slug,
         content: page.content,
         createdAt: format(new Date(page._createdAt), 'PPP'),
-        updatedAt: page._updatedAt, // Pass raw date for sitemap
+        updatedAt: format(new Date(page._updatedAt), 'PPP'), // Format the updated date
+        rawUpdatedAt: page._updatedAt, // Pass raw date for sitemap
     };
 }
-
 
 export async function getPageBySlug(slug: string): Promise<Page | null> {
     const query = `*[_type == "page" && slug.current == $slug][0] {
