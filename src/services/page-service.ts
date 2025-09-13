@@ -22,16 +22,18 @@ function formatPage(page: any): Page {
         slug: page.slug,
         content: page.content,
         createdAt: format(new Date(page._createdAt), 'PPP'),
-        updatedAt: format(new Date(page._updatedAt), 'PPP'),
+        updatedAt: page._updatedAt, // Pass raw date for sitemap
     };
 }
 
 
 export async function getPageBySlug(slug: string): Promise<Page | null> {
-    // These are reserved slugs for application routes and should never be queried as a generic page.
+    // These slugs are handled by dedicated pages in the app directory, not the generic page renderer.
+    // This prevents a page created in Sanity from overriding a core application route.
     const excludedSlugs = [
-        'about', 'contact', 'admin', 'blog', 'privacy-policy', 
-        'terms-of-use', 'advertise-with-us', 'write-for-us', 'login', 'signup', 'profile', 'search'
+        'about', 'contact', 'admin', 'blog', 'search',
+        'advertise-with-us', 'write-for-us',
+        'privacy-policy', 'terms-of-use'
     ];
     
     if (excludedSlugs.includes(slug) || slug.startsWith('ai/') || slug.startsWith('admin/') || slug.startsWith('blog/')) {

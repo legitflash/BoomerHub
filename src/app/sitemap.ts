@@ -3,27 +3,42 @@ import { MetadataRoute } from 'next'
 import { getAllPosts } from '@/services/post-service'
 import { getAllCategories } from '@/services/category-service'
 import { getAllTeamMembers } from '@/services/team-service'
+import { getAllPages } from '@/services/page-service'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
   
-  // Static pages
+  // Static pages that are part of the app's file-based routing
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: siteUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
     { url: `${siteUrl}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${siteUrl}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
     { url: `${siteUrl}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.9 },
-    { url: `${siteUrl}/privacy-policy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${siteUrl}/terms-of-use`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
     { url: `${siteUrl}/advertise-with-us`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${siteUrl}/write-for-us`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6 },
   ];
+
+  // Dynamic pages from Sanity (under the /p/ route)
+  const pages = await getAllPages();
+  const pageRoutes = pages.map(page => ({
+    url: `${siteUrl}/p/${page.slug}`,
+    lastModified: new Date(page.updatedAt),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+  
+  // Explicitly add static pages now rendered via Sanity to ensure they're in the sitemap
+  const staticSanityPages: MetadataRoute.Sitemap = [
+      { url: `${siteUrl}/privacy-policy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
+      { url: `${siteUrl}/terms-of-use`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
+  ];
+
 
   // Blog posts
   const posts = await getAllPosts();
   const postRoutes = posts.map(post => ({
     url: `${siteUrl}/blog/${post.slug}`,
-    lastModified: new Date(post.date), // Use post date as last modified
+    lastModified: new Date(post.rawDate), // Use rawDate for accuracy
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
@@ -48,6 +63,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
       ...staticRoutes,
+      ...pageRoutes,
+      ...staticSanityPages,
       ...postRoutes,
       ...categoryRoutes,
       ...authorRoutes,
