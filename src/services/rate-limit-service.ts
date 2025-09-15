@@ -14,7 +14,7 @@ interface RateLimitInfo {
 }
 
 const ipRequestMap = new Map<string, RateLimitInfo>();
-const DAILY_LIMIT = 5;
+const DAILY_LIMIT = 10;
 const WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // Periodically clean up stale entries to prevent memory leaks over time.
