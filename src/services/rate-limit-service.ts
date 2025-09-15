@@ -58,8 +58,18 @@ export async function checkAndIncrementRateLimit(ip: string | null) {
   } else {
     // Subsequent request.
     if (userInfo.count >= DAILY_LIMIT) {
-      const timeLeft = Math.ceil((userInfo.resetsAt - now) / (1000 * 60)); // Time left in minutes
-      throw new Error(`Rate limit exceeded. Please try again in ${timeLeft} minutes.`);
+      const timeLeftMs = userInfo.resetsAt - now;
+      const hoursLeft = Math.floor(timeLeftMs / (1000 * 60 * 60));
+      const minutesLeft = Math.ceil((timeLeftMs % (1000 * 60 * 60)) / (1000 * 60));
+      
+      let timeMessage;
+      if (hoursLeft > 0) {
+        timeMessage = `${hoursLeft} hour${hoursLeft > 1 ? 's' : ''}${minutesLeft > 0 ? ` and ${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}` : ''}`;
+      } else {
+        timeMessage = `${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}`;
+      }
+      
+      throw new Error(`Rate limit exceeded. You have used all ${DAILY_LIMIT} daily requests. Please try again in ${timeMessage}.`);
     }
     userInfo.count++;
   }
