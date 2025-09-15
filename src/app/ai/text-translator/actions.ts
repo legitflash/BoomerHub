@@ -6,6 +6,7 @@ import type { TranslateTextInput, TranslateTextOutput } from '@/ai/flows/transla
 import { headers } from 'next/headers';
 
 export async function getTranslation(input: TranslateTextInput): Promise<TranslateTextOutput> {
-  const ip = headers().get('x-forwarded-for') || headers().get('x-real-ip');
+  const headersList = await headers();
+  const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip');
   return translateText(input, ip);
 }

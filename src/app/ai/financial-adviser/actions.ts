@@ -6,6 +6,7 @@ import type { GenerateFinancialAdviceInput, GenerateFinancialAdviceOutput } from
 import { headers } from 'next/headers';
 
 export async function getFinancialAdvice(input: GenerateFinancialAdviceInput): Promise<GenerateFinancialAdviceOutput> {
-  const ip = headers().get('x-forwarded-for') || headers().get('x-real-ip');
+  const headersList = await headers();
+  const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip');
   return generateFinancialAdvice(input, ip);
 }
