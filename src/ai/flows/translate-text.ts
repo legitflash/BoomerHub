@@ -25,7 +25,6 @@ const TranslateTextOutputSchema = z.object({
 export type TranslateTextOutput = z.infer<typeof TranslateTextOutputSchema>;
 
 export async function translateText(input: TranslateTextInput, ip: string | null): Promise<TranslateTextOutput> {
-  await checkAndIncrementRateLimit(ip);
   return translateTextFlow(input);
 }
 

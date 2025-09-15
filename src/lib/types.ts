@@ -98,3 +98,8 @@ export type Advertisement = {
     isActive: boolean;
     createdAt?: string;
 };
+
+// Result type for server actions to handle errors gracefully in production
+export type Result<T> = 
+  | { success: true; data: T }
+  | { success: false; code: 'RATE_LIMIT_EXCEEDED' | 'VALIDATION_ERROR' | 'INTERNAL_ERROR'; message: string };

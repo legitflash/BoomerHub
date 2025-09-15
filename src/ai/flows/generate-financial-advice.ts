@@ -26,7 +26,6 @@ const GenerateFinancialAdviceOutputSchema = z.object({
 export type GenerateFinancialAdviceOutput = z.infer<typeof GenerateFinancialAdviceOutputSchema>;
 
 export async function generateFinancialAdvice(input: GenerateFinancialAdviceInput, ip: string | null): Promise<GenerateFinancialAdviceOutput> {
-  await checkAndIncrementRateLimit(ip);
   return generateFinancialAdviceFlow(input);
 }
 

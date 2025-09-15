@@ -48,29 +48,30 @@ export default function TextTranslatorPage() {
     setError(null);
     setTranslation(null);
 
-    try {
-      const result = await getTranslation(values);
-      setTranslation(result);
-    } catch (e: any) {
-      console.error(e);
-      const errorMessage = e.message || 'An error occurred during translation. Please try again.';
+    const result = await getTranslation(values);
+    
+    if (!result.success) {
+      const errorMessage = result.message;
       setError(errorMessage);
-       if (errorMessage.includes('Rate limit exceeded')) {
-           toast({
-            title: "Daily Limit Reached",
-            description: "You have exceeded your daily request limit. Please try again tomorrow.",
-            variant: "destructive",
-          });
+      
+      if (result.code === 'RATE_LIMIT_EXCEEDED') {
+        toast({
+          title: "Daily Limit Reached",
+          description: errorMessage,
+          variant: "destructive",
+        });
       } else {
-          toast({
-            title: "Request Failed",
-            description: errorMessage,
-            variant: "destructive",
-          });
+        toast({
+          title: "Translation Failed",
+          description: errorMessage,
+          variant: "destructive",
+        });
       }
-    } finally {
-      setIsLoading(false);
+    } else {
+      setTranslation(result.data);
     }
+    
+    setIsLoading(false);
   }
   
   return (

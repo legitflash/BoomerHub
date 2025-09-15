@@ -123,34 +123,35 @@ export default function MatchPredictionPage() {
     setError(null);
     setAnalysis(null);
 
-    try {
-      const result = await getMatchAnalysis({ 
-        homeTeam: values.homeTeam, 
-        awayTeam: values.awayTeam,
-        league: values.league,
-        matchDate: values.matchDate ? format(values.matchDate, 'yyyy-MM-dd') : undefined,
-      });
-      setAnalysis(result);
-    } catch (e: any) {
-      console.error(e);
-      const errorMessage = e.message || 'An error occurred while generating the analysis. Please try again.';
+    const result = await getMatchAnalysis({ 
+      homeTeam: values.homeTeam, 
+      awayTeam: values.awayTeam,
+      league: values.league,
+      matchDate: values.matchDate ? format(values.matchDate, 'yyyy-MM-dd') : undefined,
+    });
+    
+    if (!result.success) {
+      const errorMessage = result.message;
       setError(errorMessage);
-       if (errorMessage.includes('Rate limit exceeded')) {
-           toast({
-            title: "Daily Limit Reached",
-            description: "You have exceeded your daily request limit. Please try again tomorrow.",
-            variant: "destructive",
-          });
+      
+      if (result.code === 'RATE_LIMIT_EXCEEDED') {
+        toast({
+          title: "Daily Limit Reached",
+          description: errorMessage,
+          variant: "destructive",
+        });
       } else {
-          toast({
-            title: "Prediction Failed",
-            description: errorMessage,
-            variant: "destructive",
-          });
+        toast({
+          title: "Prediction Failed",
+          description: errorMessage,
+          variant: "destructive",
+        });
       }
-    } finally {
-      setIsLoading(false);
+    } else {
+      setAnalysis(result.data);
     }
+    
+    setIsLoading(false);
   }
 
   return (

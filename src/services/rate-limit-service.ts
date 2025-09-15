@@ -31,13 +31,13 @@ setInterval(() => {
 
 /**
  * Checks if a user has exceeded their daily rate limit and increments their count.
- * Throws an error if the limit is exceeded.
+ * Returns an object indicating if the rate limit was exceeded.
  * @param ip The user's IP address.
  */
-export async function checkAndIncrementRateLimit(ip: string | null) {
+export async function checkAndIncrementRateLimit(ip: string | null): Promise<{ exceeded: boolean; message?: string }> {
   if (!ip) {
     // Fail open if IP is not available, though it should be.
-    return;
+    return { exceeded: false };
   }
 
   const now = Date.now();
@@ -55,6 +55,7 @@ export async function checkAndIncrementRateLimit(ip: string | null) {
       count: 1,
       resetsAt: now + WINDOW_MS,
     });
+    return { exceeded: false };
   } else {
     // Subsequent request.
     if (userInfo.count >= DAILY_LIMIT) {
@@ -69,8 +70,12 @@ export async function checkAndIncrementRateLimit(ip: string | null) {
         timeMessage = `${minutesLeft} minute${minutesLeft > 1 ? 's' : ''}`;
       }
       
-      throw new Error(`Rate limit exceeded. You have used all ${DAILY_LIMIT} daily requests. Please try again in ${timeMessage}.`);
+      return { 
+        exceeded: true, 
+        message: `You have used all ${DAILY_LIMIT} daily requests. Please try again in ${timeMessage}.`
+      };
     }
     userInfo.count++;
+    return { exceeded: false };
   }
 }

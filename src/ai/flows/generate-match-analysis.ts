@@ -32,7 +32,6 @@ const GenerateMatchAnalysisOutputSchema = z.object({
 export type GenerateMatchAnalysisOutput = z.infer<typeof GenerateMatchAnalysisOutputSchema>;
 
 export async function generateMatchAnalysis(input: GenerateMatchAnalysisInput, ip: string | null): Promise<GenerateMatchAnalysisOutput> {
-    await checkAndIncrementRateLimit(ip);
     return generateMatchAnalysisFlow(input);
 }
 
