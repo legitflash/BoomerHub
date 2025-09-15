@@ -31,13 +31,10 @@ export default defineType({
         list: icons.map(icon => ({ title: icon, value: icon })),
       },
       description: 'Select an icon from the Lucide icon library.',
-       validation: [
-        (Rule) => Rule.required(),
-        (Rule) => Rule.custom((value) => {
-            if (!value) return true; // Handled by required()
-            return icons.includes(value) ? true : 'Please select a valid icon from the list.'
-        })
-      ]
+       validation: (Rule: any) => Rule.required().custom((value: any) => {
+        if (!value) return true; // Handled by required()
+        return icons.includes(value) ? true : 'Please select a valid icon from the list.'
+      }),
     }),
   ],
 })

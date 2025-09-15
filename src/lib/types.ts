@@ -39,6 +39,7 @@ export type BlogCategory = {
   name: string;
   slug: string;
   iconName: string;
+  isAiTool?: boolean;
 }
 
 export type TopCategory = {
