@@ -14,7 +14,7 @@ const nextConfig = {
     experimental: {
         allowedHosts: true,
     },
-    allowedDevOrigins: ['127.0.0.1'],
+    allowedDevOrigins: ['127.0.0.1', '98374861-dad0-47cc-924d-7ddf31fe48f7-00-3oohp9t06plby.picard.replit.dev'],
     images: {
         remotePatterns: [
             {
