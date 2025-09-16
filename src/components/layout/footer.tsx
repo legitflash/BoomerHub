@@ -41,7 +41,7 @@ export async function Footer() {
                 <Link href="https://www.tiktok.com/@legitflash01" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary"><TikTokIcon /></Link>
                 <Link href="https://whatsapp.com/channel/0029Vb5nwfvInlqQa38G442f"  target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><MessageCircle className="h-5 w-5 hover:text-primary" /></Link>
                 <Link href="https://t.me/Boomerhub" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary" aria-label="Telegram"><Send className="h-5 w-5"/></Link>
-                <Link href="mailto:support@boomerhub.com" aria-label="Email"><Mail className="h-5 w-5 hover:text-primary" /></Link>
+                <Link href="mailto:boomerhub1@gmail.com" aria-label="Email"><Mail className="h-5 w-5 hover:text-primary" /></Link>
             </div>
           </div>
           
@@ -96,6 +96,7 @@ export async function Footer() {
         </div>
         <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} BoomerHub. All Rights Reserved.</p>
+          <p className="mt-2">Powered by xlinemedia llc &bull; &copy; xlinemedia llc</p>
         </div>
       </div>
     </footer>

@@ -147,8 +147,8 @@ export default function ContactPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                    <Button asChild className="w-full" size="lg">
-                       <Link href="mailto:support@boomerhub.com">
-                            <Mail className="mr-2 h-5 w-5" /> Email support@boomerhub.com
+                       <Link href="mailto:boomerhub1@gmail.com">
+                            <Mail className="mr-2 h-5 w-5" /> Email boomerhub1@gmail.com
                        </Link>
                    </Button>
                     <Button asChild className="w-full" size="lg" variant="secondary">
