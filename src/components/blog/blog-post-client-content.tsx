@@ -66,6 +66,22 @@ const portableTextComponents = {
     code: CodeBlock,
     image: ImageComponent,
   },
+  marks: {
+    textColor: ({ children, value }: { children: React.ReactNode; value: { color: string } }) => (
+      <span style={{ color: value.color }}>{children}</span>
+    ),
+    backgroundColor: ({ children, value }: { children: React.ReactNode; value: { color: string } }) => (
+      <span style={{ backgroundColor: value.color, padding: '2px 4px', borderRadius: '4px' }}>{children}</span>
+    ),
+    fontSize: ({ children, value }: { children: React.ReactNode; value: { size: string } }) => (
+      <span className={value.size}>{children}</span>
+    ),
+    link: ({ children, value }: { children: React.ReactNode; value: { href: string } }) => (
+      <Link href={value.href} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+        {children}
+      </Link>
+    ),
+  },
 };
 
 
