@@ -12,7 +12,7 @@ import placeholderImageData from '@/lib/placeholder-images.json';
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Discover BoomerHub\'s mission to deliver educational content and cutting-edge insights across finance, technology, entertainment, sports, AI, and social media to empower informed decision-making.',
+  description: 'Discover BoomerHub\'s mission to deliver practical guides, honest reviews, and smart recommendations through Get Paid To opportunities, How-To tutorials, Top Ten lists, Best picks, Reviews, News, and Betting Predictions.',
 };
 
 
@@ -25,7 +25,7 @@ export default async function AboutPage() {
       <section className="text-center">
         <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl font-headline">About BoomerHub</h1>
         <p className="max-w-3xl mx-auto mt-4 text-muted-foreground md:text-xl">
-          BoomerHub is your trusted source for educational content and cutting-edge insights across finance, technology, entertainment, sports, AI, and social media. We empower readers with knowledge-driven articles and intelligent tools to make informed decisions in today's rapidly evolving digital landscape.
+          BoomerHub is your go-to platform for practical guides, honest reviews, and smart recommendations. From earning opportunities and how-to tutorials to top picks and betting insights, we deliver actionable content that helps you make informed decisions and discover the best options available.
         </p>
       </section>
 
@@ -43,10 +43,10 @@ export default async function AboutPage() {
         <div className="space-y-4">
           <h2 className="text-3xl font-bold tracking-tighter font-headline">Our Mission</h2>
           <p className="text-muted-foreground">
-            In today's information-rich world, staying informed across multiple domains is crucial for success. Our mission is to bridge the knowledge gap by delivering high-quality educational content that makes complex topics accessible to everyone. We cover the pillars of modern life: financial literacy for smart money decisions, technology insights to keep you ahead of the curve, entertainment trends that shape culture, sports analysis for informed predictions, AI developments that impact daily life, and social media strategies for digital success.
+            In a world full of options and opportunities, finding reliable guidance can be overwhelming. Our mission is to cut through the noise by delivering practical, actionable content across seven key areas: Get Paid To opportunities for earning online income, comprehensive How-To guides that walk you through processes step-by-step, curated Top Ten lists highlighting the best options, Top Best recommendations for superior choices, honest Reviews of products and services, breaking News to keep you informed, and expert Betting Predictions for sports enthusiasts.
           </p>
           <p className="text-muted-foreground">
-            Whether you're seeking investment guidance, exploring the latest tech innovations, staying updated on entertainment industry shifts, analyzing sports predictions, understanding AI's impact on your profession, or optimizing your social media presence, BoomerHub transforms complexity into clarity through expert analysis and practical insights.
+            Whether you're looking to earn extra income online, need step-by-step tutorials, want to discover the top products in any category, seek honest reviews before making purchases, stay updated with the latest news, or analyze sports betting opportunities, BoomerHub provides clear, actionable insights that help you make smarter decisions.
           </p>
         </div>
       </section>
@@ -76,14 +76,14 @@ export default async function AboutPage() {
           <Card className="p-6">
             <div className="flex items-start space-x-4">
               <Avatar className="h-12 w-12">
-                <AvatarFallback>AT</AvatarFallback>
+                <AvatarFallback>MK</AvatarFallback>
               </Avatar>
               <div className="flex-1 text-left">
                 <p className="text-sm text-muted-foreground mb-2">
-                  "BoomerHub's comprehensive coverage of tech trends and AI developments keeps me ahead in my field. Their educational approach makes complex topics accessible."
+                  "The Get Paid To opportunities and step-by-step how-to guides have helped me start earning extra income online. The instructions are clear and actually work!"
                 </p>
-                <div className="font-semibold">A.T.</div>
-                <div className="text-xs text-muted-foreground">Technology Professional</div>
+                <div className="font-semibold">M.K.</div>
+                <div className="text-xs text-muted-foreground">Online Entrepreneur</div>
               </div>
             </div>
           </Card>
@@ -91,14 +91,14 @@ export default async function AboutPage() {
           <Card className="p-6">
             <div className="flex items-start space-x-4">
               <Avatar className="h-12 w-12">
-                <AvatarFallback>SC</AvatarFallback>
+                <AvatarFallback>JL</AvatarFallback>
               </Avatar>
               <div className="flex-1 text-left">
                 <p className="text-sm text-muted-foreground mb-2">
-                  "The financial insights and entertainment industry analysis have been invaluable for my portfolio decisions. Quality content that actually helps!"
+                  "Their honest reviews and top ten lists save me so much time when making purchases. Plus the betting predictions have been surprisingly accurate!"
                 </p>
-                <div className="font-semibold">S.C.</div>
-                <div className="text-xs text-muted-foreground">Finance Professional</div>
+                <div className="font-semibold">J.L.</div>
+                <div className="text-xs text-muted-foreground">Smart Shopper</div>
               </div>
             </div>
           </Card>
