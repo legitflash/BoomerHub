@@ -11,6 +11,20 @@ const pwaConfig = withPWA({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     ...pwaConfig,
+    // Configure for Replit environment
+    async headers() {
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'no-cache, no-store, must-revalidate',
+                    },
+                ],
+            },
+        ];
+    },
     images: {
         remotePatterns: [
             {
