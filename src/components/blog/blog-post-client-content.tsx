@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PortableText } from 'next-sanity';
+import { urlFor } from '@/lib/sanity-client';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,10 +36,35 @@ const CtaComponent = ({ value }: { value: any }) => {
     );
 };
 
+const ImageComponent = ({ value }: { value: any }) => {
+    if (!value || !value.asset) {
+        return null;
+    }
+    
+    return (
+        <figure className="my-8 not-prose">
+            <Image
+                src={urlFor(value).width(800).height(600).url()}
+                alt={value.alt || 'Blog post image'}
+                width={800}
+                height={600}
+                className="rounded-lg object-cover w-full"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 800px, 800px"
+            />
+            {value.caption && (
+                <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+                    {value.caption}
+                </figcaption>
+            )}
+        </figure>
+    );
+};
+
 const portableTextComponents = {
   types: {
     cta: CtaComponent,
     code: CodeBlock,
+    image: ImageComponent,
   },
 };
 

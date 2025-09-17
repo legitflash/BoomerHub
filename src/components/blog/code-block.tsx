@@ -2,6 +2,8 @@
 'use client';
 
 import { useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Button } from '@/components/ui/button';
 import { Check, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -52,9 +54,19 @@ export default function CodeBlock({ value }: CodeBlockProps) {
             {hasCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             <span className="sr-only">Copy code</span>
         </Button>
-        <pre>
-          <code>{code}</code>
-        </pre>
+        <SyntaxHighlighter
+          language={language || 'text'}
+          style={oneDark}
+          showLineNumbers={true}
+          customStyle={{
+            margin: 0,
+            background: 'transparent',
+            padding: 0,
+            fontSize: '14px'
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
       </div>
     </div>
   );
