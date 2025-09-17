@@ -25,6 +25,15 @@ const nextConfig = {
             },
         ];
     },
+    // Allow cross-origin requests in development (fixes Replit/Netlify display differences)
+    allowedDevOrigins: [
+        '*.replit.dev',
+        '*.repl.co',  
+        '*.netlify.app',
+        'localhost',
+        'localhost:5000',
+        '127.0.0.1:5000'
+    ],
     images: {
         remotePatterns: [
             {

@@ -151,7 +151,7 @@ export default async function Home() {
 
       {/* Category Sections */}
       {allCategories.filter(c => !c.isAiTool).map(category => {
-        const recentPosts = getRecentPostsByCategory(otherPosts, category.slug, 3);
+        const recentPosts = getRecentPostsByCategory(otherPosts, category.slug, 2);
         if (recentPosts.length === 0) return null;
 
         return (

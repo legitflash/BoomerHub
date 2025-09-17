@@ -50,7 +50,7 @@ export default function BlogPostContent({ post, allPosts }: { post: Post, allPos
   // Use the reliable categorySlug for filtering related posts
   const relatedPosts = allPosts
     .filter((p) => p.categorySlug === post.categorySlug && p.slug !== post.slug)
-    .slice(0, 2); // Show up to 2 related posts so there's room for an ad
+    .slice(0, 5); // Show up to 5 related posts as requested
 
   useEffect(() => {
     // Ensure this runs only on the client

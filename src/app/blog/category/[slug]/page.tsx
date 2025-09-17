@@ -14,7 +14,7 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
   DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit,
 };
 
-const POSTS_PER_PAGE = 9; // Use 9 for a 3x3 grid with ad
+const POSTS_PER_PAGE = 10; // Show 10 posts per page as requested
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
 
 type Props = {

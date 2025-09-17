@@ -11,7 +11,7 @@ const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = 
   DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit,
 };
 
-const POSTS_PER_PAGE = 9; // Changed to 9 to make a 3x3 grid with an ad
+const POSTS_PER_PAGE = 10; // Show 10 posts per page as requested
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const allPosts = await getAllPosts();
