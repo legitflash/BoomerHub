@@ -8,17 +8,59 @@ import { ArrowLeft, DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper
 import AdsterraBanner from '@/components/ads/adsterra-banner';
 import PaginationControls from '@/components/blog/pagination-controls';
 import PostGrid from '@/components/blog/post-grid';
+import type { Metadata, ResolvingMetadata } from 'next';
 
 const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
   DollarSign, Tv, Code, Briefcase, Rocket, BarChart, Newspaper, Gamepad, Trophy, TrendingUp, Plane, Edit,
 };
 
 const POSTS_PER_PAGE = 9; // Use 9 for a 3x3 grid with ad
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://boomerhub.com';
 
 type Props = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+// Generate dynamic metadata for each category page
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await getCategoryBySlug(slug);
+
+  if (!category) {
+    return {
+      title: 'Category Not Found',
+    }
+  }
+
+  const allPosts = await getAllPosts();
+  const postsCount = allPosts.filter((p) => p.categorySlug === slug).length;
+  const description = `Explore ${postsCount} insightful articles about ${category.name}. Learn from expert insights on ${category.name.toLowerCase()} at BoomerHub.`;
+
+  return {
+    title: `${category.name} Articles & Insights`,
+    description: description,
+    keywords: [category.name, 'articles', 'insights', 'boomerhub', category.name.toLowerCase()],
+    openGraph: {
+      title: `${category.name} Articles & Insights | BoomerHub`,
+      description: description,
+      url: `${siteUrl}/blog/category/${category.slug}`,
+      siteName: 'BoomerHub',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${category.name} Articles & Insights | BoomerHub`,
+      description: description,
+    },
+    alternates: {
+      canonical: `${siteUrl}/blog/category/${category.slug}`,
+    },
+  }
+}
 
 export async function generateStaticParams() {
   const categories = await getAllCategories();

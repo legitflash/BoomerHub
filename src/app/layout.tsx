@@ -78,7 +78,7 @@ export default function RootLayout({
         >
             <div className="relative flex min-h-screen flex-col">
               <NavigationMenu />
-              <main className="flex-1">{children}</main>
+              <main id="main-content" className="flex-1" role="main">{children}</main>
               <NewsletterSignup />
               <Footer />
             </div>

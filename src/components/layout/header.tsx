@@ -1,4 +1,3 @@
-
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -20,8 +19,17 @@ export function Header({ blogCategories }: { blogCategories: BlogCategory[] }) {
   const { setTheme, theme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
+    <>
+      {/* Skip to main content link for accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+      >
+        Skip to main content
+      </a>
+      
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" role="banner">
+        <div className="container flex h-16 max-w-screen-2xl items-center justify-between">
         {/* Left Side: Mobile Menu */}
         <div className="flex items-center">
             <Sheet>
@@ -87,5 +95,6 @@ export function Header({ blogCategories }: { blogCategories: BlogCategory[] }) {
         </div>
       </div>
     </header>
+    </>
   );
 }

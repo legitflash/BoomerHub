@@ -67,51 +67,71 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Featured Post Section */}
-      {featuredPost && (
-        <section className="container px-4 md:px-6">
-           <h2 className="text-3xl font-bold tracking-tighter font-headline mb-8">Featured Post</h2>
-            <Card className="grid md:grid-cols-2 overflow-hidden group">
+      {/* Featured Post & Recent Posts Section */}
+      <section className="container px-4 md:px-6">
+        {/* Featured Post - More Compact */}
+        {featuredPost && (
+          <div className="mb-12">
+            <h2 className="text-3xl font-bold tracking-tighter font-headline mb-6">Featured Post</h2>
+            <Card className="group overflow-hidden">
+              <div className="grid md:grid-cols-[2fr_1fr] gap-6 p-6">
+                <div className="space-y-4">
+                  <Badge variant="secondary" className="w-fit">{featuredPost.category}</Badge>
+                  <Link href={`/blog/${featuredPost.slug}`}>
+                    <h3 className="text-2xl md:text-3xl font-bold group-hover:text-primary transition-colors">{featuredPost.title}</h3>
+                  </Link>
+                  <p className="text-muted-foreground line-clamp-2">{featuredPost.description}</p>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={featuredPost.authorImage} alt={featuredPost.author} />
+                        <AvatarFallback>{featuredPost.author.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold">{featuredPost.author}</p>
+                        <p>{featuredPost.date}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div className="relative">
-                     <Link href={`/blog/${featuredPost.slug}`}>
-                        <Image
-                            src={featuredPost.image}
-                            alt={featuredPost.title}
-                            width={800}
-                            height={600}
-                            data-ai-hint={featuredPost.dataAiHint}
-                            className="w-full h-full object-cover aspect-video md:aspect-auto"
-                            priority
-                        />
-                    </Link>
+                  <Link href={`/blog/${featuredPost.slug}`}>
+                    <Image
+                      src={featuredPost.image}
+                      alt={featuredPost.title}
+                      width={400}
+                      height={300}
+                      data-ai-hint={featuredPost.dataAiHint}
+                      className="w-full h-full object-cover aspect-video rounded-lg"
+                      priority
+                    />
+                  </Link>
                 </div>
-                <div className="p-6 md:p-8 flex flex-col justify-center">
-                    <CardContent className="space-y-3 p-0">
-                        <Badge variant="secondary" className="w-fit">{featuredPost.category}</Badge>
-                        <Link href={`/blog/${featuredPost.slug}`}>
-                            <h3 className="text-2xl md:text-3xl font-bold group-hover:text-primary transition-colors">{featuredPost.title}</h3>
-                        </Link>
-                        <p className="text-muted-foreground line-clamp-3">{featuredPost.description}</p>
-                        <div className="flex items-center gap-4 pt-2 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src={featuredPost.authorImage} alt={featuredPost.author} />
-                                    <AvatarFallback>{featuredPost.author.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <p className="font-semibold">{featuredPost.author}</p>
-                                    <p>{featuredPost.date}</p>
-                                </div>
-                           </div>
-                        </div>
-                    </CardContent>
-                </div>
+              </div>
             </Card>
-        </section>
-      )}
+          </div>
+        )}
+
+        {/* Recent Posts - Above the fold content */}
+        {otherPosts.length > 0 && (
+          <div className="mb-12">
+            <div className="flex justify-between items-baseline mb-6">
+              <h2 className="text-3xl font-bold tracking-tighter font-headline">Recent Posts</h2>
+              <Button variant="link" asChild>
+                <Link href="/blog">View All <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {otherPosts.slice(0, 6).map((post) => (
+                <PostCard key={post.slug} post={post} />
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* Top Categories Section */}
-      <section className="container px-4 md-px-6">
+      <section className="container px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter text-center mb-8 font-headline">Top Categories</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
           {allCategories.filter(c => !c.isAiTool).slice(0, 4).map((category) => {
