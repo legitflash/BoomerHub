@@ -16,6 +16,10 @@ const nextConfig = {
         workerThreads: false,
         cpus: 1,
     },
+    // Add build-time configuration to prevent API route issues
+    generateBuildId: async () => {
+        return 'build-' + Date.now().toString();
+    },
     // Reduce build memory usage
     webpack: (config, { isServer }) => {
         // Optimize for memory usage
