@@ -10,12 +10,13 @@ export async function GET() {
 }
 
 export async function HEAD() {
-  // Add cache headers to reduce repeated requests
+  // Add aggressive cache headers to reduce repeated requests
   return new NextResponse(null, { 
     status: 200,
     headers: {
-      'Cache-Control': 'public, max-age=60, s-maxage=60',
-      'Vary': 'Accept-Encoding'
+      'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=600',
+      'Vary': 'Accept-Encoding',
+      'ETag': `"api-health-${Date.now()}"`
     }
   });
 }

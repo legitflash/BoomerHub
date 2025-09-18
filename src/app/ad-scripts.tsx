@@ -6,36 +6,69 @@ import { useEffect } from 'react';
 
 export default function AdScripts() {
   useEffect(() => {
-    // This effect will run only on the client side, after the component mounts
-    // and after consent has been given.
+    // Helper function to safely load external scripts with error handling
+    const loadScript = (src: string, onError?: () => void) => {
+      try {
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        script.referrerPolicy = 'no-referrer-when-downgrade';
+        
+        script.onerror = () => {
+          console.warn(`Failed to load ad script: ${src}`);
+          onError?.();
+        };
+        
+        script.onload = () => {
+          console.debug(`Successfully loaded ad script: ${src}`);
+        };
+        
+        document.body.appendChild(script);
+        return script;
+      } catch (error) {
+        console.warn(`Error creating ad script for ${src}:`, error);
+        return null;
+      }
+    };
+
+    // Helper function to safely execute inline scripts
+    const executeInlineScript = (code: string, description: string) => {
+      try {
+        const script = document.createElement('script');
+        script.innerHTML = code;
+        script.onerror = () => {
+          console.warn(`Failed to execute ${description} script`);
+        };
+        document.body.appendChild(script);
+        return script;
+      } catch (error) {
+        console.warn(`Error executing ${description} script:`, error);
+        return null;
+      }
+    };
+
+    // Load scripts with error handling
+    const popUnder = loadScript("//handsome-storm.com/bUXiV.sNdRG/ll0jYRWQcc/-eYmH9QuZZXUll/kiPqTtY2AMGzsQHzTNAT-kKtiN/jrYzzuNvDuM/2qMEAM");
     
-    // Hilltop Ads Pop-under Script
-    const popUnder = document.createElement('script');
-    (popUnder as any).settings = {};
-    popUnder.src = "//handsome-storm.com/bUXiV.sNdRG/ll0jYRWQcc/-eYmH9QuZZXUll/kiPqTtY2AMGzsQHzTNAT-kKtiN/jrYzzuNvDuM/2qMEAM";
-    popUnder.async = true;
-    popUnder.referrerPolicy = 'no-referrer-when-downgrade';
-    document.body.appendChild(popUnder);
-
-    // Monetag Script
-    const monetagScript = document.createElement('script');
-    monetagScript.innerHTML = `(s=>{s.dataset.zone='9810543',s.src='https://vemtoutcheeg.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`;
-    document.body.appendChild(monetagScript);
-
-    // Monetag Interstitial Ad Script
-    const interstitialScript = document.createElement('script');
-    interstitialScript.innerHTML = `(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`;
-    document.body.appendChild(interstitialScript);
+    const monetagScript = executeInlineScript(
+      `(s=>{s.dataset.zone='9810543',s.src='https://vemtoutcheeg.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`,
+      'Monetag'
+    );
+    
+    const interstitialScript = executeInlineScript(
+      `(s=>{s.dataset.zone=9805964,s.src='https://groleegni.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`,
+      'Monetag Interstitial'
+    );
 
     return () => {
       // Cleanup scripts on component unmount
-      if (document.body.contains(popUnder)) {
+      if (popUnder && document.body.contains(popUnder)) {
         document.body.removeChild(popUnder);
       }
-       if (document.body.contains(monetagScript)) {
+      if (monetagScript && document.body.contains(monetagScript)) {
         document.body.removeChild(monetagScript);
       }
-       if (document.body.contains(interstitialScript)) {
+      if (interstitialScript && document.body.contains(interstitialScript)) {
         document.body.removeChild(interstitialScript);
       }
     };
