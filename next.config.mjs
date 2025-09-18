@@ -12,9 +12,6 @@ const pwaConfig = withPWA({
 const nextConfig = {
     ...pwaConfig,
     // Configure for Replit environment
-    experimental: {
-        allowedOrigins: ["*"],
-    },
     async headers() {
         return [
             {
