@@ -12,6 +12,9 @@ const pwaConfig = withPWA({
 const nextConfig = {
     ...pwaConfig,
     // Configure for Replit environment
+    experimental: {
+        allowedOrigins: ["*"],
+    },
     async headers() {
         return [
             {
@@ -20,6 +23,10 @@ const nextConfig = {
                     {
                         key: 'Cache-Control',
                         value: 'no-cache, no-store, must-revalidate',
+                    },
+                    {
+                        key: 'X-Frame-Options',
+                        value: 'ALLOWALL',
                     },
                 ],
             },
