@@ -67,22 +67,22 @@ const portableTextComponents = {
     image: ImageComponent,
   },
   marks: {
-    textColor: ({ children, value }: { children: React.ReactNode; value: { color: string } }) => (
-      <span style={{ color: value.color }}>{children}</span>
+    textColor: ({ children, value }: any) => (
+      <span style={{ color: value?.color }}>{children}</span>
     ),
-    backgroundColor: ({ children, value }: { children: React.ReactNode; value: { color: string } }) => (
-      <span style={{ backgroundColor: value.color, padding: '2px 4px', borderRadius: '4px' }}>{children}</span>
+    backgroundColor: ({ children, value }: any) => (
+      <span style={{ backgroundColor: value?.color, padding: '2px 4px', borderRadius: '4px' }}>{children}</span>
     ),
-    fontSize: ({ children, value }: { children: React.ReactNode; value: { size: string } }) => (
-      <span className={value.size}>{children}</span>
+    fontSize: ({ children, value }: any) => (
+      <span className={value?.size}>{children}</span>
     ),
-    link: ({ children, value }: { children: React.ReactNode; value: { href: string } }) => (
-      <Link href={value.href} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
+    link: ({ children, value }: any) => (
+      <Link href={value?.href || '#'} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
         {children}
       </Link>
     ),
   },
-};
+} as any;
 
 
 export default function BlogPostContent({ post, allPosts }: { post: Post, allPosts: Post[] }) {

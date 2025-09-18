@@ -1,10 +1,12 @@
 [build]
   command = "npm run build"
+  publish = ".next"
 
 [build.environment]
   SECRETS_SCAN_OMIT_KEYS = "GEMINI_API_KEY"
   NODE_VERSION = "20"
-  NPM_FLAGS = "--production=false"
+  NPM_FLAGS = "--production=false --legacy-peer-deps"
+  NODE_OPTIONS = "--max-old-space-size=4096"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
