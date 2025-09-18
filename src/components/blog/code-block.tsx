@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import DOMPurify from 'dompurify';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,23 @@ export default function CodeBlock({ value }: CodeBlockProps) {
 
   if (!code) {
     return null;
+  }
+
+  // If language is 'component' or 'html-component', render the HTML instead of showing code
+  if (language === 'component' || language === 'html-component' || language === 'render') {
+    // Sanitize HTML to prevent XSS attacks
+    const sanitizedHtml = DOMPurify.sanitize(code, {
+      ALLOWED_TAGS: ['div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a', 'img', 'ul', 'ol', 'li', 'br', 'strong', 'em', 'b', 'i', 'u', 'blockquote', 'pre', 'code', 'table', 'tr', 'td', 'th', 'thead', 'tbody'],
+      ALLOWED_ATTR: ['class', 'id', 'href', 'src', 'alt', 'title', 'target', 'rel', 'style'],
+      ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp|xxx):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+    });
+    
+    return (
+      <div 
+        className="my-6 not-prose"
+        dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+      />
+    );
   }
 
   return (
