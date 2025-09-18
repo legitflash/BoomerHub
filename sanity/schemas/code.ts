@@ -11,21 +11,11 @@ export default defineType({
       name: 'language',
       title: 'Language',
       type: 'string',
-      description: 'Choose language for syntax highlighting, or "component" to render HTML as visual components',
+      description: 'Default: Renders HTML as visual components. Choose "Show Code" to display syntax-highlighted code instead.',
       options: {
         list: [
-          {title: 'Render as Component (HTML)', value: 'component'},
-          {title: 'TypeScript', value: 'typescript'},
-          {title: 'JavaScript', value: 'javascript'},
-          {title: 'HTML', value: 'html'},
-          {title: 'CSS', value: 'css'},
-          {title: 'Python', value: 'python'},
-          {title: 'Java', value: 'java'},
-          {title: 'PHP', value: 'php'},
-          {title: 'JSON', value: 'json'},
-          {title: 'SQL', value: 'sql'},
-          {title: 'Bash', value: 'bash'},
-          {title: 'Text (No highlighting)', value: 'text'},
+          {title: 'Render as Component (Default)', value: 'component'},
+          {title: 'Show Code (Syntax Highlighted)', value: 'code'},
         ]
       }
     }),
