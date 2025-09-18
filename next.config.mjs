@@ -20,24 +20,39 @@ const nextConfig = {
     generateBuildId: async () => {
         return 'build-' + Date.now().toString();
     },
-    // Reduce build memory usage
-    webpack: (config, { isServer }) => {
-        // Optimize for memory usage
-        if (config.optimization.splitChunks) {
-            config.optimization.splitChunks.cacheGroups = {
-                default: {
-                    minChunks: 1,
-                    priority: -20,
-                    reuseExistingChunk: true
-                },
-                vendor: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    priority: -10,
-                    chunks: 'all'
-                }
-            };
+    // Reduce build memory usage and optimize for Netlify
+    webpack: (config, { isServer, dev }) => {
+        // Only apply optimizations in production builds
+        if (!dev) {
+            // Optimize for memory usage
+            if (config.optimization.splitChunks) {
+                config.optimization.splitChunks = {
+                    chunks: 'all',
+                    cacheGroups: {
+                        default: {
+                            minChunks: 1,
+                            priority: -20,
+                            reuseExistingChunk: true,
+                            maxSize: 244000,
+                        },
+                        vendor: {
+                            test: /[\\/]node_modules[\\/]/,
+                            name: 'vendors',
+                            priority: -10,
+                            chunks: 'all',
+                            maxSize: 244000,
+                        }
+                    }
+                };
+            }
+            
+            // Reduce memory usage during build
+            config.optimization.minimizer = config.optimization.minimizer || [];
+            
+            // Limit parallel processing to reduce memory usage
+            config.parallelism = 1;
         }
+        
         return config;
     },
     async headers() {

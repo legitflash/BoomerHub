@@ -17,16 +17,16 @@ const ipRequestMap = new Map<string, RateLimitInfo>();
 const DAILY_LIMIT = 10;
 const WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-// Periodically clean up stale entries to prevent memory leaks over time.
-// This runs once on server startup.
-setInterval(() => {
+// Clean up stale entries during rate limit checks to prevent memory leaks.
+// Avoid using setInterval in serverless environments.
+function cleanupStaleEntries() {
   const now = Date.now();
   for (const [ip, info] of ipRequestMap.entries()) {
     if (info.resetsAt < now) {
       ipRequestMap.delete(ip);
     }
   }
-}, WINDOW_MS);
+}
 
 
 /**
@@ -39,6 +39,9 @@ export async function checkAndIncrementRateLimit(ip: string | null): Promise<{ e
     // Fail open if IP is not available, though it should be.
     return { exceeded: false };
   }
+
+  // Clean up stale entries periodically to prevent memory leaks
+  cleanupStaleEntries();
 
   const now = Date.now();
   let userInfo = ipRequestMap.get(ip);
