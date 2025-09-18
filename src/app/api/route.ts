@@ -10,5 +10,12 @@ export async function GET() {
 }
 
 export async function HEAD() {
-  return new NextResponse(null, { status: 200 });
+  // Add cache headers to reduce repeated requests
+  return new NextResponse(null, { 
+    status: 200,
+    headers: {
+      'Cache-Control': 'public, max-age=60, s-maxage=60',
+      'Vary': 'Accept-Encoding'
+    }
+  });
 }

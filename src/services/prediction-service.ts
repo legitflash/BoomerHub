@@ -35,8 +35,12 @@ function formatPrediction(prediction: any): Prediction {
         match: `${homeTeamName} vs. ${awayTeamName}`,
         homeTeam: homeTeamName,
         awayTeam: awayTeamName,
-        homeTeamLogo: prediction.homeTeamLogo ? urlFor(prediction.homeTeamLogo).width(64).height(64).url() : `https://logo.clearbit.com/${homeTeamName.toLowerCase().replace(/\s+/g, '')}.com`,
-        awayTeamLogo: prediction.awayTeamLogo ? urlFor(prediction.awayTeamLogo).width(64).height(64).url() : `https://logo.clearbit.com/${awayTeamName.toLowerCase().replace(/\s+/g, '')}.com`,
+        homeTeamLogo: prediction.homeTeamLogo 
+          ? urlFor(prediction.homeTeamLogo).width(64).height(64).url() 
+          : '/images/team-placeholder.png', // Use local fallback instead of external API
+        awayTeamLogo: prediction.awayTeamLogo 
+          ? urlFor(prediction.awayTeamLogo).width(64).height(64).url() 
+          : '/images/team-placeholder.png', // Use local fallback instead of external API
         homeTeamForm: prediction.homeTeamForm || [],
         awayTeamForm: prediction.awayTeamForm || [],
         prediction: prediction.prediction,

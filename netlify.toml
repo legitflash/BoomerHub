@@ -10,6 +10,8 @@
   SANITY_REVALIDATE_SECRET = "placeholder-for-build"
   GEMINI_API_KEY = "build-placeholder-key"
   NEXT_TELEMETRY_DISABLED = "1"
+  # Performance optimizations
+  NEXT_CACHE_SIZE = "1024"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
