@@ -12,6 +12,30 @@ const pwaConfig = withPWA({
 const nextConfig = {
     ...pwaConfig,
     // Configure for Replit environment
+    experimental: {
+        workerThreads: false,
+        cpus: 1,
+    },
+    // Reduce build memory usage
+    webpack: (config, { isServer }) => {
+        // Optimize for memory usage
+        if (config.optimization.splitChunks) {
+            config.optimization.splitChunks.cacheGroups = {
+                default: {
+                    minChunks: 1,
+                    priority: -20,
+                    reuseExistingChunk: true
+                },
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    priority: -10,
+                    chunks: 'all'
+                }
+            };
+        }
+        return config;
+    },
     async headers() {
         return [
             {
